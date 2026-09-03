@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, DM_Sans } from "next/font/google";
 import "./globals.css";
+import ScrollToTop from "@/components/ScrollToTop";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -26,9 +27,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${playfair.variable} ${dmSans.variable}`}>
+    <html lang="en" className={`${playfair.variable} ${dmSans.variable} scroll-smooth`}>
       <body className="min-h-screen bg-[#F7F8FA] text-[#0D1F3C] font-sans antialiased selection:bg-[#27A84E] selection:text-white">
         {children}
+        <ScrollToTop />
       </body>
     </html>
   );
