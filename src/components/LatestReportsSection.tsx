@@ -139,25 +139,24 @@ export default function LatestReportsSection({ onOpenPricing }: LatestReportsSec
       setViewingReport(report);
       return;
     }
-    // Simulate PDF download
     setDownloadSuccess(`Downloading "${report.title}.pdf"...`);
     setTimeout(() => setDownloadSuccess(null), 3500);
   };
 
   return (
-    <section id="reports-section" className="py-16 px-4 sm:px-6 lg:px-8 bg-white border-b border-gray-200">
+    <section id="reports-section" className="py-12 sm:py-16 px-3 sm:px-6 lg:px-8 bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 sm:mb-8 gap-4">
           <div>
-            <div className="text-xs font-bold uppercase tracking-widest text-[#1E7A3A] mb-1">
+            <div className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-[#1E7A3A] mb-1">
               Our Research
             </div>
             <h2 className="font-serif-title text-2xl sm:text-3xl font-bold text-[#0D1F3C]">
               Latest Published Reports
             </h2>
             <p className="text-xs sm:text-sm text-gray-600 max-w-xl mt-1">
-              Actionable research across equities, mutual funds, and macro insights prepared by our analytical team.
+              Actionable research across equities, mutual funds, and macro insights.
             </p>
           </div>
 
@@ -175,12 +174,12 @@ export default function LatestReportsSection({ onOpenPricing }: LatestReportsSec
         </div>
 
         {/* Category Tabs */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-3 mb-6 scrollbar-none">
+        <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-3 mb-6 scrollbar-none">
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`text-xs font-medium px-3.5 py-1.5 rounded-full transition-all cursor-pointer whitespace-nowrap ${
+              className={`text-[10px] sm:text-xs font-medium px-3 py-1.5 rounded-full transition-all cursor-pointer whitespace-nowrap ${
                 activeCategory === cat
                   ? "bg-[#0D1F3C] text-white shadow-sm"
                   : "bg-[#F7F8FA] text-gray-600 hover:bg-gray-200"
@@ -199,59 +198,59 @@ export default function LatestReportsSection({ onOpenPricing }: LatestReportsSec
           </div>
         )}
 
-        {/* Reports Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {/* 2-Column Grid on Mobile! */}
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
           {filteredReports.map((report) => (
             <div
               key={report.id}
-              className="bg-[#F7F8FA] border border-gray-200 rounded-xl p-5 hover-lift flex flex-col justify-between"
+              className="bg-[#F7F8FA] border border-gray-200 rounded-xl p-3.5 sm:p-5 hover-lift flex flex-col justify-between"
             >
               <div>
-                <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center justify-between mb-2">
                   <span
-                    className={`text-[10px] font-semibold px-2.5 py-0.5 rounded-full ${report.tagClass}`}
+                    className={`text-[9px] sm:text-[10px] font-semibold px-2 py-0.5 rounded-full ${report.tagClass}`}
                   >
                     {report.category}
                   </span>
-                  <span className="text-[10px] text-gray-400 font-mono">
-                    {report.pages} Pages
+                  <span className="text-[9px] text-gray-400 font-mono">
+                    {report.pages}P
                   </span>
                 </div>
 
-                <h3 className="text-sm font-semibold text-[#0D1F3C] mb-1.5 leading-snug">
+                <h3 className="text-xs sm:text-sm font-semibold text-[#0D1F3C] mb-1 leading-snug line-clamp-2">
                   {report.title}
                 </h3>
-                <div className="text-[10px] text-gray-400 mb-3">{report.date}</div>
-                <p className="text-xs text-gray-600 line-clamp-2 mb-4 leading-relaxed">
+                <div className="text-[9px] sm:text-[10px] text-gray-400 mb-2">{report.date}</div>
+                <p className="text-[10px] sm:text-xs text-gray-600 line-clamp-2 mb-3 leading-snug sm:leading-relaxed">
                   {report.summary}
                 </p>
               </div>
 
-              <div className="pt-3 border-t border-gray-200/60 flex items-center justify-between">
+              <div className="pt-2 sm:pt-3 border-t border-gray-200/60 flex items-center justify-between">
                 <button
                   onClick={() => setViewingReport(report)}
-                  className="text-xs font-semibold text-[#1E7A3A] hover:underline flex items-center gap-1 cursor-pointer"
+                  className="text-[10px] sm:text-xs font-semibold text-[#1E7A3A] hover:underline flex items-center gap-0.5"
                 >
-                  <FileText className="w-3.5 h-3.5" />
-                  <span>Preview Executive Summary</span>
+                  <FileText className="w-3 h-3" />
+                  <span>Preview</span>
                 </button>
 
                 <button
                   onClick={() => handleDownload(report)}
-                  className={`text-xs font-medium px-3 py-1.5 rounded-md flex items-center gap-1.5 cursor-pointer transition-colors ${
+                  className={`text-[10px] sm:text-xs font-medium px-2 sm:px-3 py-1 rounded flex items-center gap-1 cursor-pointer transition-colors ${
                     report.isLocked
-                      ? "bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100"
+                      ? "bg-amber-50 text-amber-800 border border-amber-200"
                       : "bg-[#1E7A3A] text-white hover:bg-[#27A84E]"
                   }`}
                 >
                   {report.isLocked ? (
                     <>
-                      <Lock className="w-3 h-3 text-amber-700" />
-                      <span>Subscribers</span>
+                      <Lock className="w-2.5 h-2.5 text-amber-700" />
+                      <span>Locked</span>
                     </>
                   ) : (
                     <>
-                      <Download className="w-3 h-3" />
+                      <Download className="w-2.5 h-2.5" />
                       <span>PDF</span>
                     </>
                   )}
@@ -260,21 +259,6 @@ export default function LatestReportsSection({ onOpenPricing }: LatestReportsSec
             </div>
           ))}
         </div>
-
-        {filteredReports.length === 0 && (
-          <div className="text-center py-12 bg-[#F7F8FA] rounded-xl border border-dashed border-gray-300">
-            <p className="text-sm text-gray-500">No research reports found matching your filter query.</p>
-            <button
-              onClick={() => {
-                setActiveCategory("All");
-                setSearchQuery("");
-              }}
-              className="mt-3 text-xs text-[#1E7A3A] font-semibold underline"
-            >
-              Reset Filters
-            </button>
-          </div>
-        )}
       </div>
 
       {/* Report Modal */}
@@ -322,7 +306,7 @@ export default function LatestReportsSection({ onOpenPricing }: LatestReportsSec
                 <Lock className="w-5 h-5 text-amber-700 mx-auto mb-1" />
                 <h5 className="text-xs font-bold text-amber-900">Subscribers Only Content</h5>
                 <p className="text-[11px] text-amber-700 mt-1 mb-3">
-                  This deep dive report requires an active Pro Research or HNI Advisory subscription.
+                  This report requires an active Pro Research or HNI Advisory plan.
                 </p>
                 <button
                   onClick={() => {
@@ -331,7 +315,7 @@ export default function LatestReportsSection({ onOpenPricing }: LatestReportsSec
                   }}
                   className="w-full text-center text-xs font-semibold bg-[#1E7A3A] hover:bg-[#27A84E] text-white py-2 rounded-lg shadow cursor-pointer transition-colors"
                 >
-                  View Subscription Plans & Unlock →
+                  View Plans & Unlock →
                 </button>
               </div>
             ) : (

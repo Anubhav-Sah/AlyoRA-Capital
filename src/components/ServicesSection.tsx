@@ -1,12 +1,15 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
 import {
   TrendingUp,
   Lightbulb,
   Building2,
   FileSpreadsheet,
   Users,
+  Briefcase,
   ArrowRight,
   CheckCircle,
   X,
@@ -15,7 +18,7 @@ import {
 
 interface ServicesSectionProps {
   onOpenConsultation: () => void;
-  onOpenSubBrokerCalc: () => void;
+  onOpenSubBrokerCalc?: () => void;
 }
 
 export interface ServiceDetail {
@@ -23,6 +26,7 @@ export interface ServiceDetail {
   title: string;
   shortDesc: string;
   icon: React.ElementType;
+  image?: string;
   fullDesc: string;
   features: string[];
   idealFor: string;
@@ -33,8 +37,9 @@ const servicesData: ServiceDetail[] = [
   {
     id: "research",
     title: "Research Analysis",
-    shortDesc: "In-depth equity and sector reports backed by fundamental and technical research.",
+    shortDesc: "In-depth equity & sector reports backed by research.",
     icon: TrendingUp,
+    image: "/images/research-analysis.jpg",
     fullDesc:
       "Our Research Analysis division delivers institutional-grade reports on Indian equities, macroeconomic trends, and high-growth sectors. We combine rigorous DCF valuation, earnings momentum modeling, and technical entry points.",
     features: [
@@ -49,8 +54,9 @@ const servicesData: ServiceDetail[] = [
   {
     id: "advisory",
     title: "Investment Advisory",
-    shortDesc: "Personalised investment strategies aligned with your risk profile and goals.",
+    shortDesc: "Personalised investment strategies aligned with risk.",
     icon: Lightbulb,
+    image: "/images/investment-advisory.jpg",
     fullDesc:
       "Bespoke portfolio management and investment advisory tailored specifically to your financial risk appetite, capital allocation goals, and time horizon. Receive direct buy/hold/sell recommendations.",
     features: [
@@ -65,8 +71,9 @@ const servicesData: ServiceDetail[] = [
   {
     id: "mutual-funds",
     title: "Mutual Funds",
-    shortDesc: "Curated mutual fund portfolios with expert selection across equity and debt categories.",
+    shortDesc: "Curated mutual fund portfolios across equity & debt.",
     icon: Building2,
+    image: "/images/mutual-funds.jpg",
     fullDesc:
       "Avoid fund overlap and high-expense ratios. We curate optimal mutual fund portfolios across Large-Cap, Flexi-Cap, Mid-Cap, Small-Cap, and Debt schemes to maximize risk-adjusted CAGR returns.",
     features: [
@@ -79,9 +86,26 @@ const servicesData: ServiceDetail[] = [
     color: "#1E7A3A",
   },
   {
+    id: "business-consulting",
+    title: "Business Consulting",
+    shortDesc: "Growth advisory & financial planning for founders.",
+    icon: Briefcase,
+    image: "/images/sub-broker.jpg",
+    fullDesc:
+      "Partner with AlyoRA Capital Research to build, run, and scale your business with confidence — backed by institutional-grade financial research, structured strategy frameworks, and hands-on planning support.",
+    features: [
+      "Financial Planning & Budgeting (Cash-flow forecasts & break-even analysis)",
+      "Business Strategy & Growth Planning (Milestone roadmaps & revenue channels)",
+      "Startup Advisory & Business Model Validation",
+      "Business Health Diagnostics & Cost Leakage Audits",
+    ],
+    idealFor: "First-time founders, small business owners & expanding ventures",
+    color: "#0D1F3C",
+  },
+  {
     id: "planning",
     title: "Financial Planning",
-    shortDesc: "Goal-based financial planning for wealth creation, retirement, and tax optimisation.",
+    shortDesc: "Goal-based planning for wealth creation & tax optimization.",
     icon: FileSpreadsheet,
     fullDesc:
       "A comprehensive financial roadmap covering emergency funds, insurance adequacy, retirement planning, child education funding, and legal estate structuring under SEBI framework compliance.",
@@ -92,22 +116,6 @@ const servicesData: ServiceDetail[] = [
       "Goal-based Asset-Liability Matching",
     ],
     idealFor: "Families, salaried professionals & business owners",
-    color: "#0D1F3C",
-  },
-  {
-    id: "sub-broker",
-    title: "Sub-Broker Service",
-    shortDesc: "Partner with us as a sub-broker and grow your own client base with our infrastructure.",
-    icon: Users,
-    fullDesc:
-      "Leverage AlyoRA Capital's research brand, trading technology, and analytical reports to build a lucrative sub-broker advisory practice with lucrative revenue sharing and zero hassle.",
-    features: [
-      "High Commission & Revenue Share Models",
-      "White-labeled Research Reports for your clients",
-      "Dedicated Relationship Manager & Onboarding Support",
-      "Marketing Collateral & Regulatory Compliance Guidance",
-    ],
-    idealFor: "Financial advisors, mutual fund distributors & entrepreneurs",
     color: "#1E7A3A",
   },
 ];
@@ -119,58 +127,73 @@ export default function ServicesSection({
   const [selectedService, setSelectedService] = useState<ServiceDetail | null>(null);
 
   return (
-    <section id="services-section" className="py-16 px-4 sm:px-6 lg:px-8 bg-[#F7F8FA]">
+    <section id="services-section" className="py-12 sm:py-16 px-3 sm:px-6 lg:px-8 bg-[#F7F8FA]">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
-        <div className="mb-10 text-center sm:text-left">
-          <div className="text-xs font-bold uppercase tracking-widest text-[#1E7A3A] mb-1">
+        <div className="mb-8 text-center sm:text-left">
+          <div className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-[#1E7A3A] mb-1">
             What We Do
           </div>
           <h2 className="font-serif-title text-2xl sm:text-3xl font-bold text-[#0D1F3C]">
             Our Core Services
           </h2>
           <p className="text-xs sm:text-sm text-gray-600 max-w-xl mt-1">
-            From deep equity research to personalised investment advisory — built for every type of investor.
+            From deep equity research to personalized investment advisory & business growth consulting.
           </p>
         </div>
 
-        {/* Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {/* 2-Column Grid on Mobile! */}
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
           {servicesData.map((svc) => {
             const IconComponent = svc.icon;
             return (
               <div
                 key={svc.id}
                 onClick={() => setSelectedService(svc)}
-                className="bg-white border border-gray-200 rounded-xl p-5 hover-lift border-t-4 cursor-pointer flex flex-col justify-between"
+                className="bg-white border border-gray-200 rounded-xl overflow-hidden hover-lift border-t-4 cursor-pointer flex flex-col justify-between group shadow-sm"
                 style={{ borderTopColor: svc.color }}
               >
                 <div>
-                  <div className="w-10 h-10 rounded-lg bg-[#E8F5EC] flex items-center justify-center mb-3 text-[#1E7A3A]">
-                    <IconComponent className="w-5 h-5" />
+                  {svc.image && (
+                    <div className="relative h-28 sm:h-44 w-full overflow-hidden bg-gray-100 border-b border-gray-100">
+                      <Image
+                        src={svc.image}
+                        alt={svc.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                  )}
+
+                  <div className="p-3 sm:p-5">
+                    <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+                      <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-[#E8F5EC] flex items-center justify-center text-[#1E7A3A] flex-shrink-0">
+                        <IconComponent className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                      </div>
+                      <h3 className="text-xs sm:text-base font-semibold text-[#0D1F3C] line-clamp-1">
+                        {svc.title}
+                      </h3>
+                    </div>
+
+                    <p className="text-[10px] sm:text-xs text-gray-600 leading-snug sm:leading-relaxed mb-2 line-clamp-2">
+                      {svc.shortDesc}
+                    </p>
                   </div>
-                  <h3 className="text-base font-semibold text-[#0D1F3C] mb-1.5">
-                    {svc.title}
-                  </h3>
-                  <p className="text-xs text-gray-600 leading-relaxed mb-4">
-                    {svc.shortDesc}
-                  </p>
                 </div>
 
-                <div className="pt-2 border-t border-gray-100 flex items-center justify-between">
-                  <span className="text-xs font-semibold text-[#1E7A3A] hover:underline flex items-center gap-1">
-                    Learn more <ArrowRight className="w-3.5 h-3.5" />
+                <div className="p-3 sm:p-5 pt-0 border-t border-gray-100 flex items-center justify-between">
+                  <span className="text-[10px] sm:text-xs font-semibold text-[#1E7A3A] group-hover:underline flex items-center gap-1">
+                    Learn <ArrowRight className="w-3 h-3" />
                   </span>
-                  {svc.id === "sub-broker" && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onOpenSubBrokerCalc();
-                      }}
-                      className="text-[10px] bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded font-medium hover:bg-amber-100"
+
+                  {svc.id === "business-consulting" && (
+                    <Link
+                      href="/business-consulting"
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-[9px] sm:text-[10px] bg-green-50 text-[#1E7A3A] border border-green-200 px-1.5 sm:px-2 py-0.5 rounded font-medium hover:bg-green-100"
                     >
-                      Calculate Partner Earnings
-                    </button>
+                      Hub →
+                    </Link>
                   )}
                 </div>
               </div>
@@ -178,25 +201,25 @@ export default function ServicesSection({
           })}
 
           {/* CTA Consultation Card */}
-          <div className="bg-[#E8F5EC] border border-[#27A84E] rounded-xl p-5 flex flex-col justify-between hover-lift">
+          <div className="bg-[#E8F5EC] border border-[#27A84E] rounded-xl p-3.5 sm:p-6 flex flex-col justify-between hover-lift">
             <div>
-              <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center mb-3 text-[#1E7A3A] shadow-sm">
-                <ArrowRight className="w-5 h-5 text-[#1E7A3A]" />
+              <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg bg-white flex items-center justify-center mb-2 sm:mb-4 text-[#1E7A3A] shadow-sm">
+                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-[#1E7A3A]" />
               </div>
-              <h3 className="text-base font-semibold text-[#1E7A3A] mb-1.5">
+              <h3 className="text-xs sm:text-base font-semibold text-[#1E7A3A] mb-1">
                 Not sure where to start?
               </h3>
-              <p className="text-xs text-[#1E7A3A]/80 leading-relaxed mb-4">
-                Book a free 30-minute consultation call with our research team to clarify your asset allocation strategy.
+              <p className="text-[10px] sm:text-xs text-[#1E7A3A]/80 leading-snug sm:leading-relaxed mb-3 line-clamp-3">
+                Book a free 30-minute call to clarify your strategy.
               </p>
             </div>
 
             <button
               onClick={onOpenConsultation}
-              className="w-full text-center text-xs font-semibold bg-[#0D1F3C] hover:bg-[#112540] text-white py-2.5 rounded-lg shadow transition-colors flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full text-center text-[10px] sm:text-xs font-semibold bg-[#0D1F3C] text-white py-2 sm:py-3 rounded-lg shadow flex items-center justify-center gap-1.5"
             >
-              <PhoneCall className="w-3.5 h-3.5 text-[#27A84E]" />
-              <span>Book Free Call →</span>
+              <PhoneCall className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#27A84E]" />
+              <span>Book Call →</span>
             </button>
           </div>
         </div>
@@ -205,27 +228,50 @@ export default function ServicesSection({
       {/* Service Detail Modal */}
       {selectedService && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 relative shadow-2xl border border-gray-200">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 relative shadow-2xl border border-gray-200 overflow-hidden">
             <button
               onClick={() => setSelectedService(null)}
-              className="absolute top-4 right-4 p-1 rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-100"
+              className="absolute top-4 right-4 z-10 p-1.5 rounded-full bg-white/80 hover:bg-white text-gray-700 shadow-md"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <div className="flex items-center gap-3 mb-3">
-              <div className="p-3 bg-[#E8F5EC] rounded-xl text-[#1E7A3A]">
-                {React.createElement(selectedService.icon, { className: "w-6 h-6" })}
+            {selectedService.image && (
+              <div className="relative h-48 -mx-6 -mt-6 mb-4 bg-gray-100">
+                <Image
+                  src={selectedService.image}
+                  alt={selectedService.title}
+                  fill
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-5">
+                  <div className="text-white">
+                    <h3 className="font-serif-title text-xl font-bold">
+                      {selectedService.title}
+                    </h3>
+                    <p className="text-[11px] text-white/80 font-medium">
+                      {selectedService.idealFor}
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div>
-                <h3 className="font-serif-title text-xl font-bold text-[#0D1F3C]">
-                  {selectedService.title}
-                </h3>
-                <span className="text-[11px] text-gray-500 font-medium">
-                  {selectedService.idealFor}
-                </span>
+            )}
+
+            {!selectedService.image && (
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-3 bg-[#E8F5EC] rounded-xl text-[#1E7A3A]">
+                  {React.createElement(selectedService.icon, { className: "w-6 h-6" })}
+                </div>
+                <div>
+                  <h3 className="font-serif-title text-xl font-bold text-[#0D1F3C]">
+                    {selectedService.title}
+                  </h3>
+                  <span className="text-[11px] text-gray-500 font-medium">
+                    {selectedService.idealFor}
+                  </span>
+                </div>
               </div>
-            </div>
+            )}
 
             <p className="text-xs sm:text-sm text-gray-700 leading-relaxed mb-4">
               {selectedService.fullDesc}
@@ -246,15 +292,25 @@ export default function ServicesSection({
             </div>
 
             <div className="flex items-center gap-3 pt-3 border-t border-gray-100">
-              <button
-                onClick={() => {
-                  setSelectedService(null);
-                  onOpenConsultation();
-                }}
-                className="flex-1 text-center text-xs font-semibold bg-[#1E7A3A] hover:bg-[#27A84E] text-white py-2.5 rounded-lg shadow cursor-pointer transition-colors"
-              >
-                Inquire About {selectedService.title}
-              </button>
+              {selectedService.id === "business-consulting" ? (
+                <Link
+                  href="/business-consulting"
+                  onClick={() => setSelectedService(null)}
+                  className="flex-1 text-center text-xs font-semibold bg-[#1E7A3A] hover:bg-[#27A84E] text-white py-2.5 rounded-lg shadow transition-colors"
+                >
+                  Visit Business Consulting Hub →
+                </Link>
+              ) : (
+                <button
+                  onClick={() => {
+                    setSelectedService(null);
+                    onOpenConsultation();
+                  }}
+                  className="flex-1 text-center text-xs font-semibold bg-[#1E7A3A] hover:bg-[#27A84E] text-white py-2.5 rounded-lg shadow cursor-pointer transition-colors"
+                >
+                  Inquire About {selectedService.title}
+                </button>
+              )}
               <button
                 onClick={() => setSelectedService(null)}
                 className="text-xs font-medium text-gray-500 hover:text-gray-800 px-4 py-2.5 rounded-lg border border-gray-200 cursor-pointer"

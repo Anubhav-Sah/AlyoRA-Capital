@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Mail, Phone, MessageSquare, ShieldAlert } from "lucide-react";
 
 interface FooterProps {
@@ -14,12 +15,23 @@ export default function Footer({ onOpenConsultation }: FooterProps) {
       <div className="max-w-7xl mx-auto">
         {/* Top Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-8 mb-8 border-b border-white/10 gap-4">
-          <div>
-            <Link href="/" className="font-serif-title text-2xl font-bold tracking-tight text-white flex items-center gap-0.5">
-              Alyo<span className="text-[#27A84E]">RA</span> Capital Research
-            </Link>
-            <div className="text-xs text-white/40 mt-0.5 font-light">
-              Insights · Strategy · Growth
+          <div className="flex items-center gap-3">
+            <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-white p-1 shadow-md">
+              <Image
+                src="/images/logo.png"
+                alt="AlyoRA Capital Research Logo"
+                width={48}
+                height={48}
+                className="object-contain"
+              />
+            </div>
+            <div>
+              <Link href="/" className="font-serif-title text-2xl font-bold tracking-tight text-white flex items-center gap-0.5">
+                Alyo<span className="text-[#27A84E]">RA</span> Capital Research
+              </Link>
+              <div className="text-xs text-white/40 mt-0.5 font-light">
+                Insights · Strategy · Growth
+              </div>
             </div>
           </div>
 
@@ -59,8 +71,8 @@ export default function Footer({ onOpenConsultation }: FooterProps) {
                 </Link>
               </li>
               <li>
-                <Link href="/sub-broker" className="hover:text-[#27A84E] transition-colors">
-                  Sub-Broker Service & Calculator
+                <Link href="/business-consulting" className="hover:text-[#27A84E] transition-colors">
+                  Business Consulting & Growth Advisory
                 </Link>
               </li>
             </ul>

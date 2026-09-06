@@ -2,8 +2,9 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { TrendingUp, Menu, X, PhoneCall, ChevronRight } from "lucide-react";
+import { Menu, X, PhoneCall, ChevronRight } from "lucide-react";
 
 interface NavbarProps {
   onOpenConsultation?: () => void;
@@ -18,7 +19,7 @@ export default function Navbar({ onOpenConsultation }: NavbarProps) {
     { name: "About", href: "/about" },
     { name: "Services", href: "/services" },
     { name: "Reports", href: "/reports" },
-    { name: "Sub-Broker", href: "/sub-broker" },
+    { name: "Business Consulting", href: "/business-consulting" },
     { name: "Pricing", href: "/pricing" },
     { name: "Contact", href: "/contact" },
   ];
@@ -31,10 +32,16 @@ export default function Navbar({ onOpenConsultation }: NavbarProps) {
   return (
     <header className="sticky top-0 z-50 bg-[#0D1F3C] text-white shadow-lg border-b border-[#1E7A3A]/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        {/* Brand Identity */}
-        <Link href="/" className="flex items-center gap-2.5 cursor-pointer group">
-          <div className="w-8 h-8 bg-[#1E7A3A] rounded-md flex items-center justify-center shadow-md group-hover:bg-[#27A84E] transition-colors">
-            <TrendingUp className="w-4 h-4 text-white" />
+        {/* Brand Identity with Official Logo */}
+        <Link href="/" className="flex items-center gap-3 cursor-pointer group">
+          <div className="relative w-9 h-9 rounded-lg overflow-hidden bg-white p-0.5 shadow-md group-hover:scale-105 transition-transform">
+            <Image
+              src="/images/logo.png"
+              alt="AlyoRA Capital Research Logo"
+              width={36}
+              height={36}
+              className="object-contain"
+            />
           </div>
           <div>
             <div className="font-serif-title text-lg font-bold tracking-tight text-white flex items-center gap-0.5">
@@ -47,7 +54,7 @@ export default function Navbar({ onOpenConsultation }: NavbarProps) {
         </Link>
 
         {/* Desktop Nav Links */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-5 lg:gap-6">
           {navLinks.map((link) => (
             <Link
               key={link.href}

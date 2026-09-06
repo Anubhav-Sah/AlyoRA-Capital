@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import StatsBar from "@/components/StatsBar";
@@ -9,14 +10,12 @@ import WhyUsSection from "@/components/WhyUsSection";
 import LatestReportsSection from "@/components/LatestReportsSection";
 import PricingSection from "@/components/PricingSection";
 import CtaBanner from "@/components/CtaBanner";
-import SubBrokerCalculator from "@/components/SubBrokerCalculator";
 import ConsultationModal from "@/components/ConsultationModal";
 import Footer from "@/components/Footer";
 import { useRouter } from "next/navigation";
 
 export default function HomePage() {
   const [isConsultationOpen, setIsConsultationOpen] = useState<boolean>(false);
-  const [isSubBrokerCalcOpen, setIsSubBrokerCalcOpen] = useState<boolean>(false);
   const router = useRouter();
 
   return (
@@ -36,13 +35,29 @@ export default function HomePage() {
               onOpenConsultation={() => setIsConsultationOpen(true)}
             />
 
+            
+            
             {/* Stats Bar */}
             <StatsBar />
+            {/* Brand Graphic Banner Below Hero Section
+            <section className=" py-6 sm:py-8 px-4 sm:px-6 lg:px-8">
+              {/* <div className="max-w-5xl mx-auto rounded-2xl overflow-hidden shadow-2xl border border-white/15 bg-white p-2 sm:p-4 hover-lift"> */}
+                {/* <div className="relative w-full h-44 sm:h-72 md:h-96 rounded-xl overflow-hidden bg-white"> */}
+                  {/* <Image
+                    src="/images/hero-banner.jpg"
+                    alt="AlyoRA Capital Research Banner - Charging Bull & Growth Trend"
+                    fill
+                    className="object-contain"
+                    priority
+                  /> */}
+                {/* </div> */}
+              {/* </div> */}
+            {/* </section> */} 
+
 
             {/* Core Services Overview */}
             <ServicesSection
               onOpenConsultation={() => setIsConsultationOpen(true)}
-              onOpenSubBrokerCalc={() => setIsSubBrokerCalcOpen(true)}
             />
 
             {/* Why AlyoRA Trust Pillars */}
@@ -66,13 +81,6 @@ export default function HomePage() {
           </div>
         </div>
       </main>
-
-      {/* Interactive Sub-Broker Calculator Modal */}
-      <SubBrokerCalculator
-        isOpen={isSubBrokerCalcOpen}
-        onClose={() => setIsSubBrokerCalcOpen(false)}
-        onOpenConsultation={() => setIsConsultationOpen(true)}
-      />
 
       {/* Interactive Free Consultation Booking Modal */}
       <ConsultationModal

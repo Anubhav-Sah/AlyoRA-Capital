@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 import ConsultationModal from "@/components/ConsultationModal";
 import PricingSection from "@/components/PricingSection";
 import Link from "next/link";
-import { HelpCircle, ChevronDown, CheckCircle2 } from "lucide-react";
+import { HelpCircle, ChevronDown } from "lucide-react";
 
 export default function PricingPage() {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
@@ -14,20 +14,20 @@ export default function PricingPage() {
 
   const faqs = [
     {
-      q: "Can I upgrade my subscription plan later?",
-      a: "Yes, you can upgrade from Starter Research to Pro Advisory or HNI Advisory at any time. Your remaining balance will be prorated automatically.",
+      q: "Can I move up or upgrade my advisory plan mid-cycle?",
+      a: "Yes. You can upgrade from Prime to Premium, Elite, Apex, or Pinnacle at any time. Your unused credit from your current tier will be credited toward your new tier automatically.",
     },
     {
-      q: "How are research reports and buy/sell alerts delivered?",
-      a: "Subscribers receive instant WhatsApp broadcast alerts, email summaries, and 24/7 web portal access to download full PDF reports.",
+      q: "How are trading calls and research reports delivered?",
+      a: "Subscribers receive instant real-time WhatsApp & SMS broadcast alerts for entry/exit calls, along with email summaries and web portal access to download full research reports.",
     },
     {
-      q: "Are your stock recommendations guaranteed to make money?",
-      a: "No. Stock market investments carry inherent risks. While our reports utilize rigorous 5-year DCF modeling and technical backtesting, past performance is not a guarantee of future returns.",
+      q: "Are family offices and HNI clients covered under these plans?",
+      a: "These plans are structured for retail and individual traders. Family offices and enterprise partners receive custom portfolio scope and quotes — reach out to our desk for a tailored proposal.",
     },
     {
-      q: "What payment methods do you accept?",
-      a: "We accept all major Indian payment methods via Razorpay including UPI (GPay, PhonePe, Paytm), Credit Cards, Debit Cards, Net Banking, and NEFT/RTGS for HNI retainers.",
+      q: "What payment modes do you support?",
+      a: "We accept all major Indian payment methods including UPI (GPay, PhonePe, Paytm), Credit Cards, Debit Cards, Net Banking, and NEFT/RTGS for enterprise retainers.",
     },
   ];
 
@@ -48,15 +48,15 @@ export default function PricingPage() {
             </div>
 
             <h1 className="font-serif-title text-3xl sm:text-5xl font-bold tracking-tight mb-4">
-              Subscription <span className="text-[#27A84E]">Pricing & Packages</span>
+              Advisory Plans <span className="text-[#27A84E]">& Staircase Tiers</span>
             </h1>
             <p className="text-xs sm:text-base text-white/75 max-w-2xl leading-relaxed">
-              Transparent, flat-fee pricing with zero commission conflicts. Select the advisory tier tailored to your portfolio size.
+              Five stages. One climb toward sharper trading and investing. Pick the stage that matches where you are today.
             </p>
           </div>
         </section>
 
-        {/* Pricing Component */}
+        {/* 5-Stage Staircase Pricing Section */}
         <PricingSection onOpenConsultation={() => setIsConsultationOpen(true)} />
 
         {/* FAQ Section */}
@@ -65,7 +65,7 @@ export default function PricingPage() {
             <div className="text-xs font-bold uppercase tracking-widest text-[#1E7A3A] mb-1">
               Got Questions?
             </div>
-            <h2 className="font-serif-title text-2xl font-bold text-[#0D1F3C]">
+            <h2 className="font-serif-title text-2xl sm:text-3xl font-bold text-[#0D1F3C]">
               Frequently Asked Questions
             </h2>
           </div>
