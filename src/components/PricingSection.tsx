@@ -58,10 +58,39 @@ const pricingData: Record<Period, PricingData> = {
   },
 };
 
+import { usePageData } from "@/lib/usePageData";
+
 export default function PricingSection({ onOpenConsultation }: PricingSectionProps) {
   const [period, setPeriod] = useState<Period>("monthly");
+  const { cards } = usePageData("pricing");
 
-  const currentData = pricingData[period];
+  // Read pricing overrides from DB if present
+  const pricingCardMap = new Map(
+    (cards || []).map((c) => {
+      const extra = (c.extra_data || {}) as Record<string, unknown>;
+      const stage = extra.stage as number | undefined;
+      const prices = extra.prices as Record<string, number> | undefined;
+      return [stage ?? c.position, { card: c, prices }];
+    })
+  );
+
+  const getTierAmount = (defaultAmount: number, stageIdx: number) => {
+    const item = pricingCardMap.get(stageIdx);
+    if (item?.prices && typeof item.prices[period] === "number") {
+      return item.prices[period];
+    }
+    return defaultAmount;
+  };
+
+  const currentData = {
+    prime: getTierAmount(pricingData[period].prime, 0),
+    premium: getTierAmount(pricingData[period].premium, 1),
+    elite: getTierAmount(pricingData[period].elite, 2),
+    apex: getTierAmount(pricingData[period].apex, 3),
+    pinnacle: getTierAmount(pricingData[period].pinnacle, 4),
+    label: pricingData[period].label,
+    billed: pricingData[period].billed,
+  };
 
   const formatINR = (n: number) => {
     return "₹" + n.toLocaleString("en-IN");

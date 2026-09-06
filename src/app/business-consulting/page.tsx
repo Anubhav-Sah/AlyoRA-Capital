@@ -17,95 +17,137 @@ import {
   BarChart3,
 } from "lucide-react";
 
+import { usePageData } from "@/lib/usePageData";
+
 export default function BusinessConsultingPage() {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
+  const { cards: dbCards, getContent } = usePageData("business-consulting");
 
-  const cards = [
-    {
-      num: "Card 1",
-      icon: DollarSign,
-      title: "Financial Planning & Budgeting",
-      desc: "Build realistic budgets, cash-flow forecasts, and financial models tailored to your business stage — so every rupee has a purpose.",
-      deliverables: [
-        "Monthly/annual budgeting frameworks built around your actual revenue cycle",
-        "Cash-flow forecasting to help you spot shortfalls before they happen",
-        "Cost structuring — fixed vs. variable, break-even analysis, margin tracking",
-        "Simple financial models you (or your team) can actually update and use, not static one-time reports",
-      ],
-      tagline: "You always know how much runway you have and where money is leaking.",
-      color: "#1E7A3A",
-    },
-    {
-      num: "Card 2",
-      icon: TrendingUp,
-      title: "Business Strategy & Growth Planning",
-      desc: "Get a clear roadmap for scaling — market positioning, revenue strategy, and milestone-based growth plans built around your goals.",
-      deliverables: [
-        "Market and competitor positioning to sharpen what makes you different",
-        "Revenue strategy — pricing, channels, and where growth will actually come from",
-        "Quarter-by-quarter milestone roadmap instead of a vague long-term \"vision\"",
-        "Regular strategy check-ins to adjust the plan as the business moves",
-      ],
-      tagline: "A living growth plan with clear next steps, not a one-time PDF that gets forgotten.",
-      color: "#C8963E",
-    },
-    {
-      num: "Card 3",
-      icon: Rocket,
-      title: "Startup Advisory",
-      desc: "End-to-end guidance for early-stage founders — business model validation, pricing strategy, and structuring your venture for sustainable growth.",
-      deliverables: [
-        "Business model validation — does the idea hold up financially before you scale it",
-        "Pricing strategy rooted in unit economics, not guesswork",
-        "Legal/financial structuring guidance (entity type, basic compliance checklist)",
-        "Founder-to-founder style sounding board for early decisions that are hard to make alone",
-      ],
-      tagline: "Fewer early-stage mistakes, and a foundation built to survive the first 12–18 months.",
-      color: "#1E7A3A",
-    },
-    {
-      num: "Card 4",
-      icon: Search,
-      title: "Business Health Diagnostics",
-      desc: "Identify what's holding your business back — cost leakages, weak margins, or inefficient operations — through a structured diagnostic review.",
-      deliverables: [
-        "Full review of financial statements, margins, and expense patterns",
-        "Operational efficiency check — where time/money is going that shouldn't be",
-        "A prioritized \"fix list\" ranked by impact, not a generic audit report",
-        "Benchmarking against industry norms where relevant",
-      ],
-      tagline: "A clear, ranked picture of what's actually holding growth back — and what to fix first.",
-      color: "#0D1F3C",
-    },
-    {
-      num: "Card 5",
-      icon: Plane,
-      title: "Expansion & Scaling Support",
-      desc: "Planning to expand into a new city, product line, or market? We help you evaluate feasibility, funding needs, and execution risk before you commit.",
-      deliverables: [
-        "Feasibility study for the new market, product line, or location",
-        "Capital requirement estimate — how much expansion will actually cost",
-        "Risk mapping — what could go wrong and how to de-risk the rollout",
-        "Phased execution plan so expansion doesn't strain existing operations",
-      ],
-      tagline: "You expand with a plan and a number, not just a gut feeling.",
-      color: "#1E7A3A",
-    },
-    {
-      num: "Card 6",
-      icon: BarChart3,
-      title: "Investment & Capital Structuring",
-      desc: "Guidance on funding options, capital allocation, and investment readiness — helping you prepare for investors, loans, or reinvestment decisions.",
-      deliverables: [
-        "Funding options comparison — self-funding, loans, investors — fit for your stage",
-        "Capital allocation planning — where new money should actually go",
-        "Investor-readiness support — financials, pitch numbers, and story alignment",
-        "Reinvestment strategy for profitable businesses looking to compound growth",
-      ],
-      tagline: "You raise or allocate capital with a clear plan, not reactive decision-making.",
-      color: "#C8963E",
-    },
-  ];
+  const icons = [DollarSign, TrendingUp, Rocket, Search, Plane, BarChart3];
+
+  const displayCards =
+    dbCards && dbCards.length > 0
+      ? dbCards
+          .filter((c) => c.visible)
+          .map((c, i) => {
+            const extra = (c.extra_data || {}) as Record<string, unknown>;
+            const deliverables = Array.isArray(extra.deliverables)
+              ? (extra.deliverables as string[])
+              : [c.subtitle || "Institutional guidance & execution roadmap"];
+            const tagline =
+              typeof extra.tagline === "string"
+                ? extra.tagline
+                : "Clear milestone-based execution.";
+            const color =
+              typeof extra.color === "string"
+                ? extra.color
+                : i % 2 === 0
+                ? "#1E7A3A"
+                : "#C8963E";
+
+            return {
+              num: `Card ${i + 1}`,
+              icon: icons[i % icons.length] || DollarSign,
+              title: c.title,
+              desc: c.description || c.subtitle,
+              deliverables,
+              tagline,
+              color,
+            };
+          })
+      : [
+          {
+            num: "Card 1",
+            icon: DollarSign,
+            title: "Financial Planning & Budgeting",
+            desc: "Build realistic budgets, cash-flow forecasts, and financial models tailored to your business stage — so every rupee has a purpose.",
+            deliverables: [
+              "Monthly/annual budgeting frameworks built around your actual revenue cycle",
+              "Cash-flow forecasting to help you spot shortfalls before they happen",
+              "Cost structuring — fixed vs. variable, break-even analysis, margin tracking",
+              "Simple financial models you (or your team) can actually update and use, not static one-time reports",
+            ],
+            tagline: "You always know how much runway you have and where money is leaking.",
+            color: "#1E7A3A",
+          },
+          {
+            num: "Card 2",
+            icon: TrendingUp,
+            title: "Business Strategy & Growth Planning",
+            desc: "Get a clear roadmap for scaling — market positioning, revenue strategy, and milestone-based growth plans built around your goals.",
+            deliverables: [
+              "Market and competitor positioning to sharpen what makes you different",
+              "Revenue strategy — pricing, channels, and where growth will actually come from",
+              "Quarter-by-quarter milestone roadmap instead of a vague long-term \"vision\"",
+              "Regular strategy check-ins to adjust the plan as the business moves",
+            ],
+            tagline: "A living growth plan with clear next steps, not a one-time PDF that gets forgotten.",
+            color: "#C8963E",
+          },
+          {
+            num: "Card 3",
+            icon: Rocket,
+            title: "Startup Advisory",
+            desc: "End-to-end guidance for early-stage founders — business model validation, pricing strategy, and structuring your venture for sustainable growth.",
+            deliverables: [
+              "Business model validation — does the idea hold up financially before you scale it",
+              "Pricing strategy rooted in unit economics, not guesswork",
+              "Legal/financial structuring guidance (entity type, basic compliance checklist)",
+              "Founder-to-founder style sounding board for early decisions that are hard to make alone",
+            ],
+            tagline: "Fewer early-stage mistakes, and a foundation built to survive the first 12–18 months.",
+            color: "#1E7A3A",
+          },
+          {
+            num: "Card 4",
+            icon: Search,
+            title: "Business Health Diagnostics",
+            desc: "Identify what's holding your business back — cost leakages, weak margins, or inefficient operations — through a structured diagnostic review.",
+            deliverables: [
+              "Full review of financial statements, margins, and expense patterns",
+              "Operational efficiency check — where time/money is going that shouldn't be",
+              "A prioritized \"fix list\" ranked by impact, not a generic audit report",
+              "Benchmarking against industry norms where relevant",
+            ],
+            tagline: "A clear, ranked picture of what's actually holding growth back — and what to fix first.",
+            color: "#0D1F3C",
+          },
+          {
+            num: "Card 5",
+            icon: Plane,
+            title: "Expansion & Scaling Support",
+            desc: "Planning to expand into a new city, product line, or market? We help you evaluate feasibility, funding needs, and execution risk before you commit.",
+            deliverables: [
+              "Feasibility study for the new market, product line, or location",
+              "Capital requirement estimate — how much expansion will actually cost",
+              "Risk mapping — what could go wrong and how to de-risk the rollout",
+              "Phased execution plan so expansion doesn't strain existing operations",
+            ],
+            tagline: "You expand with a plan and a number, not just a gut feeling.",
+            color: "#1E7A3A",
+          },
+          {
+            num: "Card 6",
+            icon: BarChart3,
+            title: "Investment & Capital Structuring",
+            desc: "Guidance on funding options, capital allocation, and investment readiness — helping you prepare for investors, loans, or reinvestment decisions.",
+            deliverables: [
+              "Funding options comparison — self-funding, loans, investors — fit for your stage",
+              "Capital allocation planning — where new money should actually go",
+              "Investor-readiness support — financials, pitch numbers, and story alignment",
+              "Reinvestment strategy for profitable businesses looking to compound growth",
+            ],
+            tagline: "You raise or allocate capital with a clear plan, not reactive decision-making.",
+            color: "#C8963E",
+          },
+        ];
+
+  const heroHeading = getContent("hero", "heading", "Business Consulting & Growth Advisory");
+  const heroDescription = getContent(
+    "hero",
+    "description",
+    "Practical, high-impact consulting services for SMEs, growth ventures, and corporate founders."
+  );
 
   const whoItIsFor = [
     "First-time founders launching a new venture",
@@ -134,8 +176,19 @@ export default function BusinessConsultingPage() {
 
               {/* Headline */}
               <h1 className="font-serif-title text-2xl sm:text-5xl font-bold tracking-tight mb-3 leading-tight">
-                Business Consulting <span className="text-[#27A84E]">& Growth Advisory</span>
+                {heroHeading.includes("&") ? (
+                  <>
+                    {heroHeading.split("&")[0]} <span className="text-[#27A84E]">& {heroHeading.split("&")[1]}</span>
+                  </>
+                ) : (
+                  heroHeading
+                )}
               </h1>
+
+              {/* Sub-headline */}
+              <p className="text-xs sm:text-base text-white/75 leading-relaxed mb-6 font-light max-w-2xl">
+                {heroDescription}
+              </p>
 
               {/* Sub-headline */}
               <p className="text-xs sm:text-base text-white/90 max-w-3xl leading-relaxed mb-2 font-medium">
@@ -194,7 +247,7 @@ export default function BusinessConsultingPage() {
 
           {/* 2-Column Grid on Mobile! */}
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
-            {cards.map((card, idx) => {
+            {displayCards.map((card, idx) => {
               const IconComp = card.icon;
               return (
                 <div

@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X, PhoneCall, ChevronRight } from "lucide-react";
+import { usePageData } from "@/lib/usePageData";
 
 interface NavbarProps {
   onOpenConsultation?: () => void;
@@ -13,8 +14,9 @@ interface NavbarProps {
 export default function Navbar({ onOpenConsultation }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const { getContent } = usePageData("navbar");
 
-  const navLinks = [
+  const defaultNavLinks = [
     { name: "Home", href: "/" },
     { name: "About", href: "/about" },
     { name: "Services", href: "/services" },
@@ -23,6 +25,19 @@ export default function Navbar({ onOpenConsultation }: NavbarProps) {
     { name: "Pricing", href: "/pricing" },
     { name: "Contact", href: "/contact" },
   ];
+
+  let navLinks = defaultNavLinks;
+  const dbLinksJson = getContent("nav-links", "items", "");
+  if (dbLinksJson) {
+    try {
+      const parsed = JSON.parse(dbLinksJson);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        navLinks = parsed;
+      }
+    } catch {
+      // ignore
+    }
+  }
 
   const isActive = (path: string) => {
     if (path === "/") return pathname === "/";

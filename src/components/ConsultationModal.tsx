@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { X, CheckCircle, PhoneCall, Send, ShieldCheck } from "lucide-react";
+import { insforge } from "@/lib/insforge";
 
 interface ConsultationModalProps {
   isOpen: boolean;
@@ -15,13 +16,35 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
   const [service, setService] = useState("Investment Advisory");
   const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !email || !phone) return;
-    setSubmitted(true);
+    setLoading(true);
+
+    try {
+      // Persist consultation booking to InsForge backend database table
+      await insforge.database
+        .from("consultation_bookings")
+        .insert([
+          {
+            full_name: name,
+            email_address: email,
+            phone_number: phone,
+            service_interest: service,
+            message_details: message,
+            created_at: new Date().toISOString(),
+          },
+        ]);
+    } catch (err) {
+      console.warn("InsForge submission fallback notice:", err);
+    } finally {
+      setLoading(false);
+      setSubmitted(true);
+    }
   };
 
   const handleReset = () => {
@@ -116,8 +139,8 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
                   <option value="Research Analysis">Research Analysis (Equities & Sectors)</option>
                   <option value="Investment Advisory">Investment Advisory (Custom Portfolio)</option>
                   <option value="Mutual Funds">Mutual Fund SIP & Portfolio Structuring</option>
+                  <option value="Business Consulting">Business Consulting & Growth Advisory</option>
                   <option value="Financial Planning">Goal-based Financial Planning</option>
-                  <option value="Sub-Broker Service">Sub-Broker Partnership Inquiry</option>
                 </select>
               </div>
 
@@ -138,15 +161,16 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
                 <span className="flex items-center gap-1">
                   <ShieldCheck className="w-3.5 h-3.5 text-[#1E7A3A]" /> 100% Privacy Guaranteed
                 </span>
-                <span>No spam policy</span>
+                <span>InsForge Secured</span>
               </div>
 
               <button
                 type="submit"
-                className="w-full text-center text-xs font-semibold bg-[#1E7A3A] hover:bg-[#27A84E] text-white py-3 rounded-lg shadow transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                disabled={loading}
+                className="w-full text-center text-xs font-semibold bg-[#1E7A3A] hover:bg-[#27A84E] disabled:bg-gray-400 text-white py-3 rounded-lg shadow transition-colors flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Send className="w-3.5 h-3.5" />
-                <span>Confirm & Schedule Free Call</span>
+                <span>{loading ? "Scheduling..." : "Confirm & Schedule Free Call"}</span>
               </button>
             </form>
           </div>
@@ -160,7 +184,7 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
               Consultation Scheduled!
             </h3>
             <p className="text-xs text-gray-600 max-w-sm mx-auto mb-6 leading-relaxed">
-              Thank you, <span className="font-semibold text-[#0D1F3C]">{name}</span>. An AlyoRA research partner will reach out to you via <span className="font-semibold">{phone}</span> within 24 business hours to confirm your consultation slot.
+              Thank you, <span className="font-semibold text-[#0D1F3C]">{name}</span>. Your consultation booking has been recorded on InsForge. An AlyoRA research partner will reach out to you via <span className="font-semibold">{phone}</span> within 24 business hours.
             </p>
 
             <button

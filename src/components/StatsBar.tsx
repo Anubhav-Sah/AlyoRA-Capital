@@ -2,13 +2,36 @@
 
 import React from "react";
 import { Users, Calendar, FileCheck, Layers } from "lucide-react";
+import { usePageData } from "@/lib/usePageData";
 
 export default function StatsBar() {
+  const { getContent } = usePageData("home");
+
   const stats = [
-    { value: "500+", label: "Clients Served", icon: Users, desc: "Satisfied retail & HNI investors" },
-    { value: "5+", label: "Years of Research", icon: Calendar, desc: "Proven track record in equities" },
-    { value: "100+", label: "Reports Published", icon: FileCheck, desc: "In-depth sector & stock deep-dives" },
-    { value: "5", label: "Core Services", icon: Layers, desc: "End-to-end wealth & research solutions" },
+    {
+      value: getContent("stats", "stat1_val", "₹250Cr+"),
+      label: getContent("stats", "stat1_label", "Client Assets Monitored"),
+      icon: Users,
+      desc: "Satisfied retail & HNI investors",
+    },
+    {
+      value: getContent("stats", "stat2_val", "18.4%"),
+      label: getContent("stats", "stat2_label", "Historical 3-Yr CAGR"),
+      icon: Calendar,
+      desc: "Proven track record in equities",
+    },
+    {
+      value: getContent("stats", "stat3_val", "3,200+"),
+      label: getContent("stats", "stat3_label", "Active Investors"),
+      icon: FileCheck,
+      desc: "In-depth sector & stock deep-dives",
+    },
+    {
+      value: getContent("stats", "stat4_val", "98.2%"),
+      label: getContent("stats", "stat4_label", "Client Retention Rate"),
+      icon: Layers,
+      desc: "End-to-end wealth & research solutions",
+    },
   ];
 
   return (

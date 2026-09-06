@@ -6,11 +6,24 @@ import Footer from "@/components/Footer";
 import ConsultationModal from "@/components/ConsultationModal";
 import { Mail, Phone, MapPin, MessageSquare, Send, CheckCircle2, Clock } from "lucide-react";
 import Link from "next/link";
+import { usePageData } from "@/lib/usePageData";
 
 export default function ContactPage() {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [formData, setFormData] = useState({ name: "", email: "", phone: "", subject: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
+
+  const { getContent } = usePageData("contact");
+
+  const heroHeading = getContent("hero", "heading", "Get in Touch with Our Research Desk");
+  const heroDescription = getContent(
+    "hero",
+    "description",
+    "Have questions regarding our research reports, advisory plans, or sub-broker program? Reach out to our analytical team directly."
+  );
+  const contactEmail = getContent("info", "email", "info@alyoracapital.com");
+  const contactPhone = getContent("info", "phone", "+91 98765 43210");
+  const contactHours = getContent("info", "hours", "Mon - Fri: 9:00 AM - 6:00 PM IST");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,10 +48,16 @@ export default function ContactPage() {
             </div>
 
             <h1 className="font-serif-title text-3xl sm:text-5xl font-bold tracking-tight mb-4">
-              Get in Touch with <span className="text-[#27A84E]">Our Research Desk</span>
+              {heroHeading.includes("Our Research Desk") ? (
+                <>
+                  Get in Touch with <span className="text-[#27A84E]">Our Research Desk</span>
+                </>
+              ) : (
+                heroHeading
+              )}
             </h1>
             <p className="text-xs sm:text-base text-white/75 max-w-2xl leading-relaxed">
-              Have questions regarding our research reports, advisory plans, or sub-broker program? Reach out to our analytical team directly.
+              {heroDescription}
             </p>
           </div>
         </section>
@@ -56,8 +75,8 @@ export default function ContactPage() {
                   Email Desk
                 </h3>
                 <p className="text-xs text-gray-500 mb-2">For report inquiries & support:</p>
-                <a href="mailto:info@alyoracapital.com" className="text-xs font-semibold text-[#1E7A3A] hover:underline">
-                  info@alyoracapital.com
+                <a href={`mailto:${contactEmail}`} className="text-xs font-semibold text-[#1E7A3A] hover:underline">
+                  {contactEmail}
                 </a>
               </div>
 
@@ -68,9 +87,9 @@ export default function ContactPage() {
                 <h3 className="text-xs font-bold uppercase tracking-wider text-[#0D1F3C] mb-1">
                   Phone & WhatsApp
                 </h3>
-                <p className="text-xs text-gray-500 mb-2">Mon-Fri, 9:00 AM - 6:00 PM IST:</p>
-                <a href="tel:+919876543210" className="text-xs font-semibold text-[#1E7A3A] hover:underline block">
-                  +91 XXXXX XXXXX
+                <p className="text-xs text-gray-500 mb-2">{contactHours}:</p>
+                <a href={`tel:${contactPhone.replace(/\s+/g, "")}`} className="text-xs font-semibold text-[#1E7A3A] hover:underline block">
+                  {contactPhone}
                 </a>
               </div>
 

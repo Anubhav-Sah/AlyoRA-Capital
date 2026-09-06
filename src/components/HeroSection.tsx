@@ -4,19 +4,35 @@ import React from "react";
 import Image from "next/image";
 import { ArrowRight, FileText, CheckCircle2, ShieldCheck, Award } from "lucide-react";
 
+import { usePageData } from "@/lib/usePageData";
+
 interface HeroSectionProps {
-  tagline: string;
+  tagline?: string;
   onExploreServices: () => void;
   onViewReports: () => void;
   onOpenConsultation: () => void;
 }
 
 export default function HeroSection({
-  tagline,
+  tagline: propTagline,
   onExploreServices,
   onViewReports,
   onOpenConsultation,
 }: HeroSectionProps) {
+  const { getContent } = usePageData("home");
+
+  const eyebrow = getContent("hero", "eyebrow", "Insights · Strategy · Growth");
+  const heading = getContent("hero", "heading", "AlyoRA Capital Research");
+  const tagline = propTagline || getContent("hero", "tagline", "Where Research Meets Returns");
+  const description = getContent(
+    "hero",
+    "description",
+    "Professional equity research, investment advisory, business consulting, and mutual fund guidance for investors & business leaders who demand clarity, precision, and results."
+  );
+  const ctaPrimary = getContent("hero", "cta_primary_label", "Explore Services");
+  const ctaSecondary = getContent("hero", "cta_secondary_label", "View Research Reports");
+  const ctaTertiary = getContent("hero", "cta_tertiary_label", "Book Free Consultation →");
+
   const renderTagline = () => {
     if (tagline === "Where Research Meets Returns") {
       return (
@@ -50,11 +66,17 @@ export default function HeroSection({
           <div className="inline-flex flex-wrap items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#112540] border border-[#1E7A3A]/50 mb-5 shadow-sm">
             <span className="w-2.5 h-2.5 rounded-full bg-[#27A84E] animate-ping flex-shrink-0" />
             <span className="text-sm sm:text-base font-bold text-white tracking-wide">
-              Alyo<span className="text-[#27A84E]">RA</span> Capital Research
+              {heading.includes("AlyoRA") ? (
+                <>
+                  Alyo<span className="text-[#27A84E]">RA</span> Capital Research
+                </>
+              ) : (
+                heading
+              )}
             </span>
             <span className="text-white/40 text-xs hidden sm:inline">—</span>
             <span className="text-[10px] sm:text-xs font-medium uppercase tracking-widest text-[#27A84E]/90">
-              Insights · Strategy · Growth
+              {eyebrow}
             </span>
           </div>
 
@@ -65,8 +87,7 @@ export default function HeroSection({
 
           {/* Subtitle */}
           <p className="text-sm sm:text-base text-white/75 leading-relaxed mb-7 max-w-2xl font-light">
-            Professional equity research, investment advisory, business consulting, and mutual fund guidance for
-            investors & business leaders who demand clarity, precision, and results.
+            {description}
           </p>
 
           {/* Buttons */}
@@ -75,7 +96,7 @@ export default function HeroSection({
               onClick={onExploreServices}
               className="text-xs sm:text-sm font-semibold bg-[#1E7A3A] hover:bg-[#27A84E] text-white px-6 py-3 rounded-lg shadow-lg hover:shadow-emerald-900/40 transition-all cursor-pointer flex items-center gap-2"
             >
-              <span>Explore Services</span>
+              <span>{ctaPrimary}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
 
@@ -84,14 +105,14 @@ export default function HeroSection({
               className="text-xs sm:text-sm font-medium border border-white/30 hover:border-white/60 hover:bg-white/10 text-white px-6 py-3 rounded-lg transition-colors cursor-pointer flex items-center gap-2"
             >
               <FileText className="w-4 h-4 text-[#27A84E]" />
-              <span>View Research Reports</span>
+              <span>{ctaSecondary}</span>
             </button>
 
             <button
               onClick={onOpenConsultation}
               className="text-xs font-medium text-[#C8963E] hover:text-amber-300 underline underline-offset-4 px-2 py-3 transition-colors cursor-pointer"
             >
-              Book Free Consultation →
+              {ctaTertiary}
             </button>
           </div>
 

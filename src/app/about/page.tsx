@@ -7,9 +7,24 @@ import ConsultationModal from "@/components/ConsultationModal";
 import WhyUsSection from "@/components/WhyUsSection";
 import { ShieldCheck, Award, TrendingUp, Users, CheckCircle2, PhoneCall } from "lucide-react";
 import Link from "next/link";
+import { usePageData } from "@/lib/usePageData";
 
 export default function AboutPage() {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
+  const { getContent } = usePageData("about");
+
+  const heading = getContent("hero", "heading", "About AlyoRA Capital Research");
+  const description = getContent(
+    "hero",
+    "description",
+    "We are an independent equity research and investment advisory firm dedicated to bringing institutional-grade market clarity to retail and high-net-worth investors."
+  );
+  const foundationHeading = getContent("hero", "subheading", "Built on Data. Driven by Integrity.");
+  const missionDesc = getContent(
+    "mission",
+    "description",
+    "Founded in 2021, AlyoRA Capital Research was established to address a critical market need: unbiased, non-commission-driven financial analysis for retail and HNI investors in India."
+  );
 
   return (
     <div className="min-h-screen bg-[#F7F8FA] flex flex-col font-sans">
@@ -28,10 +43,16 @@ export default function AboutPage() {
             </div>
 
             <h1 className="font-serif-title text-3xl sm:text-5xl font-bold tracking-tight mb-4">
-              About AlyoRA <span className="text-[#27A84E]">Capital Research</span>
+              {heading.includes("Capital Research") ? (
+                <>
+                  About AlyoRA <span className="text-[#27A84E]">Capital Research</span>
+                </>
+              ) : (
+                heading
+              )}
             </h1>
             <p className="text-xs sm:text-base text-white/75 max-w-2xl leading-relaxed">
-              We are an independent equity research and investment advisory firm dedicated to bringing institutional-grade market clarity to retail and high-net-worth investors.
+              {description}
             </p>
           </div>
         </section>

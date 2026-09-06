@@ -118,15 +118,58 @@ interface LatestReportsSectionProps {
   onOpenPricing: () => void;
 }
 
+import { usePageData } from "@/lib/usePageData";
+
 export default function LatestReportsSection({ onOpenPricing }: LatestReportsSectionProps) {
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [viewingReport, setViewingReport] = useState<ReportItem | null>(null);
   const [downloadSuccess, setDownloadSuccess] = useState<string | null>(null);
 
+  const { cards, pdfs, getContent } = usePageData("reports");
+
+  const displayReports: ReportItem[] =
+    cards && cards.length > 0
+      ? cards
+          .filter((c) => c.visible)
+          .map((c, i) => {
+            const extra = (c.extra_data || {}) as Record<string, unknown>;
+            const category = (c.badge ||
+              (extra.category as string) ||
+              "Equity") as ReportItem["category"];
+            const date = (extra.date as string) || "Recent";
+            const tagClass =
+              (extra.tagClass as string) ||
+              (category === "Mutual Funds"
+                ? "bg-[#E8F5EC] text-[#1E7A3A]"
+                : category === "Deep Dive"
+                ? "bg-[#FFF3E0] text-[#854F0B]"
+                : category === "Macro"
+                ? "bg-[#F3E8FF] text-[#6B21A8]"
+                : "bg-[#EBF2FA] text-[#185FA5]");
+            const isLocked = Boolean(extra.isLocked);
+            const pages = typeof extra.pages === "number" ? extra.pages : 16;
+            const highlights = Array.isArray(extra.highlights)
+              ? (extra.highlights as string[])
+              : [c.subtitle || "Institutional deep dive analysis"];
+
+            return {
+              id: c.id || `rep-${i}`,
+              title: c.title,
+              category,
+              date,
+              tagClass,
+              isLocked,
+              pages,
+              summary: c.description || c.subtitle || "",
+              highlights,
+            };
+          })
+      : mockReports;
+
   const categories = ["All", "Equity", "Mutual Funds", "Deep Dive", "Macro"];
 
-  const filteredReports = mockReports.filter((rep) => {
+  const filteredReports = displayReports.filter((rep) => {
     const matchesCategory = activeCategory === "All" || rep.category === activeCategory;
     const matchesSearch =
       rep.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -137,6 +180,16 @@ export default function LatestReportsSection({ onOpenPricing }: LatestReportsSec
   const handleDownload = (report: ReportItem) => {
     if (report.isLocked) {
       setViewingReport(report);
+      return;
+    }
+    // Check if there is an uploaded PDF matching this report
+    const matchingPdf = pdfs.find(
+      (p) =>
+        p.name.toLowerCase().includes(report.title.toLowerCase().slice(0, 15)) ||
+        report.title.toLowerCase().includes(p.name.toLowerCase().slice(0, 15))
+    );
+    if (matchingPdf && matchingPdf.url) {
+      window.open(matchingPdf.url, "_blank");
       return;
     }
     setDownloadSuccess(`Downloading "${report.title}.pdf"...`);

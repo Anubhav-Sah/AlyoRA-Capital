@@ -120,11 +120,53 @@ const servicesData: ServiceDetail[] = [
   },
 ];
 
+import { usePageData } from "@/lib/usePageData";
+
 export default function ServicesSection({
   onOpenConsultation,
   onOpenSubBrokerCalc,
 }: ServicesSectionProps) {
   const [selectedService, setSelectedService] = useState<ServiceDetail | null>(null);
+  const { cards, getContent } = usePageData("services");
+
+  const icons = [TrendingUp, Lightbulb, Building2, Briefcase, FileSpreadsheet, Users];
+
+  const displayServices: ServiceDetail[] =
+    cards && cards.length > 0
+      ? cards
+          .filter((c) => c.visible)
+          .map((c, i) => {
+            const extra = (c.extra_data || {}) as Record<string, unknown>;
+            const features = Array.isArray(extra.features)
+              ? (extra.features as string[])
+              : [];
+            const idealFor =
+              typeof extra.idealFor === "string"
+                ? extra.idealFor
+                : "Investors & business leaders";
+            const color =
+              typeof extra.color === "string" ? extra.color : "#1E7A3A";
+
+            return {
+              id: c.id || `srv-${i}`,
+              title: c.title,
+              shortDesc: c.subtitle || c.description,
+              icon: icons[i % icons.length] || TrendingUp,
+              image: c.image_url || undefined,
+              fullDesc: c.description || c.subtitle,
+              features,
+              idealFor,
+              color,
+            };
+          })
+      : servicesData;
+
+  const sectionHeading = getContent("main-cards", "heading", "Our Core Services");
+  const sectionSubheading = getContent(
+    "main-cards",
+    "subheading",
+    "From deep equity research to personalized investment advisory & business growth consulting."
+  );
 
   return (
     <section id="services-section" className="py-12 sm:py-16 px-3 sm:px-6 lg:px-8 bg-[#F7F8FA]">
@@ -135,16 +177,16 @@ export default function ServicesSection({
             What We Do
           </div>
           <h2 className="font-serif-title text-2xl sm:text-3xl font-bold text-[#0D1F3C]">
-            Our Core Services
+            {sectionHeading}
           </h2>
           <p className="text-xs sm:text-sm text-gray-600 max-w-xl mt-1">
-            From deep equity research to personalized investment advisory & business growth consulting.
+            {sectionSubheading}
           </p>
         </div>
 
         {/* 2-Column Grid on Mobile! */}
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
-          {servicesData.map((svc) => {
+          {displayServices.map((svc) => {
             const IconComponent = svc.icon;
             return (
               <div
