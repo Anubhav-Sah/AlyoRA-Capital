@@ -106,12 +106,13 @@ export default function PricingSection({ onOpenConsultation }: PricingSectionPro
       badge: null,
       colorBar: [6, 6, 6, 6, 6],
       features: [
-        { text: "Index outlook & options", inherit: false },
-        { text: "Buyer strategy only", inherit: false },
-        { text: "Real-time alerts", inherit: false },
-        { text: "Standard support", inherit: false },
+        { text: "Sensex, Nifty, Bank Nifty & Fin Nifty outlook (weekly)", inherit: false },
+        { text: "Intraday index options calls", inherit: false },
+        { text: "Stock options calls (buyer strategy only)", inherit: false },
+        { text: "Real-time entry & exit alerts", inherit: false },
+        { text: "Standard email & WhatsApp support", inherit: false },
       ],
-      ctaText: "Start Prime",
+      ctaText: "Start with Prime",
     },
     {
       id: "premium",
@@ -123,11 +124,12 @@ export default function PricingSection({ onOpenConsultation }: PricingSectionPro
       colorBar: [6, 6, 6, 10, 10],
       features: [
         { text: "Everything in Prime", inherit: true },
-        { text: "Futures & Options", inherit: false },
-        { text: "Commodities (Gold/Crude)", inherit: false },
-        { text: "Priority WhatsApp access", inherit: false },
+        { text: "Index & stock futures calls", inherit: false },
+        { text: "Options buyer and seller strategies", inherit: false },
+        { text: "Commodity calls (Gold, Silver, Crude & more)", inherit: false },
+        { text: "Priority WhatsApp analyst access", inherit: false },
       ],
-      ctaText: "Go Premium",
+      ctaText: "Move to Premium",
     },
     {
       id: "elite",
@@ -139,9 +141,10 @@ export default function PricingSection({ onOpenConsultation }: PricingSectionPro
       colorBar: [6, 6, 10, 14, 14],
       features: [
         { text: "Everything in Premium", inherit: true },
-        { text: "IPO guidance", inherit: false },
-        { text: "Swing trading (2-15d)", inherit: false },
-        { text: "Long-term stock picks", inherit: false },
+        { text: "IPO analysis & application guidance", inherit: false },
+        { text: "Swing trading calls (2–15 day)", inherit: false },
+        { text: "Monthly equity research report", inherit: false },
+        { text: "Long-term stock picks for wealth building", inherit: false },
       ],
       ctaText: "Go Elite",
     },
@@ -155,9 +158,10 @@ export default function PricingSection({ onOpenConsultation }: PricingSectionPro
       colorBar: [6, 6, 10, 14, 18],
       features: [
         { text: "Everything in Elite", inherit: true },
-        { text: "FPO & OFS advisory", inherit: false },
-        { text: "Gold & silver advisory", inherit: false },
-        { text: "Weekly research reports", inherit: false },
+        { text: "FPO & Offer-for-Sale guidance", inherit: false },
+        { text: "Full primary market advisory", inherit: false },
+        { text: "Gold & silver investment advisory", inherit: false },
+        { text: "Weekly research report & recommendations", inherit: false },
       ],
       ctaText: "Reach Apex",
     },
@@ -171,11 +175,12 @@ export default function PricingSection({ onOpenConsultation }: PricingSectionPro
       colorBar: [6, 6, 10, 14, 22],
       features: [
         { text: "Everything in Apex", inherit: true },
-        { text: "Tailored portfolio", inherit: false },
-        { text: "Bonds & G-Sec advisory", inherit: false },
-        { text: "1-on-1 research partner", inherit: false },
+        { text: "Tailor-made investment portfolio", inherit: false },
+        { text: "G-Sec, bonds & debenture advisory", inherit: false },
+        { text: "Complete gold & silver allocation planning", inherit: false },
+        { text: "Dedicated senior research partner 1-on-1", inherit: false },
       ],
-      ctaText: "Reach Summit",
+      ctaText: "Reach the Summit",
     },
   ];
 
@@ -218,7 +223,7 @@ export default function PricingSection({ onOpenConsultation }: PricingSectionPro
         </div>
 
         {/* 2-Column Grid on Mobile! */}
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-2.5 sm:gap-4 items-end mb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 sm:gap-4 items-end mb-10">
           {tiers.map((tier) => (
             <div
               key={tier.id}
@@ -320,7 +325,7 @@ export default function PricingSection({ onOpenConsultation }: PricingSectionPro
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 sm:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6">
             {/* Financial Planning */}
             <div className="bg-[#F7F8FA] border border-gray-200 rounded-xl p-3.5 sm:p-5 hover-lift flex flex-col justify-between">
               <div>

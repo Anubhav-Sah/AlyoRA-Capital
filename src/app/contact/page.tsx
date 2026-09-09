@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ConsultationModal from "@/components/ConsultationModal";
-import { Mail, Phone, MapPin, MessageSquare, Send, CheckCircle2, Clock } from "lucide-react";
+import { Mail, Phone, MessageSquare, Send, CheckCircle2, Clock, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { usePageData } from "@/lib/usePageData";
 
@@ -101,11 +101,64 @@ export default function ContactPage() {
                   Market Support Hours
                 </h3>
                 <p className="text-xs text-gray-600 leading-relaxed">
-                  Pre-Market Note: 8:30 AM IST<br />
-                  Trading Hours Desk: 9:00 AM - 4:00 PM IST
+                  Pre-Market Note: <strong className="text-[#0D1F3C]">8:45 AM IST</strong><br />
+                  Trading Hours Desk: <strong className="text-[#0D1F3C]">9:00 AM – 11:30 PM IST</strong>
                 </p>
               </div>
             </div>
+
+              {/* WhatsApp QR Card */}
+              <div className="bg-[#E8F5EC] border-2 border-[#27A84E] rounded-xl p-5 shadow-sm">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-9 h-9 bg-[#25D366] text-white rounded-lg flex items-center justify-center flex-shrink-0">
+                    <MessageSquare className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-[#0D1F3C]">WhatsApp Direct</h3>
+                    <p className="text-[10px] text-gray-500">Scan to chat instantly</p>
+                  </div>
+                </div>
+                {/* QR Code placeholder */}
+                <div className="bg-white border border-[#27A84E]/30 rounded-xl p-3 mb-3 flex items-center justify-center">
+                  <div className="w-32 h-32 bg-[#F7F8FA] rounded-lg flex items-center justify-center border border-gray-200 relative overflow-hidden">
+                    {/* QR pattern simulation */}
+                    <svg viewBox="0 0 100 100" className="w-full h-full p-2" fill="none">
+                      <rect x="5" y="5" width="30" height="30" fill="none" stroke="#0D1F3C" strokeWidth="3" />
+                      <rect x="11" y="11" width="18" height="18" fill="#0D1F3C" />
+                      <rect x="65" y="5" width="30" height="30" fill="none" stroke="#0D1F3C" strokeWidth="3" />
+                      <rect x="71" y="11" width="18" height="18" fill="#0D1F3C" />
+                      <rect x="5" y="65" width="30" height="30" fill="none" stroke="#0D1F3C" strokeWidth="3" />
+                      <rect x="11" y="71" width="18" height="18" fill="#0D1F3C" />
+                      <rect x="45" y="5" width="6" height="6" fill="#0D1F3C" />
+                      <rect x="53" y="5" width="6" height="6" fill="#0D1F3C" />
+                      <rect x="45" y="13" width="6" height="6" fill="#0D1F3C" />
+                      <rect x="45" y="45" width="6" height="6" fill="#0D1F3C" />
+                      <rect x="55" y="45" width="6" height="6" fill="#0D1F3C" />
+                      <rect x="65" y="45" width="6" height="6" fill="#0D1F3C" />
+                      <rect x="75" y="45" width="6" height="6" fill="#0D1F3C" />
+                      <rect x="45" y="55" width="6" height="6" fill="#0D1F3C" />
+                      <rect x="65" y="55" width="6" height="6" fill="#0D1F3C" />
+                      <rect x="45" y="65" width="6" height="6" fill="#0D1F3C" />
+                      <rect x="55" y="65" width="6" height="6" fill="#0D1F3C" />
+                      <rect x="75" y="65" width="6" height="6" fill="#0D1F3C" />
+                      <rect x="45" y="75" width="6" height="6" fill="#0D1F3C" />
+                      <rect x="65" y="75" width="6" height="6" fill="#0D1F3C" />
+                      <rect x="75" y="75" width="6" height="6" fill="#0D1F3C" />
+                      <rect x="55" y="85" width="6" height="6" fill="#0D1F3C" />
+                      <text x="50" y="98" textAnchor="middle" fontSize="6" fill="#1E7A3A" fontWeight="bold">AlyoRA WA</text>
+                    </svg>
+                  </div>
+                </div>
+                <a
+                  href="https://wa.me/919876543210?text=Hello%20AlyoRA%20Capital%20Research%2C%20I%20would%20like%20to%20know%20more%20about%20your%20services."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center justify-center gap-1.5 text-xs font-semibold bg-[#25D366] text-white py-2.5 rounded-lg cursor-pointer hover:bg-[#20BA5A] transition-colors"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  Chat on WhatsApp
+                </a>
+              </div>
 
             {/* Contact Form Column */}
             <div className="md:col-span-2 bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-md">

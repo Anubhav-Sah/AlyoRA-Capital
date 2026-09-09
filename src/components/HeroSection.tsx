@@ -81,12 +81,19 @@ export default function HeroSection({
           </div>
 
           {/* Heading */}
-          <h1 className="font-serif-title text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.15] text-white mb-5">
+          <h1 className="font-serif-title text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.15] text-white mb-4">
             {renderTagline()}
           </h1>
 
+          {/* Second Sub-tagline Box as requested */}
+          <div className="inline-block bg-[#112540] border border-[#27A84E]/50 rounded-xl px-4 py-2 mb-5 shadow-sm">
+            <p className="text-sm sm:text-base font-semibold text-[#27A84E] tracking-wide">
+              &ldquo;Research for Every Investor. Wealth for Every Indian.&rdquo;
+            </p>
+          </div>
+
           {/* Subtitle */}
-          <p className="text-sm sm:text-base text-white/75 leading-relaxed mb-7 max-w-2xl font-light">
+          <p className="text-sm sm:text-base text-white/75 leading-relaxed mb-7 max-w-3xl font-light">
             {description}
           </p>
 
@@ -120,7 +127,7 @@ export default function HeroSection({
           <div className="h-0.5 bg-[#1E7A3A] w-14 mb-6 opacity-80" />
 
           {/* Key Trust Signals */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-white/60 pt-1">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-white/60 pt-1 max-w-3xl">
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-[#27A84E] flex-shrink-0" />
               <span>100% Unbiased Fundamental Analysis</span>
@@ -133,19 +140,6 @@ export default function HeroSection({
               <Award className="w-4 h-4 text-[#C8963E] flex-shrink-0" />
               <span>Dedicated Research Analysts</span>
             </div>
-          </div>
-        </div>
-
-        {/* Hero Official Logo Display */}
-        <div className="lg:col-span-4 hidden lg:flex justify-center">
-          <div className="relative w-64 h-64 sm:w-72 sm:h-72 bg-white rounded-3xl p-4 shadow-2xl border-2 border-[#1E7A3A]/40 group hover:scale-105 transition-transform duration-300">
-            <Image
-              src="/images/logo.png"
-              alt="AlyoRA Capital Research Charging Bull Logo"
-              fill
-              className="object-contain p-2"
-              priority
-            />
           </div>
         </div>
       </div>

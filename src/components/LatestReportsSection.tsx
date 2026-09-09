@@ -299,7 +299,7 @@ export default function LatestReportsSection({ onOpenPricing }: LatestReportsSec
                   {report.isLocked ? (
                     <>
                       <Lock className="w-2.5 h-2.5 text-amber-700" />
-                      <span>Locked</span>
+                      <span>Subscriber only</span>
                     </>
                   ) : (
                     <>

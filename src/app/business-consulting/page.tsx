@@ -46,7 +46,7 @@ export default function BusinessConsultingPage() {
                 : "#C8963E";
 
             return {
-              num: `Card ${i + 1}`,
+              num: ``,
               icon: icons[i % icons.length] || DollarSign,
               title: c.title,
               desc: c.description || c.subtitle,
@@ -57,7 +57,7 @@ export default function BusinessConsultingPage() {
           })
       : [
           {
-            num: "Card 1",
+            num: "",
             icon: DollarSign,
             title: "Financial Planning & Budgeting",
             desc: "Build realistic budgets, cash-flow forecasts, and financial models tailored to your business stage — so every rupee has a purpose.",
@@ -71,7 +71,7 @@ export default function BusinessConsultingPage() {
             color: "#1E7A3A",
           },
           {
-            num: "Card 2",
+            num: "",
             icon: TrendingUp,
             title: "Business Strategy & Growth Planning",
             desc: "Get a clear roadmap for scaling — market positioning, revenue strategy, and milestone-based growth plans built around your goals.",
@@ -85,7 +85,7 @@ export default function BusinessConsultingPage() {
             color: "#C8963E",
           },
           {
-            num: "Card 3",
+            num: "",
             icon: Rocket,
             title: "Startup Advisory",
             desc: "End-to-end guidance for early-stage founders — business model validation, pricing strategy, and structuring your venture for sustainable growth.",
@@ -99,7 +99,7 @@ export default function BusinessConsultingPage() {
             color: "#1E7A3A",
           },
           {
-            num: "Card 4",
+            num: "",
             icon: Search,
             title: "Business Health Diagnostics",
             desc: "Identify what's holding your business back — cost leakages, weak margins, or inefficient operations — through a structured diagnostic review.",
@@ -113,7 +113,7 @@ export default function BusinessConsultingPage() {
             color: "#0D1F3C",
           },
           {
-            num: "Card 5",
+            num: "",
             icon: Plane,
             title: "Expansion & Scaling Support",
             desc: "Planning to expand into a new city, product line, or market? We help you evaluate feasibility, funding needs, and execution risk before you commit.",
@@ -127,7 +127,7 @@ export default function BusinessConsultingPage() {
             color: "#1E7A3A",
           },
           {
-            num: "Card 6",
+            num: "",
             icon: BarChart3,
             title: "Investment & Capital Structuring",
             desc: "Guidance on funding options, capital allocation, and investment readiness — helping you prepare for investors, loans, or reinvestment decisions.",
@@ -246,7 +246,7 @@ export default function BusinessConsultingPage() {
           </div>
 
           {/* 2-Column Grid on Mobile! */}
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
             {displayCards.map((card, idx) => {
               const IconComp = card.icon;
               return (
@@ -308,7 +308,7 @@ export default function BusinessConsultingPage() {
               </h3>
             </div>
 
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
               {whoItIsFor.map((item, idx) => (
                 <div
                   key={idx}

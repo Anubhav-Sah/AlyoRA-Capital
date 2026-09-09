@@ -4,21 +4,24 @@ import React, { useState } from "react";
 import { Users, DollarSign, Calculator, ArrowRight, CheckCircle2, X, PhoneCall } from "lucide-react";
 
 interface SubBrokerCalculatorProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onOpenConsultation: () => void;
+  isOpen?: boolean;
+  onClose?: () => void;
+  onOpenConsultation?: () => void;
+  inline?: boolean;
 }
 
 export default function SubBrokerCalculator({
   isOpen,
   onClose,
   onOpenConsultation,
+  inline = false,
 }: SubBrokerCalculatorProps) {
   const [clientCount, setClientCount] = useState<number>(25);
   const [avgPortfolioLakhs, setAvgPortfolioLakhs] = useState<number>(10);
   const [revenueSharePercent, setRevenueSharePercent] = useState<number>(60);
 
-  if (!isOpen) return null;
+  // In modal mode, hide if not open
+  if (!inline && !isOpen) return null;
 
   // Total Assets Under Advisory (AUM) in Lakhs & Crores
   const totalAumLakhs = clientCount * avgPortfolioLakhs;
