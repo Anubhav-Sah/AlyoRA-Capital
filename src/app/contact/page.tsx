@@ -85,44 +85,30 @@ export default function ContactPage() {
                   <Phone className="w-4 h-4" />
                 </div>
                 <h3 className="text-xs font-bold uppercase tracking-wider text-[#0D1F3C] mb-1">
-                  Phone & WhatsApp
+                  Phone &amp; WhatsApp
                 </h3>
-                <p className="text-xs text-gray-500 mb-2">{contactHours}:</p>
-                <a href={`tel:${contactPhone.replace(/\s+/g, "")}`} className="text-xs font-semibold text-[#1E7A3A] hover:underline block">
-                  {contactPhone}
-                </a>
-              </div>
+                <p className="text-xs text-gray-500 mb-3">{contactHours}:</p>
 
-              <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-                <div className="w-9 h-9 bg-[#E8F5EC] text-[#1E7A3A] rounded-lg flex items-center justify-center mb-3">
-                  <Clock className="w-4 h-4" />
-                </div>
-                <h3 className="text-xs font-bold uppercase tracking-wider text-[#0D1F3C] mb-1">
-                  Market Support Hours
-                </h3>
-                <p className="text-xs text-gray-600 leading-relaxed">
-                  Pre-Market Note: <strong className="text-[#0D1F3C]">8:45 AM IST</strong><br />
-                  Trading Hours Desk: <strong className="text-[#0D1F3C]">9:00 AM – 11:30 PM IST</strong>
-                </p>
-              </div>
-            </div>
-
-              {/* WhatsApp QR Card */}
-              <div className="bg-[#E8F5EC] border-2 border-[#27A84E] rounded-xl p-5 shadow-sm">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="w-9 h-9 bg-[#25D366] text-white rounded-lg flex items-center justify-center flex-shrink-0">
-                    <MessageSquare className="w-4 h-4" />
-                  </div>
+                {/* Phone + QR side by side */}
+                <div className="flex items-center justify-between gap-3">
                   <div>
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-[#0D1F3C]">WhatsApp Direct</h3>
-                    <p className="text-[10px] text-gray-500">Scan to chat instantly</p>
+                    <a href={`tel:${contactPhone.replace(/\s+/g, "")}`} className="text-xs font-semibold text-[#1E7A3A] hover:underline block mb-2">
+                      {contactPhone}
+                    </a>
+                    <a
+                      href="https://wa.me/919876543210?text=Hello%20AlyoRA%20Capital%20Research%2C%20I%20would%20like%20to%20know%20more%20about%20your%20services."
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-[10px] font-semibold bg-[#25D366] text-white px-2.5 py-1.5 rounded-lg hover:bg-[#20BA5A] transition-colors"
+                    >
+                      <MessageSquare className="w-3 h-3" />
+                      Chat on WhatsApp
+                    </a>
                   </div>
-                </div>
-                {/* QR Code placeholder */}
-                <div className="bg-white border border-[#27A84E]/30 rounded-xl p-3 mb-3 flex items-center justify-center">
-                  <div className="w-32 h-32 bg-[#F7F8FA] rounded-lg flex items-center justify-center border border-gray-200 relative overflow-hidden">
-                    {/* QR pattern simulation */}
-                    <svg viewBox="0 0 100 100" className="w-full h-full p-2" fill="none">
+
+                  {/* Compact QR */}
+                  <div className="flex-shrink-0 bg-[#F7F8FA] border border-[#27A84E]/30 rounded-xl p-1.5">
+                    <svg viewBox="0 0 100 100" className="w-16 h-16" fill="none">
                       <rect x="5" y="5" width="30" height="30" fill="none" stroke="#0D1F3C" strokeWidth="3" />
                       <rect x="11" y="11" width="18" height="18" fill="#0D1F3C" />
                       <rect x="65" y="5" width="30" height="30" fill="none" stroke="#0D1F3C" strokeWidth="3" />
@@ -145,20 +131,25 @@ export default function ContactPage() {
                       <rect x="65" y="75" width="6" height="6" fill="#0D1F3C" />
                       <rect x="75" y="75" width="6" height="6" fill="#0D1F3C" />
                       <rect x="55" y="85" width="6" height="6" fill="#0D1F3C" />
-                      <text x="50" y="98" textAnchor="middle" fontSize="6" fill="#1E7A3A" fontWeight="bold">AlyoRA WA</text>
                     </svg>
+                    <p className="text-[8px] text-center text-[#1E7A3A] font-semibold mt-0.5">Scan to chat</p>
                   </div>
                 </div>
-                <a
-                  href="https://wa.me/919876543210?text=Hello%20AlyoRA%20Capital%20Research%2C%20I%20would%20like%20to%20know%20more%20about%20your%20services."
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full flex items-center justify-center gap-1.5 text-xs font-semibold bg-[#25D366] text-white py-2.5 rounded-lg cursor-pointer hover:bg-[#20BA5A] transition-colors"
-                >
-                  <ExternalLink className="w-3.5 h-3.5" />
-                  Chat on WhatsApp
-                </a>
               </div>
+
+              <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                <div className="w-9 h-9 bg-[#E8F5EC] text-[#1E7A3A] rounded-lg flex items-center justify-center mb-3">
+                  <Clock className="w-4 h-4" />
+                </div>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[#0D1F3C] mb-1">
+                  Market Support Hours
+                </h3>
+                <p className="text-xs text-gray-600 leading-relaxed">
+                  Pre-Market Note: <strong className="text-[#0D1F3C]">8:45 AM IST</strong><br />
+                  Trading Hours Desk: <strong className="text-[#0D1F3C]">9:00 AM – 11:30 PM IST</strong>
+                </p>
+              </div>
+            </div>
 
             {/* Contact Form Column */}
             <div className="md:col-span-2 bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-md">

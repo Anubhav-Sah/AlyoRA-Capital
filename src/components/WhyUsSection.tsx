@@ -107,36 +107,57 @@ export default function WhyUsSection() {
         </div>
 
         {/* Single col on mobile, 4-col on desktop */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
           {pillars.map((item) => {
             const Icon = item.icon;
             return (
               <button
                 key={item.num}
                 onClick={() => setSelectedPillar(item)}
-                className="bg-white border border-gray-200/80 rounded-xl p-4 sm:p-5 shadow-sm hover-lift flex flex-col gap-3 items-start text-left group cursor-pointer transition-all duration-200 hover:border-[#1E7A3A]/40 hover:shadow-md"
+                className="group relative bg-white border border-gray-200 rounded-2xl p-6 shadow-sm text-left cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-transparent overflow-hidden"
               >
-                <div className="flex items-center gap-3 w-full">
-                  <div className="font-serif-title text-2xl sm:text-3xl font-bold text-[#1E7A3A]/30 flex-shrink-0 leading-none">
-                    {item.num}
-                  </div>
-                  <div
-                    className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                    style={{ background: `${item.color}18` }}
+                {/* Gradient accent top bar */}
+                <div
+                  className="absolute top-0 left-0 right-0 h-1 rounded-t-2xl transition-all duration-300 group-hover:h-1.5"
+                  style={{ background: `linear-gradient(90deg, ${item.color}, ${item.color}99)` }}
+                />
+
+                {/* Background glow on hover */}
+                <div
+                  className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-2xl"
+                  style={{ background: item.color }}
+                />
+
+                {/* Number + Icon row */}
+                <div className="flex items-center justify-between mb-5">
+                  <span
+                    className="font-serif-title text-5xl font-black leading-none"
+                    style={{ color: `${item.color}22` }}
                   >
-                    <Icon className="w-4 h-4" style={{ color: item.color }} />
+                    {item.num}
+                  </span>
+                  <div
+                    className="w-11 h-11 rounded-xl flex items-center justify-center shadow-sm transition-transform duration-300 group-hover:scale-110"
+                    style={{ background: `${item.color}15`, border: `1.5px solid ${item.color}30` }}
+                  >
+                    <Icon className="w-5 h-5" style={{ color: item.color }} />
                   </div>
                 </div>
-                <div>
-                  <h3 className="text-sm font-semibold text-[#0D1F3C] mb-1">
-                    {item.title}
-                  </h3>
-                  <p className="text-xs text-gray-600 leading-relaxed">
-                    {item.text}
-                  </p>
-                </div>
-                <div className="flex items-center gap-1 text-[10px] font-semibold text-[#1E7A3A] mt-auto group-hover:underline">
-                  See details <ArrowRight className="w-3 h-3" />
+
+                {/* Title */}
+                <h3 className="text-sm font-bold text-[#0D1F3C] mb-2 group-hover:text-[#1E7A3A] transition-colors duration-200">
+                  {item.title}
+                </h3>
+
+                {/* Description */}
+                <p className="text-xs text-gray-500 leading-relaxed mb-4">
+                  {item.text}
+                </p>
+
+                {/* CTA */}
+                <div className="flex items-center gap-1.5 text-[11px] font-semibold transition-colors duration-200" style={{ color: item.color }}>
+                  <span>See details</span>
+                  <ArrowRight className="w-3 h-3 transition-transform duration-200 group-hover:translate-x-1" />
                 </div>
               </button>
             );

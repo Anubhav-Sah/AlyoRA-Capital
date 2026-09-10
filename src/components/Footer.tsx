@@ -229,7 +229,7 @@ export default function Footer({ onOpenConsultation }: FooterProps) {
               <li className="flex items-center gap-2">
                 <Phone className="w-3.5 h-3.5 text-[#27A84E]" />
                 <a href="tel:+919876543210" className="hover:text-white transition-colors">
-                  +91 XXXXX XXXXX
+                  +91 98765 43210
                 </a>
               </li>
               <li className="flex items-center gap-2">
