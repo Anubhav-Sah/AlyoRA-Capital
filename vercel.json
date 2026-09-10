@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/cron/ping?secret=alyora-cron-2024",
-      "schedule": "0 */48 * * *"
+      "schedule": "0 0 */2 * *"
     }
   ]
 }
