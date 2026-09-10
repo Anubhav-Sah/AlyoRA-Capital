@@ -356,6 +356,106 @@ function FAQItem({ faq }: { faq: FAQ }) {
   );
 }
 
+function InlineSubBrokerCalc({ onBook }: { onBook: () => void }) {
+  const [clientCount, setClientCount] = useState(25);
+  const [avgPortfolioLakhs, setAvgPortfolioLakhs] = useState(10);
+  const [revenueSharePercent, setRevenueSharePercent] = useState(60);
+
+  const totalAumLakhs = clientCount * avgPortfolioLakhs;
+  const totalAumCrores = (totalAumLakhs / 100).toFixed(2);
+  const totalAnnualYield = totalAumLakhs * 100000 * 0.012;
+  const partnerAnnual = Math.round(totalAnnualYield * (revenueSharePercent / 100));
+  const partnerMonthly = Math.round(partnerAnnual / 12);
+  const fmt = (n: number) => "₹" + n.toLocaleString("en-IN");
+
+  return (
+    <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+      <div className="flex items-center gap-3 mb-5">
+        <div className="p-2.5 bg-[#E8F5EC] text-[#1E7A3A] rounded-xl">
+          <Calculator className="w-5 h-5" />
+        </div>
+        <div>
+          <h2 className="font-serif-title text-xl font-bold text-[#0D1F3C]">Revenue Potential Calculator</h2>
+          <p className="text-xs text-gray-500">Estimate your monthly & annual commissions as an AlyoRA Sub-Broker.</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Sliders */}
+        <div className="space-y-5 bg-[#F7F8FA] p-5 rounded-xl border border-gray-200">
+          <div>
+            <div className="flex justify-between text-xs font-semibold text-[#0D1F3C] mb-1.5">
+              <span>Active Clients Onboarded</span>
+              <span className="text-[#1E7A3A] font-bold">{clientCount} Clients</span>
+            </div>
+            <input type="range" min="5" max="200" step="5" value={clientCount}
+              onChange={(e) => setClientCount(Number(e.target.value))}
+              className="w-full accent-[#1E7A3A] cursor-pointer" />
+            <div className="flex justify-between text-[10px] text-gray-400 mt-1">
+              <span>5</span><span>100</span><span>200+</span>
+            </div>
+          </div>
+          <div>
+            <div className="flex justify-between text-xs font-semibold text-[#0D1F3C] mb-1.5">
+              <span>Avg. Client Portfolio (AUM)</span>
+              <span className="text-[#1E7A3A] font-bold">₹{avgPortfolioLakhs}L</span>
+            </div>
+            <input type="range" min="2" max="50" step="1" value={avgPortfolioLakhs}
+              onChange={(e) => setAvgPortfolioLakhs(Number(e.target.value))}
+              className="w-full accent-[#1E7A3A] cursor-pointer" />
+            <div className="flex justify-between text-[10px] text-gray-400 mt-1">
+              <span>₹2L</span><span>₹25L</span><span>₹50L+</span>
+            </div>
+          </div>
+          <div>
+            <div className="flex justify-between text-xs font-semibold text-[#0D1F3C] mb-1.5">
+              <span>Partner Commission Share</span>
+              <span className="text-[#C8963E] font-bold">{revenueSharePercent}%</span>
+            </div>
+            <input type="range" min="50" max="80" step="5" value={revenueSharePercent}
+              onChange={(e) => setRevenueSharePercent(Number(e.target.value))}
+              className="w-full accent-[#C8963E] cursor-pointer" />
+            <div className="flex justify-between text-[10px] text-gray-400 mt-1">
+              <span>50%</span><span>65%</span><span>80%</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Results */}
+        <div className="bg-[#0D1F3C] text-white p-5 rounded-xl flex flex-col justify-between shadow-lg relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-[#1E7A3A]/20 rounded-full blur-2xl pointer-events-none" />
+          <div>
+            <div className="text-[11px] uppercase tracking-wider text-[#27A84E] font-semibold mb-1">Total AUM Under Advisory</div>
+            <div className="font-serif-title text-2xl font-bold text-white mb-4">₹{totalAumCrores} Crores</div>
+            <div className="space-y-3 pt-3 border-t border-white/10">
+              <div>
+                <div className="text-[10px] text-white/60 uppercase">Estimated Monthly Payout</div>
+                <div className="font-serif-title text-2xl font-bold text-[#27A84E]">
+                  {fmt(partnerMonthly)} <span className="text-xs font-normal text-white/70">/ month</span>
+                </div>
+              </div>
+              <div>
+                <div className="text-[10px] text-white/60 uppercase">Estimated Annual Earnings</div>
+                <div className="font-serif-title text-xl font-semibold text-[#C8963E]">
+                  {fmt(partnerAnnual)} <span className="text-xs font-normal text-white/70">/ year</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="pt-4 mt-4 border-t border-white/10">
+            <button
+              onClick={onBook}
+              className="w-full text-xs font-semibold bg-[#1E7A3A] hover:bg-[#27A84E] text-white py-2.5 rounded-lg shadow transition-colors flex items-center justify-center gap-2 cursor-pointer"
+            >
+              Apply for Sub-Broker Partnership →
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function ServiceSlugPage() {
   const params = useParams<{ slug: string }>();
   const slug = params?.slug as string;
@@ -502,15 +602,9 @@ export default function ServiceSlugPage() {
                 </ol>
               </div>
 
-              {/* Sub-broker Calculator */}
+              {/* Sub-broker Calculator — inline version */}
               {service.id === "sub-broker" && (
-                <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
-                  <h2 className="font-serif-title text-xl font-bold text-[#0D1F3C] mb-4">
-                    Revenue Potential Calculator
-                  </h2>
-                  <p className="text-xs text-gray-500 mb-4">Estimate your monthly earnings as an AlyoRA Sub-Broker based on your network size and conversion rate.</p>
-                  <SubBrokerCalculator />
-                </div>
+                <InlineSubBrokerCalc onBook={() => setIsConsultationOpen(true)} />
               )}
 
               {/* FAQs */}
