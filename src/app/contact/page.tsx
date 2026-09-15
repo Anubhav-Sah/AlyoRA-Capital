@@ -27,7 +27,19 @@ export default function ContactPage() {
   const contactEmail = getContent("info", "email", "info@alyoracapital.in");
   const contactEmail2 = getContent("info", "email_secondary", "sarfraj@alyoracapital.in");
   const contactPhone = getContent("info", "phone", "+91 6389570522");
+  const contactPhone2 = getContent("info", "phone_secondary", "");
   const contactHours = getContent("info", "hours", "Mon - Fri: 9:00 AM - 6:00 PM IST");
+  const whatsappUrl = getContent("info", "whatsapp_url", "https://wa.me/message/3DF25RTHCJG7O1");
+  const whatsappQrUrl = getContent("info", "whatsapp_qr_url", "/images/whatsapp-qr.png");
+  const preMarketHours = getContent("info", "pre_market_hours", "8:45 AM IST");
+  const tradingDeskHours = getContent("info", "trading_desk_hours", "9:00 AM – 11:30 PM IST");
+
+  // Social Links
+  const linkedinUrl = getContent("social", "linkedin", "https://linkedin.com/company/alyora-capital-research");
+  const twitterUrl = getContent("social", "twitter", "https://x.com/alyoracapital");
+  const instagramUrl = getContent("social", "instagram", "https://instagram.com/alyoracapital");
+  const telegramUrl = getContent("social", "telegram", "https://t.me/alyoracapital");
+  const youtubeUrl = getContent("social", "youtube", "https://youtube.com/@alyoracapital");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,10 +58,11 @@ export default function ContactPage() {
       }
     } catch (err) {
       console.error("Submission failed, continuing:", err);
+      const cleanTargetPhone = contactPhone.replace(/[^0-9]/g, "") || "916389570522";
       const waText = encodeURIComponent(
         `Hello AlyoRA Capital,\nInquiry from Website:\nName: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone}\nSubject: ${formData.subject}\nMessage: ${formData.message}`
       );
-      setWhatsappRedirectUrl(`https://wa.me/916389570522?text=${waText}`);
+      setWhatsappRedirectUrl(`https://wa.me/${cleanTargetPhone}?text=${waText}`);
     } finally {
       setSubmitting(false);
       setSubmitted(true);
@@ -103,9 +116,11 @@ export default function ContactPage() {
                 <a href={`mailto:${contactEmail}`} className="text-xs font-semibold text-[#1E7A3A] hover:underline block">
                   {contactEmail}
                 </a>
-                <a href={`mailto:${contactEmail2}`} className="text-xs font-semibold text-[#1E7A3A] hover:underline block mt-1">
-                  {contactEmail2}
-                </a>
+                {contactEmail2 && (
+                  <a href={`mailto:${contactEmail2}`} className="text-xs font-semibold text-[#1E7A3A] hover:underline block mt-1">
+                    {contactEmail2}
+                  </a>
+                )}
               </div>
 
               <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
@@ -120,14 +135,19 @@ export default function ContactPage() {
                 {/* Phone + QR side by side */}
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <a href="tel:+916389570522" className="text-xs font-semibold text-[#1E7A3A] hover:underline block mb-2">
-                      +91 6389570522
+                    <a href={`tel:${contactPhone.replace(/\s+/g, "")}`} className="text-xs font-semibold text-[#1E7A3A] hover:underline block mb-1">
+                      {contactPhone}
                     </a>
+                    {contactPhone2 && (
+                      <a href={`tel:${contactPhone2.replace(/\s+/g, "")}`} className="text-xs font-semibold text-gray-600 hover:underline block mb-2">
+                        {contactPhone2}
+                      </a>
+                    )}
                     <a
-                      href="https://wa.me/message/3DF25RTHCJG7O1"
+                      href={whatsappUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-[10px] font-semibold bg-[#25D366] text-white px-2.5 py-1.5 rounded-lg hover:bg-[#20BA5A] transition-colors"
+                      className="inline-flex items-center gap-1.5 text-[10px] font-semibold bg-[#25D366] text-white px-2.5 py-1.5 rounded-lg hover:bg-[#20BA5A] transition-colors mt-1"
                     >
                       <MessageSquare className="w-3 h-3" />
                       Chat on WhatsApp
@@ -136,8 +156,9 @@ export default function ContactPage() {
 
                   {/* WhatsApp QR */}
                   <div className="flex-shrink-0 bg-white border border-[#27A84E]/30 rounded-xl p-1 shadow-sm flex flex-col items-center">
-                    <Image
-                      src="/images/whatsapp-qr.png"
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={whatsappQrUrl}
                       alt="WhatsApp QR Code"
                       width={68}
                       height={68}
@@ -156,9 +177,68 @@ export default function ContactPage() {
                   Market Support Hours
                 </h3>
                 <p className="text-xs text-gray-600 leading-relaxed">
-                  Pre-Market Note: <strong className="text-[#0D1F3C]">8:45 AM IST</strong><br />
-                  Trading Hours Desk: <strong className="text-[#0D1F3C]">9:00 AM – 11:30 PM IST</strong>
+                  Pre-Market Note: <strong className="text-[#0D1F3C]">{preMarketHours}</strong><br />
+                  Trading Hours Desk: <strong className="text-[#0D1F3C]">{tradingDeskHours}</strong>
                 </p>
+              </div>
+
+              {/* Social Channels Link Card */}
+              <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+                <h4 className="text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-2.5">
+                  Connect on Social Channels
+                </h4>
+                <div className="flex items-center gap-2 flex-wrap">
+                  {linkedinUrl && (
+                    <a
+                      href={linkedinUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[11px] font-medium text-gray-600 hover:text-[#0A66C2] px-2.5 py-1 rounded-md bg-gray-50 hover:bg-blue-50 transition-colors border border-gray-100"
+                    >
+                      LinkedIn
+                    </a>
+                  )}
+                  {telegramUrl && (
+                    <a
+                      href={telegramUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[11px] font-medium text-gray-600 hover:text-[#229ED9] px-2.5 py-1 rounded-md bg-gray-50 hover:bg-sky-50 transition-colors border border-gray-100"
+                    >
+                      Telegram
+                    </a>
+                  )}
+                  {twitterUrl && (
+                    <a
+                      href={twitterUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[11px] font-medium text-gray-600 hover:text-black px-2.5 py-1 rounded-md bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-100"
+                    >
+                      Twitter / X
+                    </a>
+                  )}
+                  {instagramUrl && (
+                    <a
+                      href={instagramUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[11px] font-medium text-gray-600 hover:text-pink-600 px-2.5 py-1 rounded-md bg-gray-50 hover:bg-pink-50 transition-colors border border-gray-100"
+                    >
+                      Instagram
+                    </a>
+                  )}
+                  {youtubeUrl && (
+                    <a
+                      href={youtubeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[11px] font-medium text-gray-600 hover:text-red-600 px-2.5 py-1 rounded-md bg-gray-50 hover:bg-red-50 transition-colors border border-gray-100"
+                    >
+                      YouTube
+                    </a>
+                  )}
+                </div>
               </div>
             </div>
 

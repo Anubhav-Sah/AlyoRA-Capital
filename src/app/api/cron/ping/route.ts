@@ -18,7 +18,7 @@ export async function GET(request: Request) {
 
   // 1. Ping InsForge DB
   try {
-    const dbRes = await fetch(`${INSFORGE_URL}/rest/v1/site_content?limit=1`, {
+    const dbRes = await fetch(`${INSFORGE_URL}/api/database/records/site_content?limit=1`, {
       headers: { apikey: INSFORGE_ANON_KEY, Authorization: `Bearer ${INSFORGE_ANON_KEY}` },
       cache: "no-store",
     });

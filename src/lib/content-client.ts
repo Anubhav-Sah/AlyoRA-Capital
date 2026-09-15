@@ -256,14 +256,17 @@ export async function upsertSiteContent(item: {
 }) {
   try {
     const updatedBy = await getCurrentUserId();
-    return insforge.database.from("site_content").upsert([
-      {
-        ...item,
-        type: item.type || "text",
-        updated_at: new Date().toISOString(),
-        ...(updatedBy ? { updated_by: updatedBy } : {}),
-      },
-    ]);
+    return insforge.database.from("site_content").upsert(
+      [
+        {
+          ...item,
+          type: item.type || "text",
+          updated_at: new Date().toISOString(),
+          ...(updatedBy ? { updated_by: updatedBy } : {}),
+        },
+      ],
+      { onConflict: "page,section,key" }
+    );
   } catch {
     return { data: null, error: new Error("Failed to upsert content") };
   }

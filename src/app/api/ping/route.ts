@@ -8,7 +8,7 @@ export async function GET() {
 
   try {
     // Ping InsForge DB via REST
-    const response = await fetch(`${INSFORGE_URL}/rest/v1/site_content?limit=1`, {
+    const response = await fetch(`${INSFORGE_URL}/api/database/records/site_content?limit=1`, {
       headers: {
         apikey: INSFORGE_ANON_KEY,
         Authorization: `Bearer ${INSFORGE_ANON_KEY}`,

@@ -7,7 +7,7 @@ import Image from "next/image";
 import {
   LayoutDashboard, Home, Info, Wrench, FileText, Briefcase,
   DollarSign, Phone, Menu, ChevronLeft, LogOut, Shield,
-  Navigation, RefreshCw, Activity, Globe,
+  Navigation, RefreshCw, Activity, Globe, Mail,
 } from "lucide-react";
 import { getCurrentUser, signOut } from "@/lib/content-client";
 
@@ -15,14 +15,15 @@ import type { UserProfile } from "@/lib/content-client";
 
 const navItems = [
   { label: "Overview",         href: "/contentChange/dashboard",                   icon: LayoutDashboard },
-  { label: "Home",             href: "/contentChange/dashboard/home",               icon: Home },
-  { label: "About",            href: "/contentChange/dashboard/about",              icon: Info },
-  { label: "Services",         href: "/contentChange/dashboard/services",           icon: Wrench },
-  { label: "Reports",          href: "/contentChange/dashboard/reports",            icon: FileText },
+  { label: "Contact & Social", href: "/contentChange/dashboard/contact",           icon: Phone },
+  { label: "Inquiries Inbox",  href: "/contentChange/dashboard/inquiries",         icon: Mail },
+  { label: "Home",             href: "/contentChange/dashboard/home",              icon: Home },
+  { label: "About",            href: "/contentChange/dashboard/about",             icon: Info },
+  { label: "Services",         href: "/contentChange/dashboard/services",          icon: Wrench },
+  { label: "Reports",          href: "/contentChange/dashboard/reports",           icon: FileText },
   { label: "Business Consulting", href: "/contentChange/dashboard/business-consulting", icon: Briefcase },
-  { label: "Pricing",          href: "/contentChange/dashboard/pricing",            icon: DollarSign },
-  { label: "Contact",          href: "/contentChange/dashboard/contact",            icon: Phone },
-  { label: "Navbar",           href: "/contentChange/dashboard/navbar",             icon: Navigation },
+  { label: "Pricing",          href: "/contentChange/dashboard/pricing",           icon: DollarSign },
+  { label: "Navbar & Footer",  href: "/contentChange/dashboard/navbar",            icon: Navigation },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
