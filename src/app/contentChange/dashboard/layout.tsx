@@ -88,7 +88,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="flex items-center justify-between p-4 border-b border-white/10">
           {sidebarOpen && (
             <Link href="/" target="_blank" className="flex items-center gap-2">
-              <div className="relative w-7 h-7 rounded-md overflow-hidden bg-white p-0.5">
+              <div className="relative w-8 h-8 rounded-full overflow-hidden bg-white p-0.5 border border-white/20 flex items-center justify-center flex-shrink-0">
                 <Image src="/images/logo.png" alt="Logo" fill className="object-contain" />
               </div>
               <span className="text-white text-sm font-bold">AlyoRA CMS</span>

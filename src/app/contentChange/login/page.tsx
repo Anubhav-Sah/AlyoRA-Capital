@@ -139,8 +139,8 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-md relative z-10">
         {/* Logo + title */}
         <div className="flex flex-col items-center mb-8">
-          <div className="relative w-16 h-16 rounded-2xl overflow-hidden bg-white p-1 shadow-2xl mb-4 border-2 border-[#1E7A3A]/40">
-            <Image src="/images/logo.png" alt="AlyoRA Logo" fill className="object-contain p-1" />
+          <div className="relative w-18 h-18 rounded-full overflow-hidden bg-white p-2 shadow-2xl mb-4 border-2 border-[#1E7A3A]/40 flex items-center justify-center">
+            <Image src="/images/logo.png" alt="AlyoRA Logo" fill className="object-contain p-1.5" />
           </div>
           <h1 className="text-white text-2xl font-bold tracking-tight">AlyoRA Admin</h1>
           <p className="text-white/40 text-xs mt-1 tracking-widest uppercase">

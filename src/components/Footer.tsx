@@ -106,12 +106,12 @@ export default function Footer({ onOpenConsultation }: FooterProps) {
         {/* Top Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-8 mb-8 border-b border-white/10 gap-4">
           <div className="flex items-center gap-3">
-            <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-white p-1 shadow-md">
+            <div className="relative w-12 h-12 rounded-full overflow-hidden bg-white p-1 shadow-md border border-white/20 flex items-center justify-center">
               <Image
                 src="/images/logo.png"
                 alt="AlyoRA Capital Research Logo"
-                width={48}
-                height={48}
+                width={46}
+                height={46}
                 className="object-contain"
               />
             </div>

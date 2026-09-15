@@ -19,6 +19,15 @@ export const metadata: Metadata = {
   title: "AlyoRA Capital Research — Where Research Meets Returns",
   description: "Professional equity research, investment advisory, and mutual fund guidance for investors who demand clarity, precision, and results.",
   keywords: ["AlyoRA Capital", "Equity Research", "Investment Advisory", "Mutual Funds", "Financial Planning", "Sub-Broker"],
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/icon.png", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-icon.png" },
+    ],
+  },
 };
 
 export default function RootLayout({

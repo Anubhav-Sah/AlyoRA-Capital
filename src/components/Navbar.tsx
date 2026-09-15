@@ -49,12 +49,12 @@ export default function Navbar({ onOpenConsultation }: NavbarProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand Identity with Official Logo */}
         <Link href="/" className="flex items-center gap-3 cursor-pointer group">
-          <div className="relative w-9 h-9 rounded-lg overflow-hidden bg-white p-0.5 shadow-md group-hover:scale-105 transition-transform">
+          <div className="relative w-10 h-10 rounded-full overflow-hidden bg-white p-1 shadow-md group-hover:scale-105 transition-transform border border-white/20 flex items-center justify-center">
             <Image
               src="/images/logo.png"
               alt="AlyoRA Capital Research Logo"
-              width={36}
-              height={36}
+              width={38}
+              height={38}
               className="object-contain"
             />
           </div>
