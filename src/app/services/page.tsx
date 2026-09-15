@@ -9,9 +9,29 @@ import ServicesSection from "@/components/ServicesSection";
 import Link from "next/link";
 import { ArrowRight, PhoneCall, Calculator } from "lucide-react";
 
+import { usePageData } from "@/lib/usePageData";
+
 export default function ServicesPage() {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [isSubBrokerCalcOpen, setIsSubBrokerCalcOpen] = useState(false);
+  const { getContent } = usePageData("services");
+
+  const heroTitle = getContent("hero", "title", "Core Advisory & Research Services");
+  const heroSubtitle = getContent(
+    "hero",
+    "subtitle",
+    "Explore our full suite of equity research, wealth advisory, mutual fund portfolio management, and sub-broker partnership programs."
+  );
+
+  const bannerBadge = getContent("sub-broker-banner", "badge", "Sub-Broker Partner Network");
+  const bannerHeading = getContent("sub-broker-banner", "heading", "Grow Your Wealth Practice With AlyoRA Infrastructure");
+  const bannerDescription = getContent(
+    "sub-broker-banner",
+    "description",
+    "Offer your clients institutional-grade equity reports and wealth models under a lucrative revenue-sharing model."
+  );
+  const bannerBtn1 = getContent("sub-broker-banner", "button1_text", "Calculate Revenue Potential");
+  const bannerBtn2 = getContent("sub-broker-banner", "button2_text", "Partner Info");
 
   return (
     <div className="min-h-screen bg-[#F7F8FA] flex flex-col font-sans">
@@ -30,10 +50,10 @@ export default function ServicesPage() {
             </div>
 
             <h1 className="font-serif-title text-3xl sm:text-5xl font-bold tracking-tight mb-4">
-              Core Advisory <span className="text-[#27A84E]">& Research Services</span>
+              {heroTitle}
             </h1>
             <p className="text-xs sm:text-base text-white/75 max-w-2xl leading-relaxed">
-              Explore our full suite of equity research, wealth advisory, mutual fund portfolio management, and sub-broker partnership programs.
+              {heroSubtitle}
             </p>
           </div>
         </section>
@@ -49,13 +69,13 @@ export default function ServicesPage() {
           <div className="bg-[#112540] text-white rounded-2xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 border border-white/10 shadow-xl">
             <div>
               <span className="inline-block text-[10px] font-bold uppercase bg-[#1E7A3A] text-white px-2.5 py-0.5 rounded-full mb-2">
-                Sub-Broker Partner Network
+                {bannerBadge}
               </span>
               <h3 className="font-serif-title text-2xl font-bold text-white mb-2">
-                Grow Your Wealth Practice With AlyoRA Infrastructure
+                {bannerHeading}
               </h3>
               <p className="text-xs sm:text-sm text-white/70 max-w-xl">
-                Offer your clients institutional-grade equity reports and wealth models under a lucrative revenue-sharing model.
+                {bannerDescription}
               </p>
             </div>
 
@@ -65,14 +85,14 @@ export default function ServicesPage() {
                 className="text-xs font-semibold bg-[#C8963E] hover:bg-amber-500 text-black px-4 py-2.5 rounded-lg shadow transition-colors flex items-center gap-1.5 cursor-pointer"
               >
                 <Calculator className="w-4 h-4" />
-                <span>Calculate Revenue Potential</span>
+                <span>{bannerBtn1}</span>
               </button>
 
               <Link
                 href="/sub-broker"
                 className="text-xs font-medium border border-white/30 hover:bg-white/10 text-white px-4 py-2.5 rounded-lg transition-colors flex items-center gap-1"
               >
-                <span>Partner Info</span>
+                <span>{bannerBtn2}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>

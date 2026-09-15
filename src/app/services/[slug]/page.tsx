@@ -466,7 +466,7 @@ export default function ServiceSlugPage() {
 
   let service = servicesMap[slug];
 
-  if (!service && cards && cards.length > 0) {
+  if (cards && cards.length > 0) {
     const matchedCard = cards.find((c) => {
       const extra = (c.extra_data || {}) as Record<string, unknown>;
       const cardSlug =
@@ -480,44 +480,64 @@ export default function ServiceSlugPage() {
 
     if (matchedCard) {
       const extra = (matchedCard.extra_data || {}) as Record<string, unknown>;
-      service = {
-        id: slug,
-        title: matchedCard.title,
-        tagline: matchedCard.subtitle || `${matchedCard.title} solutions for Indian investors.`,
-        shortDesc: matchedCard.description || matchedCard.subtitle,
-        icon: TrendingUp,
-        color: typeof extra.color === "string" ? extra.color : "#1E7A3A",
-        fullDesc: [
-          matchedCard.description || "Comprehensive financial research and advisory tailored to your strategic goals.",
-          "Our research division delivers objective, data-backed insights with zero broker bias.",
-        ],
-        deliverables: Array.isArray(extra.deliverables)
-          ? (extra.deliverables as string[])
-          : [
-              "Direct access to analyst team recommendations",
-              "Detailed risk-reward analysis and entry-exit zones",
-              "Regular performance and portfolio tracking",
-            ],
-        idealFor: Array.isArray(extra.idealFor)
-          ? (extra.idealFor as string[])
-          : ["Retail Investors", "High Net Worth Individuals", "Active Market Participants"],
-        methodology: [
-          "Quantitative and fundamental research models",
-          "Institutional risk management principles",
-          "Continuous market monitoring and timely updates",
-        ],
-        faqs: [
-          {
-            q: `What is included in ${matchedCard.title}?`,
-            a: "You receive our full research framework, documented trade logic, and direct support.",
-          },
-          {
-            q: "How do I get started?",
-            a: "Click 'Book Free Consultation' or contact our research desk to discuss your requirements.",
-          },
-        ],
-        ctaText: "Book Free Consultation",
-      };
+      const cardDeliverables = Array.isArray(extra.features)
+        ? (extra.features as string[])
+        : Array.isArray(extra.deliverables)
+        ? (extra.deliverables as string[])
+        : null;
+
+      if (service) {
+        service = {
+          ...service,
+          title: matchedCard.title || service.title,
+          tagline: matchedCard.subtitle || service.tagline,
+          shortDesc: matchedCard.subtitle || matchedCard.description || service.shortDesc,
+          color: typeof extra.color === "string" ? extra.color : service.color,
+          deliverables: cardDeliverables && cardDeliverables.length > 0 ? cardDeliverables : service.deliverables,
+          fullDesc: matchedCard.description
+            ? [matchedCard.description, ...service.fullDesc.slice(1)]
+            : service.fullDesc,
+        };
+      } else {
+        service = {
+          id: slug,
+          title: matchedCard.title,
+          tagline: matchedCard.subtitle || `${matchedCard.title} solutions for Indian investors.`,
+          shortDesc: matchedCard.description || matchedCard.subtitle,
+          icon: TrendingUp,
+          color: typeof extra.color === "string" ? extra.color : "#1E7A3A",
+          fullDesc: [
+            matchedCard.description || "Comprehensive financial research and advisory tailored to your strategic goals.",
+            "Our research division delivers objective, data-backed insights with zero broker bias.",
+          ],
+          deliverables: cardDeliverables && cardDeliverables.length > 0
+            ? cardDeliverables
+            : [
+                "Direct access to analyst team recommendations",
+                "Detailed risk-reward analysis and entry-exit zones",
+                "Regular performance and portfolio tracking",
+              ],
+          idealFor: Array.isArray(extra.idealFor)
+            ? (extra.idealFor as string[])
+            : ["Retail Investors", "High Net Worth Individuals", "Active Market Participants"],
+          methodology: [
+            "Quantitative and fundamental research models",
+            "Institutional risk management principles",
+            "Continuous market monitoring and timely updates",
+          ],
+          faqs: [
+            {
+              q: `What is included in ${matchedCard.title}?`,
+              a: "You receive our full research framework, documented trade logic, and direct support.",
+            },
+            {
+              q: "How do I get started?",
+              a: "Click 'Book Free Consultation' or contact our research desk to discuss your requirements.",
+            },
+          ],
+          ctaText: "Book Free Consultation",
+        };
+      }
     }
   }
 

@@ -5,12 +5,13 @@ import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ConsultationModal from "@/components/ConsultationModal";
-import { Mail, Phone, MessageSquare, Send, CheckCircle2, Clock, ExternalLink } from "lucide-react";
+import { Mail, Phone, MessageSquare, Send, CheckCircle2, Clock, ExternalLink, ZoomIn, X } from "lucide-react";
 import Link from "next/link";
 import { usePageData } from "@/lib/usePageData";
 
 export default function ContactPage() {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
+  const [isQrModalOpen, setIsQrModalOpen] = useState(false);
   const [formData, setFormData] = useState({ name: "", email: "", phone: "", subject: "General Inquiry", message: "" });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -41,28 +42,42 @@ export default function ContactPage() {
   const telegramUrl = getContent("social", "telegram", "https://t.me/alyoracapital");
   const youtubeUrl = getContent("social", "youtube", "https://youtube.com/@alyoracapital");
 
+  const whatsappPhone = getContent("info", "whatsapp_phone", "+91 6389570522");
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email) return;
+
+    // 1. Build prefilled WhatsApp message URL
+    const cleanTargetPhone = (whatsappPhone || contactPhone).replace(/[^0-9]/g, "") || "916389570522";
+    const waText = encodeURIComponent(
+      `Hello AlyoRA Capital Research,\n\n` +
+      `*New Website Inquiry*\n` +
+      `👤 Name: ${formData.name}\n` +
+      `📧 Email: ${formData.email}\n` +
+      (formData.phone ? `📞 Phone: ${formData.phone}\n` : "") +
+      `📌 Subject: ${formData.subject}\n` +
+      (formData.message ? `💬 Message: ${formData.message}\n` : "")
+    );
+    const waUrl = `https://wa.me/${cleanTargetPhone}?text=${waText}`;
+    setWhatsappRedirectUrl(waUrl);
+
+    // 2. Open WhatsApp immediately on click to avoid browser popup blockers
+    if (typeof window !== "undefined") {
+      window.open(waUrl, "_blank", "noopener,noreferrer");
+    }
+
     setSubmitting(true);
 
+    // 3. Simultaneously record the inquiry in the database
     try {
-      const res = await fetch("/api/contact", {
+      await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, whatsappUrl: waUrl }),
       });
-      const data = await res.json();
-      if (data.whatsappUrl) {
-        setWhatsappRedirectUrl(data.whatsappUrl);
-      }
     } catch (err) {
-      console.error("Submission failed, continuing:", err);
-      const cleanTargetPhone = contactPhone.replace(/[^0-9]/g, "") || "916389570522";
-      const waText = encodeURIComponent(
-        `Hello AlyoRA Capital,\nInquiry from Website:\nName: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone}\nSubject: ${formData.subject}\nMessage: ${formData.message}`
-      );
-      setWhatsappRedirectUrl(`https://wa.me/${cleanTargetPhone}?text=${waText}`);
+      console.error("Submission log notice:", err);
     } finally {
       setSubmitting(false);
       setSubmitted(true);
@@ -154,18 +169,30 @@ export default function ContactPage() {
                     </a>
                   </div>
 
-                  {/* WhatsApp QR */}
-                  <div className="flex-shrink-0 bg-white border border-[#27A84E]/30 rounded-xl p-1 shadow-sm flex flex-col items-center">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={whatsappQrUrl}
-                      alt="WhatsApp QR Code"
-                      width={68}
-                      height={68}
-                      className="w-16 h-16 object-contain rounded-lg"
-                    />
-                    <p className="text-[8px] text-center text-[#1E7A3A] font-semibold mt-0.5">Scan to chat</p>
-                  </div>
+                  {/* WhatsApp QR - Clickable to open pop-up menu */}
+                  <button
+                    type="button"
+                    onClick={() => setIsQrModalOpen(true)}
+                    title="Click to open QR Code in pop-up"
+                    className="flex-shrink-0 bg-white border border-[#27A84E]/30 hover:border-[#27A84E] rounded-xl p-1.5 shadow-sm hover:shadow-md transition-all flex flex-col items-center cursor-pointer group hover:scale-105 active:scale-95"
+                  >
+                    <div className="relative">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={whatsappQrUrl}
+                        alt="WhatsApp QR Code"
+                        width={68}
+                        height={68}
+                        className="w-16 h-16 object-contain rounded-lg"
+                      />
+                      <div className="absolute inset-0 bg-black/40 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <ZoomIn className="w-4 h-4 text-white" />
+                      </div>
+                    </div>
+                    <p className="text-[8px] text-center text-[#1E7A3A] font-bold mt-1 group-hover:underline flex items-center gap-0.5">
+                      <span>Scan to chat</span>
+                    </p>
+                  </button>
                 </div>
               </div>
 
@@ -331,14 +358,14 @@ export default function ContactPage() {
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="w-full text-center text-xs font-semibold bg-[#1E7A3A] hover:bg-[#27A84E] disabled:opacity-50 text-white py-3 rounded-lg shadow transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                      className="w-full text-center text-xs font-bold bg-[#1E7A3A] hover:bg-[#18632e] active:scale-[0.99] disabled:opacity-50 text-white py-3.5 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
                     >
                       {submitting ? (
-                        <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                       ) : (
-                        <Send className="w-3.5 h-3.5" />
+                        <MessageSquare className="w-4 h-4 text-[#25D366]" />
                       )}
-                      <span>{submitting ? "Sending..." : "Send Direct Message"}</span>
+                      <span>{submitting ? "Opening WhatsApp..." : "Send Message via WhatsApp"}</span>
                     </button>
                   </form>
                 </div>
@@ -346,10 +373,10 @@ export default function ContactPage() {
                 <div className="text-center py-10">
                   <CheckCircle2 className="w-12 h-12 text-[#27A84E] mx-auto mb-3" />
                   <h4 className="font-serif-title text-2xl font-bold text-[#0D1F3C] mb-2">
-                    Message Sent Successfully!
+                    Inquiry Sent to WhatsApp!
                   </h4>
-                  <p className="text-xs text-gray-600 max-w-md mx-auto mb-5">
-                    Thank you, <span className="font-semibold text-[#0D1F3C]">{formData.name}</span>. Your inquiry is recorded on our research desk.
+                  <p className="text-xs text-gray-600 max-w-md mx-auto mb-6 leading-relaxed">
+                    Thank you, <span className="font-semibold text-[#0D1F3C]">{formData.name}</span>. We have opened WhatsApp with your prefilled inquiry. If WhatsApp did not open automatically, tap the button below:
                   </p>
 
                   {whatsappRedirectUrl && (
@@ -358,10 +385,10 @@ export default function ContactPage() {
                         href={whatsappRedirectUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20BA5A] text-white font-semibold text-xs px-5 py-2.5 rounded-lg shadow-md transition-all"
+                        className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20BA5A] text-white font-bold text-xs px-6 py-3 rounded-xl shadow-md transition-all active:scale-95"
                       >
                         <MessageSquare className="w-4 h-4" />
-                        <span>Chat Directly on WhatsApp Desk</span>
+                        <span>Chat on WhatsApp Now</span>
                       </a>
                     </div>
                   )}
@@ -371,7 +398,7 @@ export default function ContactPage() {
                       setSubmitted(false);
                       setFormData({ name: "", email: "", phone: "", subject: "General Inquiry", message: "" });
                     }}
-                    className="text-xs font-semibold bg-[#0D1F3C] text-white px-5 py-2 rounded-lg"
+                    className="text-xs font-semibold bg-[#0D1F3C] hover:bg-[#112540] text-white px-5 py-2.5 rounded-xl transition-colors cursor-pointer"
                   >
                     Send Another Message
                   </button>
@@ -381,6 +408,78 @@ export default function ContactPage() {
           </div>
         </section>
       </main>
+
+      {/* WhatsApp QR Pop-Up Modal */}
+      {isQrModalOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setIsQrModalOpen(false)}
+          className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-gray-100 text-center relative animate-in zoom-in-95 duration-200"
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setIsQrModalOpen(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-full p-1.5 transition-colors cursor-pointer"
+              aria-label="Close QR Modal"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            {/* Header Badge */}
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[#1E7A3A] text-xs font-bold mb-3">
+              <MessageSquare className="w-3.5 h-3.5 text-[#25D366]" />
+              <span>WhatsApp Direct Desk</span>
+            </div>
+
+            <h3 className="text-xl font-bold text-gray-900 mb-1">
+              Scan to Chat on WhatsApp
+            </h3>
+            <p className="text-xs text-gray-500 mb-4 leading-relaxed">
+              Scan this QR code with your phone camera or WhatsApp scanner to start chatting with our analytical desk.
+            </p>
+
+            {/* Large QR Display */}
+            <div className="relative mx-auto w-64 h-64 bg-white rounded-2xl p-4 border-2 border-emerald-100 shadow-inner flex items-center justify-center mb-5">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={whatsappQrUrl}
+                alt="Enlarged WhatsApp QR Code"
+                className="w-full h-full object-contain"
+              />
+            </div>
+
+            {/* Hotline & Action */}
+            <div className="space-y-2.5">
+              <div className="text-xs font-semibold text-gray-700">
+                Official Helpline: <strong className="text-[#1E7A3A] font-bold">{contactPhone}</strong>
+              </div>
+
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20BA5A] text-white font-bold text-xs py-3 px-4 rounded-xl shadow-md transition-all active:scale-[0.98]"
+              >
+                <MessageSquare className="w-4 h-4" />
+                <span>Open WhatsApp Chat Directly</span>
+              </a>
+
+              <button
+                type="button"
+                onClick={() => setIsQrModalOpen(false)}
+                className="text-xs text-gray-400 hover:text-gray-600 font-medium cursor-pointer pt-1"
+              >
+                Close Window
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <ConsultationModal
         isOpen={isConsultationOpen}

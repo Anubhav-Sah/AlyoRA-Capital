@@ -125,6 +125,7 @@ export default function ServicesSection({
           })
       : servicesData;
 
+  const sectionTagline = getContent("main-cards", "tagline", "What We Do");
   const sectionHeading = getContent("main-cards", "heading", "Our Core Services");
   const sectionSubheading = getContent(
     "main-cards",
@@ -132,13 +133,17 @@ export default function ServicesSection({
     "From deep equity research to personalised investment advisory & business growth consulting."
   );
 
+  const ctaHeading = getContent("cta-card", "heading", "Not sure where to start?");
+  const ctaDesc = getContent("cta-card", "description", "Book a free 30-minute call to clarify your strategy.");
+  const ctaBtn = getContent("cta-card", "button_text", "Book Free Call →");
+
   return (
     <section id="services-section" className="py-12 sm:py-16 px-3 sm:px-6 lg:px-8 bg-[#F7F8FA]">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="mb-8 text-center sm:text-left">
           <div className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-[#1E7A3A] mb-1">
-            What We Do
+            {sectionTagline}
           </div>
           <h2 className="font-serif-title text-2xl sm:text-3xl font-bold text-[#0D1F3C]">
             {sectionHeading}
@@ -193,10 +198,10 @@ export default function ServicesSection({
                 <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-[#1E7A3A]" />
               </div>
               <h3 className="text-sm sm:text-base font-semibold text-[#1E7A3A] mb-1">
-                Not sure where to start?
+                {ctaHeading}
               </h3>
               <p className="text-xs text-[#1E7A3A]/80 leading-relaxed mb-4">
-                Book a free 30-minute call to clarify your strategy.
+                {ctaDesc}
               </p>
             </div>
 
@@ -205,7 +210,7 @@ export default function ServicesSection({
               className="w-full text-center text-xs font-semibold bg-[#0D1F3C] text-white py-2.5 sm:py-3 rounded-lg shadow flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <PhoneCall className="w-3.5 h-3.5 text-[#27A84E]" />
-              <span>Book Free Call →</span>
+              <span>{ctaBtn}</span>
             </button>
           </div>
         </div>
