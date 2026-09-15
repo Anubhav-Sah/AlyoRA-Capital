@@ -94,15 +94,16 @@ export default function WhyUsSection() {
   const [selectedPillar, setSelectedPillar] = useState<Pillar | null>(null);
   const { cards, getContent } = usePageData("home");
 
+  const sectionTagline = getContent("why-us", "tagline", "WHY ALYORA");
   const sectionHeading = getContent(
     "why-us",
     "heading",
-    "Research you can trust. Advice you can act on."
+    "The AlyoRA Difference"
   );
   const sectionSubheading = getContent(
     "why-us",
     "subheading",
-    "Click any pillar to explore what sets AlyoRA apart from generic advisory firms."
+    "Four core pillars that set our research desk apart from traditional commission-driven brokers."
   );
 
   const whyUsCards = (cards || []).filter((c) => c.section === "why-us" && c.visible);
@@ -121,7 +122,7 @@ export default function WhyUsSection() {
             : pillars[i % pillars.length]?.features || [];
 
           return {
-            num: String(i + 1).padStart(2, "0"),
+            num: (typeof extra.num === "string" && extra.num) || String(i + 1).padStart(2, "0"),
             title: c.title,
             text: c.subtitle || c.description,
             icon: pillars[i % pillars.length]?.icon || ShieldCheck,
@@ -137,7 +138,7 @@ export default function WhyUsSection() {
       <div className="max-w-7xl mx-auto">
         <div className="mb-8 text-center sm:text-left">
           <div className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-[#1E7A3A] mb-1">
-            Why AlyoRA
+            {sectionTagline}
           </div>
           <h2 className="font-serif-title text-2xl sm:text-3xl font-bold text-[#0D1F3C]">
             {sectionHeading}
