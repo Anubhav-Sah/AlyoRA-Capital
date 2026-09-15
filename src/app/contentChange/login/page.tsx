@@ -10,7 +10,8 @@ import { insforge } from "@/lib/insforge";
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const [mode, setMode] = useState<"login" | "register">("login");
+  const [mode, setMode] = useState<"passcode" | "login" | "register">("passcode");
+  const [passcode, setPasscode] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -18,8 +19,35 @@ export default function AdminLoginPage() {
   const [error, setError] = useState("");
   const [showRequestModal, setShowRequestModal] = useState(false);
 
+  const handlePasscodeSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    // Default master passcodes
+    const validCodes = ["alyora2026", "admin2026", "alyoracapital", "6389570522"];
+    if (validCodes.includes(passcode.trim().toLowerCase())) {
+      setLoading(true);
+      const masterProfile: UserProfile = {
+        id: "admin-master-session",
+        email: "admin@alyoracapital.in",
+        role: "admin",
+      };
+      if (typeof window !== "undefined") {
+        localStorage.setItem("alyora_admin_profile", JSON.stringify(masterProfile));
+      }
+      setTimeout(() => {
+        router.replace("/contentChange/dashboard");
+      }, 400);
+    } else {
+      setError("Incorrect admin passcode. Please try again or use Email Login.");
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (mode === "passcode") {
+      handlePasscodeSubmit(e);
+      return;
+    }
     setError("");
     setLoading(true);
 
@@ -123,7 +151,7 @@ export default function AdminLoginPage() {
         {/* Glass Card */}
         <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl">
           <div className="flex gap-1 mb-6 p-1 bg-white/5 rounded-lg">
-            {(["login", "register"] as const).map((m) => (
+            {(["passcode", "login", "register"] as const).map((m) => (
               <button
                 key={m}
                 onClick={() => { setMode(m); setError(""); }}
@@ -133,47 +161,80 @@ export default function AdminLoginPage() {
                     : "text-white/50 hover:text-white/80"
                 }`}
               >
-                {m === "login" ? "Sign In" : "Register"}
+                {m === "passcode" ? "Quick Passcode" : m === "login" ? "Email Login" : "Register"}
               </button>
             ))}
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Email */}
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
-              <input
-                id="admin-email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email address"
-                required
-                className="w-full bg-white/5 border border-white/10 rounded-lg pl-10 pr-4 py-3 text-white text-sm placeholder:text-white/30 focus:outline-none focus:border-[#1E7A3A]/60 focus:bg-white/8 transition-all"
-              />
-            </div>
+            {mode === "passcode" ? (
+              <div>
+                <label className="block text-white/70 text-xs font-semibold mb-2">
+                  Admin Passcode
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+                  <input
+                    id="admin-passcode"
+                    type={showPassword ? "text" : "password"}
+                    value={passcode}
+                    onChange={(e) => setPasscode(e.target.value)}
+                    placeholder="Enter admin passcode (e.g. alyora2026)"
+                    required
+                    autoFocus
+                    className="w-full bg-white/5 border border-white/10 rounded-lg pl-10 pr-10 py-3 text-white text-sm placeholder:text-white/30 focus:outline-none focus:border-[#1E7A3A] focus:bg-white/8 transition-all font-mono"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 cursor-pointer"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+                <p className="text-[11px] text-white/40 mt-2">
+                  💡 Tip: Enter <span className="text-[#27A84E] font-mono font-semibold">alyora2026</span> for instant access.
+                </p>
+              </div>
+            ) : (
+              <>
+                {/* Email */}
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                  <input
+                    id="admin-email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Email address"
+                    required
+                    className="w-full bg-white/5 border border-white/10 rounded-lg pl-10 pr-4 py-3 text-white text-sm placeholder:text-white/30 focus:outline-none focus:border-[#1E7A3A]/60 focus:bg-white/8 transition-all"
+                  />
+                </div>
 
-            {/* Password */}
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
-              <input
-                id="admin-password"
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
-                required
-                minLength={6}
-                className="w-full bg-white/5 border border-white/10 rounded-lg pl-10 pr-10 py-3 text-white text-sm placeholder:text-white/30 focus:outline-none focus:border-[#1E7A3A]/60 transition-all"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 cursor-pointer"
-              >
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
-            </div>
+                {/* Password */}
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                  <input
+                    id="admin-password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Password"
+                    required
+                    minLength={6}
+                    className="w-full bg-white/5 border border-white/10 rounded-lg pl-10 pr-10 py-3 text-white text-sm placeholder:text-white/30 focus:outline-none focus:border-[#1E7A3A]/60 transition-all"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 cursor-pointer"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </>
+            )}
 
             {error && (
               <div className="flex items-center gap-2 text-red-400 text-xs bg-red-400/10 border border-red-400/20 rounded-lg px-3 py-2">
@@ -193,7 +254,13 @@ export default function AdminLoginPage() {
               ) : (
                 <Shield className="w-4 h-4" />
               )}
-              {loading ? "Authenticating..." : mode === "login" ? "Sign In to Admin" : "Create Account"}
+              {loading
+                ? "Authenticating..."
+                : mode === "passcode"
+                ? "Unlock Dashboard →"
+                : mode === "login"
+                ? "Sign In to Admin"
+                : "Create Account"}
             </button>
           </form>
 

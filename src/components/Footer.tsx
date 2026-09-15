@@ -3,7 +3,8 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Mail, Phone, MessageSquare, ShieldAlert } from "lucide-react";
+import { Mail, Phone, MessageSquare, ShieldAlert, MapPin } from "lucide-react";
+import { usePageData } from "@/lib/usePageData";
 
 interface FooterProps {
   onOpenConsultation?: () => void;
@@ -45,40 +46,55 @@ function InstagramIcon({ className }: { className?: string }) {
 function TelegramIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z" />
     </svg>
   );
 }
 
 export default function Footer({ onOpenConsultation }: FooterProps) {
+  const { getContent } = usePageData("navbar");
+
+  const emailPrimary = getContent("footer-col3", "email", "info@alyoracapital.in");
+  const emailSecondary = getContent("footer-col3", "email_secondary", "sarfraj@alyoracapital.in");
+  const phone = getContent("footer-col3", "phone", "+91 6389570522");
+  const whatsappUrl = getContent("footer-col3", "whatsapp_url", "https://wa.me/message/3DF25RTHCJG7O1");
+  const amfiRegNo = getContent("footer-col3", "amfi_reg_no", "ARN-369301");
+  const sebiRegNo = getContent("footer-col3", "sebi_reg_no", "( Documentation in Process )");
+  const cityLocation = getContent("footer-col3", "city_location", "");
+  const disclaimerText = getContent(
+    "footer-col3",
+    "disclaimer",
+    "Investment in securities market is subject to market risks. Please read all related documents carefully before investing. Past performance is not indicative of future results. This website is for informational and educational purposes only and does not constitute explicit investment advice or stock tips."
+  );
+
   const socialLinks = [
     {
       label: "WhatsApp",
-      href: "https://wa.me/919876543210",
+      href: getContent("footer-col2", "social_whatsapp", whatsappUrl),
       Icon: WhatsAppIcon,
       hoverColor: "#25D366",
     },
     {
       label: "LinkedIn",
-      href: "https://linkedin.com/company/alyora-capital-research",
+      href: getContent("footer-col2", "social_linkedin", "https://linkedin.com/company/alyora-capital-research"),
       Icon: LinkedInIcon,
       hoverColor: "#0A66C2",
     },
     {
       label: "Twitter / X",
-      href: "https://x.com/alyoracapital",
+      href: getContent("footer-col2", "social_twitter", "https://x.com/alyoracapital"),
       Icon: TwitterXIcon,
       hoverColor: "#ffffff",
     },
     {
       label: "Instagram",
-      href: "https://instagram.com/alyoracapital",
+      href: getContent("footer-col2", "social_instagram", "https://instagram.com/alyoracapital"),
       Icon: InstagramIcon,
       hoverColor: "#E1306C",
     },
     {
       label: "Telegram",
-      href: "https://t.me/alyoracapital",
+      href: getContent("footer-col2", "social_telegram", "https://t.me/alyoracapital"),
       Icon: TelegramIcon,
       hoverColor: "#229ED9",
     },
@@ -220,27 +236,52 @@ export default function Footer({ onOpenConsultation }: FooterProps) {
               Contact &amp; Support
             </div>
             <ul className="space-y-2.5 text-xs text-white/60">
+              {cityLocation && (
+                <li className="flex items-center gap-2 text-white/80">
+                  <MapPin className="w-3.5 h-3.5 text-[#27A84E] flex-shrink-0" />
+                  <span>{cityLocation}</span>
+                </li>
+              )}
               <li className="flex items-center gap-2">
                 <Mail className="w-3.5 h-3.5 text-[#27A84E]" />
-                <a href="mailto:info@alyoracapital.com" className="hover:text-white transition-colors">
-                  info@alyoracapital.com
+                <a href={`mailto:${emailPrimary}`} className="hover:text-white transition-colors">
+                  {emailPrimary}
                 </a>
               </li>
+              {emailSecondary && (
+                <li className="flex items-center gap-2">
+                  <Mail className="w-3.5 h-3.5 text-[#27A84E]" />
+                  <a href={`mailto:${emailSecondary}`} className="hover:text-white transition-colors">
+                    {emailSecondary}
+                  </a>
+                </li>
+              )}
               <li className="flex items-center gap-2">
                 <Phone className="w-3.5 h-3.5 text-[#27A84E]" />
-                <a href="tel:+919876543210" className="hover:text-white transition-colors">
-                  +91 98765 43210
+                <a href={`tel:${phone.replace(/\s+/g, "")}`} className="hover:text-white transition-colors">
+                  {phone}
                 </a>
               </li>
               <li className="flex items-center gap-2">
                 <MessageSquare className="w-3.5 h-3.5 text-[#27A84E]" />
-                <Link href="/contact" className="hover:text-white transition-colors">
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-white transition-colors"
+                >
                   WhatsApp Business
-                </Link>
+                </a>
               </li>
-              <li className="pt-2 text-[10px] text-white/30 leading-relaxed border-t border-white/5">
-                <span className="text-white/40 font-semibold block mb-0.5">SEBI Reg. No.</span>
-                INH000000000 (Research Analyst)
+              <li className="pt-2 text-[10px] text-white/40 leading-relaxed border-t border-white/5 space-y-1">
+                <div>
+                  <span className="text-white/60 font-semibold">AMFI Reg. No. : </span>
+                  <span className="text-[#27A84E] font-medium">{amfiRegNo}</span>
+                </div>
+                <div>
+                  <span className="text-white/60 font-semibold">SEBI Reg. No. : </span>
+                  <span>{sebiRegNo}</span>
+                </div>
               </li>
             </ul>
           </div>
@@ -260,7 +301,7 @@ export default function Footer({ onOpenConsultation }: FooterProps) {
           <div className="bg-[#0B1B33] p-3 rounded-lg border border-white/5 text-[10px] text-white/30 leading-relaxed flex items-start gap-2">
             <ShieldAlert className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
             <div>
-              <strong className="text-white/40 font-semibold">Disclaimer:</strong> Investment in securities market is subject to market risks. Please read all related documents carefully before investing. Past performance is not indicative of future results. This website is for informational and educational purposes only and does not constitute explicit investment advice or stock tips. SEBI Reg. No. INH000000000.
+              <strong className="text-white/40 font-semibold">Disclaimer:</strong> {disclaimerText} AMFI Reg. No. {amfiRegNo} | SEBI Reg. No. {sebiRegNo}.
             </div>
           </div>
         </div>

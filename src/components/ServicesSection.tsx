@@ -102,13 +102,25 @@ export default function ServicesSection({
             const extra = (c.extra_data || {}) as Record<string, unknown>;
             const color =
               typeof extra.color === "string" ? extra.color : "#1E7A3A";
+            const autoSlug = c.title
+              .toLowerCase()
+              .replace(/[^a-z0-9]+/g, "-")
+              .replace(/^-+|-+$/g, "");
+            const customSlug =
+              (typeof extra.slug === "string" && extra.slug) ||
+              (c.button_url && c.button_url.startsWith("/services/")
+                ? c.button_url.replace("/services/", "")
+                : null) ||
+              slugMap[i] ||
+              autoSlug;
+
             return {
               id: c.id || `srv-${i}`,
               title: c.title,
               shortDesc: c.subtitle || c.description,
               icon: icons[i % icons.length] || TrendingUp,
               color,
-              slug: slugMap[i] || "research-analysis",
+              slug: customSlug,
             };
           })
       : servicesData;

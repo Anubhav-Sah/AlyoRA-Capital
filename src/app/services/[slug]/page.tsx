@@ -20,6 +20,7 @@ import {
   Calculator,
 } from "lucide-react";
 import { notFound, useParams } from "next/navigation";
+import { usePageData } from "@/lib/usePageData";
 
 interface FAQ {
   q: string;
@@ -461,8 +462,65 @@ export default function ServiceSlugPage() {
   const slug = params?.slug as string;
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [showCalc, setShowCalc] = useState(false);
+  const { cards } = usePageData("services");
 
-  const service = servicesMap[slug];
+  let service = servicesMap[slug];
+
+  if (!service && cards && cards.length > 0) {
+    const matchedCard = cards.find((c) => {
+      const extra = (c.extra_data || {}) as Record<string, unknown>;
+      const cardSlug =
+        (typeof extra.slug === "string" && extra.slug) ||
+        (c.button_url && c.button_url.startsWith("/services/")
+          ? c.button_url.replace("/services/", "")
+          : null) ||
+        c.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+      return cardSlug === slug;
+    });
+
+    if (matchedCard) {
+      const extra = (matchedCard.extra_data || {}) as Record<string, unknown>;
+      service = {
+        id: slug,
+        title: matchedCard.title,
+        tagline: matchedCard.subtitle || `${matchedCard.title} solutions for Indian investors.`,
+        shortDesc: matchedCard.description || matchedCard.subtitle,
+        icon: TrendingUp,
+        color: typeof extra.color === "string" ? extra.color : "#1E7A3A",
+        fullDesc: [
+          matchedCard.description || "Comprehensive financial research and advisory tailored to your strategic goals.",
+          "Our research division delivers objective, data-backed insights with zero broker bias.",
+        ],
+        deliverables: Array.isArray(extra.deliverables)
+          ? (extra.deliverables as string[])
+          : [
+              "Direct access to analyst team recommendations",
+              "Detailed risk-reward analysis and entry-exit zones",
+              "Regular performance and portfolio tracking",
+            ],
+        idealFor: Array.isArray(extra.idealFor)
+          ? (extra.idealFor as string[])
+          : ["Retail Investors", "High Net Worth Individuals", "Active Market Participants"],
+        methodology: [
+          "Quantitative and fundamental research models",
+          "Institutional risk management principles",
+          "Continuous market monitoring and timely updates",
+        ],
+        faqs: [
+          {
+            q: `What is included in ${matchedCard.title}?`,
+            a: "You receive our full research framework, documented trade logic, and direct support.",
+          },
+          {
+            q: "How do I get started?",
+            a: "Click 'Book Free Consultation' or contact our research desk to discuss your requirements.",
+          },
+        ],
+        ctaText: "Book Free Consultation",
+      };
+    }
+  }
+
   if (!service) notFound();
 
   const Icon = service.icon;

@@ -96,14 +96,27 @@ export default function PricingSection({ onOpenConsultation }: PricingSectionPro
     return "₹" + n.toLocaleString("en-IN");
   };
 
+  const getTierBadge = (defaultBadge: string | null, stageIdx: number) => {
+    const item = pricingCardMap.get(stageIdx);
+    if (item?.card.badge) return item.card.badge;
+    const extra = (item?.card.extra_data || {}) as Record<string, unknown>;
+    if (typeof extra.offer === "string" && extra.offer) return extra.offer;
+    return defaultBadge;
+  };
+
+  const getTierTag = (defaultTag: string, stageIdx: number) => {
+    const item = pricingCardMap.get(stageIdx);
+    return item?.card.subtitle || defaultTag;
+  };
+
   const tiers = [
     {
       id: "prime",
       name: "Prime",
-      tag: "Index options calls.",
+      tag: getTierTag("Index options calls.", 0),
       amount: currentData.prime,
       step: 0,
-      badge: null,
+      badge: getTierBadge(null, 0),
       colorBar: [6, 6, 6, 6, 6],
       features: [
         { text: "Sensex, Nifty, Bank Nifty & Fin Nifty outlook (weekly)", inherit: false },
@@ -117,10 +130,10 @@ export default function PricingSection({ onOpenConsultation }: PricingSectionPro
     {
       id: "premium",
       name: "Premium",
-      tag: "Futures & commodities.",
+      tag: getTierTag("Futures & commodities.", 1),
       amount: currentData.premium,
       step: 1,
-      badge: null,
+      badge: getTierBadge(null, 1),
       colorBar: [6, 6, 6, 10, 10],
       features: [
         { text: "Everything in Prime", inherit: true },
@@ -134,10 +147,10 @@ export default function PricingSection({ onOpenConsultation }: PricingSectionPro
     {
       id: "elite",
       name: "Elite",
-      tag: "IPOs & swing wealth.",
+      tag: getTierTag("IPOs & swing wealth.", 2),
       amount: currentData.elite,
       step: 2,
-      badge: "Most chosen",
+      badge: getTierBadge("Most chosen", 2),
       colorBar: [6, 6, 10, 14, 14],
       features: [
         { text: "Everything in Premium", inherit: true },
@@ -151,10 +164,10 @@ export default function PricingSection({ onOpenConsultation }: PricingSectionPro
     {
       id: "apex",
       name: "Apex",
-      tag: "Primary market & metals.",
+      tag: getTierTag("Primary market & metals.", 3),
       amount: currentData.apex,
       step: 3,
-      badge: null,
+      badge: getTierBadge(null, 3),
       colorBar: [6, 6, 10, 14, 18],
       features: [
         { text: "Everything in Elite", inherit: true },
@@ -168,10 +181,10 @@ export default function PricingSection({ onOpenConsultation }: PricingSectionPro
     {
       id: "pinnacle",
       name: "Pinnacle",
-      tag: "Full tailored portfolio.",
+      tag: getTierTag("Complete portfolio.", 4),
       amount: currentData.pinnacle,
       step: 4,
-      badge: "Full portfolio",
+      badge: getTierBadge("Full Portfolio", 4),
       colorBar: [6, 6, 10, 14, 22],
       features: [
         { text: "Everything in Apex", inherit: true },
@@ -180,7 +193,7 @@ export default function PricingSection({ onOpenConsultation }: PricingSectionPro
         { text: "Complete gold & silver allocation planning", inherit: false },
         { text: "Dedicated senior research partner 1-on-1", inherit: false },
       ],
-      ctaText: "Reach the Summit",
+      ctaText: "Reach the Summit →",
     },
   ];
 
@@ -314,66 +327,97 @@ export default function PricingSection({ onOpenConsultation }: PricingSectionPro
           ))}
         </div>
 
-        {/* 2-Column Mobile Standalone Services */}
-        <div className="mb-8 bg-white rounded-xl p-4 sm:p-8 border border-gray-200 shadow-sm">
-          <div className="mb-4">
-            <h3 className="font-serif-title text-xl sm:text-2xl font-bold text-[#0D1F3C] mb-1">
-              Standalone Services
-            </h3>
-            <p className="text-xs text-gray-600">
-              Not tied to any advisory plan — available on their own.
-            </p>
-          </div>
+        {/* Dynamic Standalone Services */}
+        {(() => {
+          const defaultStandalone = [
+            {
+              id: "std-1",
+              title: "Financial Planning",
+              price: "₹1,999 / slot",
+              description: "Goal-based planning for retirement, tax efficiency and wealth creation.",
+              badge: "",
+              button_label: "Book Slot →",
+            },
+            {
+              id: "std-2",
+              title: "Mutual Fund Planning",
+              price: "Free",
+              description: "Curated mutual fund and SIP guidance across equity and debt categories.",
+              badge: "Free",
+              button_label: "Get Started →",
+            },
+          ];
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6">
-            {/* Financial Planning */}
-            <div className="bg-[#F7F8FA] border border-gray-200 rounded-xl p-3.5 sm:p-5 hover-lift flex flex-col justify-between">
-              <div>
-                <h4 className="font-serif-title text-sm sm:text-xl font-bold text-[#0D1F3C] mb-1">
-                  Financial Planning
-                </h4>
-                <p className="text-[10px] sm:text-xs text-gray-600 leading-relaxed mb-3 line-clamp-3">
-                  Goal-based planning for retirement, tax efficiency and wealth creation.
+          const dbStandalone = (cards || []).filter((c) => c.section === "standalone" && c.visible);
+          const displayStandalone =
+            dbStandalone.length > 0
+              ? dbStandalone.map((c, i) => {
+                  const extra = (c.extra_data || {}) as Record<string, unknown>;
+                  return {
+                    id: c.id || `std-db-${i}`,
+                    title: c.title,
+                    price: c.subtitle || (typeof extra.price === "string" ? extra.price : "Custom"),
+                    description: c.description,
+                    badge: c.badge || (typeof extra.badge === "string" ? extra.badge : ""),
+                    button_label: c.button_label || "Book Slot →",
+                  };
+                })
+              : defaultStandalone;
+
+          return (
+            <div className="mb-8 bg-white rounded-xl p-4 sm:p-8 border border-gray-200 shadow-sm">
+              <div className="mb-4">
+                <h3 className="font-serif-title text-xl sm:text-2xl font-bold text-[#0D1F3C] mb-1">
+                  Standalone Services
+                </h3>
+                <p className="text-xs text-gray-600">
+                  Not tied to any advisory plan — available on their own.
                 </p>
-                <div className="font-serif-title text-base sm:text-2xl font-bold text-[#0D1F3C] mb-3">
-                  ₹1,999 <span className="text-[10px] sm:text-xs font-sans text-gray-500 font-normal">/ slot</span>
-                </div>
               </div>
 
-              <button
-                onClick={onOpenConsultation}
-                className="w-full text-center text-[10px] sm:text-xs font-semibold bg-[#0D1F3C] text-white py-2 rounded-lg"
-              >
-                Book Slot →
-              </button>
-            </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
+                {displayStandalone.map((item) => (
+                  <div
+                    key={item.id}
+                    className={`border rounded-xl p-3.5 sm:p-5 hover-lift flex flex-col justify-between ${
+                      item.badge === "Free"
+                        ? "bg-[#E8F5EC]/50 border-[#1E7A3A]/40"
+                        : "bg-[#F7F8FA] border-gray-200"
+                    }`}
+                  >
+                    <div>
+                      {item.badge && (
+                        <div className="inline-block text-[8px] sm:text-[9px] font-bold uppercase bg-[#1E7A3A] text-white px-1.5 py-0.5 rounded mb-1">
+                          {item.badge}
+                        </div>
+                      )}
+                      <h4 className="font-serif-title text-sm sm:text-xl font-bold text-[#0D1F3C] mb-1">
+                        {item.title}
+                      </h4>
+                      <p className="text-[10px] sm:text-xs text-gray-600 leading-relaxed mb-3 line-clamp-3">
+                        {item.description}
+                      </p>
+                      <div className="font-serif-title text-base sm:text-2xl font-bold text-[#0D1F3C] mb-3">
+                        {item.price}
+                      </div>
+                    </div>
 
-            {/* Mutual Fund Planning */}
-            <div className="bg-[#E8F5EC]/50 border-2 border-[#1E7A3A]/40 rounded-xl p-3.5 sm:p-5 hover-lift flex flex-col justify-between">
-              <div>
-                <div className="inline-block text-[8px] sm:text-[9px] font-bold uppercase bg-[#1E7A3A] text-white px-1.5 py-0.5 rounded mb-1">
-                  Free
-                </div>
-                <h4 className="font-serif-title text-sm sm:text-xl font-bold text-[#1E7A3A] mb-1">
-                  Mutual Fund Planning
-                </h4>
-                <p className="text-[10px] sm:text-xs text-gray-600 leading-relaxed mb-3 line-clamp-3">
-                  Curated mutual fund and SIP guidance across equity and debt categories.
-                </p>
-                <div className="font-serif-title text-base sm:text-2xl font-bold text-[#1E7A3A] mb-3">
-                  Free
-                </div>
+                    <button
+                      onClick={onOpenConsultation}
+                      className={`w-full text-center text-[10px] sm:text-xs font-semibold py-2 rounded-lg cursor-pointer transition-colors ${
+                        item.badge === "Free"
+                          ? "bg-[#1E7A3A] hover:bg-[#27A84E] text-white"
+                          : "bg-[#0D1F3C] hover:bg-[#112540] text-white"
+                      }`}
+                    >
+                      {item.button_label}
+                    </button>
+                  </div>
+                ))}
               </div>
-
-              <button
-                onClick={onOpenConsultation}
-                className="w-full text-center text-[10px] sm:text-xs font-semibold bg-[#1E7A3A] text-white py-2 rounded-lg"
-              >
-                Get Started →
-              </button>
             </div>
-          </div>
-        </div>
+          );
+        })()}
 
         {/* Pricing Footnote Notes */}
         <div className="bg-[#112540] text-white p-4 sm:p-6 rounded-xl border border-white/10 text-[11px] sm:text-xs leading-relaxed space-y-2">

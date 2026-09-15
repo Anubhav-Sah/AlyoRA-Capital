@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ConsultationModal from "@/components/ConsultationModal";
@@ -10,8 +11,10 @@ import { usePageData } from "@/lib/usePageData";
 
 export default function ContactPage() {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
-  const [formData, setFormData] = useState({ name: "", email: "", phone: "", subject: "", message: "" });
+  const [formData, setFormData] = useState({ name: "", email: "", phone: "", subject: "General Inquiry", message: "" });
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [whatsappRedirectUrl, setWhatsappRedirectUrl] = useState("");
 
   const { getContent } = usePageData("contact");
 
@@ -21,14 +24,36 @@ export default function ContactPage() {
     "description",
     "Have questions regarding our research reports, advisory plans, or sub-broker program? Reach out to our analytical team directly."
   );
-  const contactEmail = getContent("info", "email", "info@alyoracapital.com");
-  const contactPhone = getContent("info", "phone", "+91 98765 43210");
+  const contactEmail = getContent("info", "email", "info@alyoracapital.in");
+  const contactEmail2 = getContent("info", "email_secondary", "sarfraj@alyoracapital.in");
+  const contactPhone = getContent("info", "phone", "+91 6389570522");
   const contactHours = getContent("info", "hours", "Mon - Fri: 9:00 AM - 6:00 PM IST");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email) return;
-    setSubmitted(true);
+    setSubmitting(true);
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (data.whatsappUrl) {
+        setWhatsappRedirectUrl(data.whatsappUrl);
+      }
+    } catch (err) {
+      console.error("Submission failed, continuing:", err);
+      const waText = encodeURIComponent(
+        `Hello AlyoRA Capital,\nInquiry from Website:\nName: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone}\nSubject: ${formData.subject}\nMessage: ${formData.message}`
+      );
+      setWhatsappRedirectUrl(`https://wa.me/916389570522?text=${waText}`);
+    } finally {
+      setSubmitting(false);
+      setSubmitted(true);
+    }
   };
 
   return (
@@ -75,8 +100,11 @@ export default function ContactPage() {
                   Email Desk
                 </h3>
                 <p className="text-xs text-gray-500 mb-2">For report inquiries & support:</p>
-                <a href={`mailto:${contactEmail}`} className="text-xs font-semibold text-[#1E7A3A] hover:underline">
+                <a href={`mailto:${contactEmail}`} className="text-xs font-semibold text-[#1E7A3A] hover:underline block">
                   {contactEmail}
+                </a>
+                <a href={`mailto:${contactEmail2}`} className="text-xs font-semibold text-[#1E7A3A] hover:underline block mt-1">
+                  {contactEmail2}
                 </a>
               </div>
 
@@ -92,11 +120,11 @@ export default function ContactPage() {
                 {/* Phone + QR side by side */}
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <a href={`tel:${contactPhone.replace(/\s+/g, "")}`} className="text-xs font-semibold text-[#1E7A3A] hover:underline block mb-2">
-                      {contactPhone}
+                    <a href="tel:+916389570522" className="text-xs font-semibold text-[#1E7A3A] hover:underline block mb-2">
+                      +91 6389570522
                     </a>
                     <a
-                      href="https://wa.me/919876543210?text=Hello%20AlyoRA%20Capital%20Research%2C%20I%20would%20like%20to%20know%20more%20about%20your%20services."
+                      href="https://wa.me/message/3DF25RTHCJG7O1"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1.5 text-[10px] font-semibold bg-[#25D366] text-white px-2.5 py-1.5 rounded-lg hover:bg-[#20BA5A] transition-colors"
@@ -106,32 +134,15 @@ export default function ContactPage() {
                     </a>
                   </div>
 
-                  {/* Compact QR */}
-                  <div className="flex-shrink-0 bg-[#F7F8FA] border border-[#27A84E]/30 rounded-xl p-1.5">
-                    <svg viewBox="0 0 100 100" className="w-16 h-16" fill="none">
-                      <rect x="5" y="5" width="30" height="30" fill="none" stroke="#0D1F3C" strokeWidth="3" />
-                      <rect x="11" y="11" width="18" height="18" fill="#0D1F3C" />
-                      <rect x="65" y="5" width="30" height="30" fill="none" stroke="#0D1F3C" strokeWidth="3" />
-                      <rect x="71" y="11" width="18" height="18" fill="#0D1F3C" />
-                      <rect x="5" y="65" width="30" height="30" fill="none" stroke="#0D1F3C" strokeWidth="3" />
-                      <rect x="11" y="71" width="18" height="18" fill="#0D1F3C" />
-                      <rect x="45" y="5" width="6" height="6" fill="#0D1F3C" />
-                      <rect x="53" y="5" width="6" height="6" fill="#0D1F3C" />
-                      <rect x="45" y="13" width="6" height="6" fill="#0D1F3C" />
-                      <rect x="45" y="45" width="6" height="6" fill="#0D1F3C" />
-                      <rect x="55" y="45" width="6" height="6" fill="#0D1F3C" />
-                      <rect x="65" y="45" width="6" height="6" fill="#0D1F3C" />
-                      <rect x="75" y="45" width="6" height="6" fill="#0D1F3C" />
-                      <rect x="45" y="55" width="6" height="6" fill="#0D1F3C" />
-                      <rect x="65" y="55" width="6" height="6" fill="#0D1F3C" />
-                      <rect x="45" y="65" width="6" height="6" fill="#0D1F3C" />
-                      <rect x="55" y="65" width="6" height="6" fill="#0D1F3C" />
-                      <rect x="75" y="65" width="6" height="6" fill="#0D1F3C" />
-                      <rect x="45" y="75" width="6" height="6" fill="#0D1F3C" />
-                      <rect x="65" y="75" width="6" height="6" fill="#0D1F3C" />
-                      <rect x="75" y="75" width="6" height="6" fill="#0D1F3C" />
-                      <rect x="55" y="85" width="6" height="6" fill="#0D1F3C" />
-                    </svg>
+                  {/* WhatsApp QR */}
+                  <div className="flex-shrink-0 bg-white border border-[#27A84E]/30 rounded-xl p-1 shadow-sm flex flex-col items-center">
+                    <Image
+                      src="/images/whatsapp-qr.png"
+                      alt="WhatsApp QR Code"
+                      width={68}
+                      height={68}
+                      className="w-16 h-16 object-contain rounded-lg"
+                    />
                     <p className="text-[8px] text-center text-[#1E7A3A] font-semibold mt-0.5">Scan to chat</p>
                   </div>
                 </div>
@@ -239,10 +250,15 @@ export default function ContactPage() {
 
                     <button
                       type="submit"
-                      className="w-full text-center text-xs font-semibold bg-[#1E7A3A] hover:bg-[#27A84E] text-white py-3 rounded-lg shadow transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                      disabled={submitting}
+                      className="w-full text-center text-xs font-semibold bg-[#1E7A3A] hover:bg-[#27A84E] disabled:opacity-50 text-white py-3 rounded-lg shadow transition-colors flex items-center justify-center gap-2 cursor-pointer"
                     >
-                      <Send className="w-3.5 h-3.5" />
-                      <span>Send Direct Message</span>
+                      {submitting ? (
+                        <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      ) : (
+                        <Send className="w-3.5 h-3.5" />
+                      )}
+                      <span>{submitting ? "Sending..." : "Send Direct Message"}</span>
                     </button>
                   </form>
                 </div>
@@ -252,13 +268,28 @@ export default function ContactPage() {
                   <h4 className="font-serif-title text-2xl font-bold text-[#0D1F3C] mb-2">
                     Message Sent Successfully!
                   </h4>
-                  <p className="text-xs text-gray-600 max-w-md mx-auto mb-6">
-                    Thank you, <span className="font-semibold text-[#0D1F3C]">{formData.name}</span>. We have received your inquiry and will respond to <span className="font-semibold">{formData.email}</span> shortly.
+                  <p className="text-xs text-gray-600 max-w-md mx-auto mb-5">
+                    Thank you, <span className="font-semibold text-[#0D1F3C]">{formData.name}</span>. Your inquiry is recorded on our research desk.
                   </p>
+
+                  {whatsappRedirectUrl && (
+                    <div className="mb-6">
+                      <a
+                        href={whatsappRedirectUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20BA5A] text-white font-semibold text-xs px-5 py-2.5 rounded-lg shadow-md transition-all"
+                      >
+                        <MessageSquare className="w-4 h-4" />
+                        <span>Chat Directly on WhatsApp Desk</span>
+                      </a>
+                    </div>
+                  )}
+
                   <button
                     onClick={() => {
                       setSubmitted(false);
-                      setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
+                      setFormData({ name: "", email: "", phone: "", subject: "General Inquiry", message: "" });
                     }}
                     className="text-xs font-semibold bg-[#0D1F3C] text-white px-5 py-2 rounded-lg"
                   >

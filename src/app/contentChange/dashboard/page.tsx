@@ -5,18 +5,19 @@ import Link from "next/link";
 import {
   Home, Info, Wrench, FileText, Briefcase, DollarSign, Phone,
   Navigation, ArrowRight, CheckCircle, AlertCircle, RefreshCw, Activity,
-  BarChart3, Clock,
+  BarChart3, Clock, MessageSquare,
 } from "lucide-react";
 
 const pages = [
-  { key: "home",                label: "Home",               href: "/contentChange/dashboard/home",                icon: Home,       color: "#1E7A3A", desc: "Hero, Stats, Services, Why Us, Reports preview, Pricing, CTA" },
-  { key: "about",               label: "About",              href: "/contentChange/dashboard/about",               icon: Info,       color: "#0D1F3C", desc: "Team, Mission, Vision, Values cards" },
-  { key: "services",            label: "Services",           href: "/contentChange/dashboard/services",            icon: Wrench,     color: "#1E7A3A", desc: "All service cards, descriptions, images, features" },
-  { key: "reports",             label: "Reports",            href: "/contentChange/dashboard/reports",             icon: FileText,   color: "#C8963E", desc: "Research reports list, PDF uploads, categories" },
-  { key: "business-consulting", label: "Business Consulting",href: "/contentChange/dashboard/business-consulting", icon: Briefcase,  color: "#0D1F3C", desc: "Consulting packages, process steps, case studies" },
-  { key: "pricing",             label: "Pricing",            href: "/contentChange/dashboard/pricing",             icon: DollarSign, color: "#27A84E", desc: "5-stage pricing plans, features, billing periods" },
-  { key: "contact",             label: "Contact",            href: "/contentChange/dashboard/contact",             icon: Phone,      color: "#1E7A3A", desc: "Contact details, form fields, office info" },
-  { key: "navbar",              label: "Navbar & Footer",    href: "/contentChange/dashboard/navbar",              icon: Navigation, color: "#C8963E", desc: "Navigation links order, logo, footer content" },
+  { key: "home",                label: "Home & Live Stats",   href: "/contentChange/dashboard/home",                icon: Home,          color: "#1E7A3A", desc: "Stats Bar (₹250Cr+, 18.4%), Why AlyoRA pillars & under-card details, Hero, CTA" },
+  { key: "services",            label: "Services & Sub-Pages",href: "/contentChange/dashboard/services",            icon: Wrench,        color: "#1E7A3A", desc: "Core service cards (+ Add Extra Card), service features, plans & detail pages" },
+  { key: "reports",             label: "Reports & PDF Uploads",href: "/contentChange/dashboard/reports",             icon: FileText,      color: "#C8963E", desc: "Published reports, PDF uploads for client downloads, headings, subscriber status" },
+  { key: "pricing",             label: "Pricing & Standalone",href: "/contentChange/dashboard/pricing",             icon: DollarSign,    color: "#27A84E", desc: "5-stage pricing tiers, special offers, standalone cards (+ Add Financial/Mutual Fund cards)" },
+  { key: "about",               label: "About Us",            href: "/contentChange/dashboard/about",               icon: Info,          color: "#0D1F3C", desc: "Vision, Mission, Core Principles, Story, and Team/Values cards" },
+  { key: "navbar",              label: "Footer & Regulatory", href: "/contentChange/dashboard/navbar",              icon: Navigation,    color: "#C8963E", desc: "AMFI Reg. No., SEBI Reg. No., City/Location, Social Media links, Disclaimers" },
+  { key: "contact",             label: "Contact & Desk Info", href: "/contentChange/dashboard/contact",             icon: Phone,         color: "#1E7A3A", desc: "Email addresses, Phone numbers, WhatsApp link, Support desk hours" },
+  { key: "inquiries",           label: "Client Inquiries Inbox",href: "/contentChange/dashboard/inquiries",          icon: MessageSquare, color: "#25D366", desc: "View all messages submitted by visitors on the website with 1-click WhatsApp reply" },
+  { key: "business-consulting", label: "Business Consulting", href: "/contentChange/dashboard/business-consulting", icon: Briefcase,     color: "#0D1F3C", desc: "Consulting packages, engagement process steps, case studies" },
 ];
 
 interface PingStatus {

@@ -95,10 +95,33 @@ const SECTION_SUGGESTED_FIELDS: Record<string, { key: string; label: string; isT
     { key: "subheading", label: "Subtitle / Tagline" },
   ],
   info: [
-    { key: "email", label: "Contact Email" },
-    { key: "phone", label: "Contact Phone" },
-    { key: "address", label: "Office Address" },
+    { key: "email", label: "Primary Email (e.g. info@alyoracapital.in)" },
+    { key: "email_secondary", label: "Secondary Email (e.g. sarfraj@alyoracapital.in)" },
+    { key: "phone", label: "Contact Phone (e.g. +91 6389570522)" },
+    { key: "whatsapp_url", label: "WhatsApp Direct Link (e.g. https://wa.me/message/...)" },
+    { key: "address", label: "Office Address / City" },
     { key: "hours", label: "Business Hours" },
+  ],
+  standalone: [
+    { key: "heading", label: "Section Title (e.g. Standalone Services)" },
+    { key: "subheading", label: "Subtitle / Tagline" },
+  ],
+  "footer-col2": [
+    { key: "social_whatsapp", label: "WhatsApp Link" },
+    { key: "social_linkedin", label: "LinkedIn Profile URL" },
+    { key: "social_twitter", label: "Twitter / X Profile URL" },
+    { key: "social_instagram", label: "Instagram Profile URL" },
+    { key: "social_telegram", label: "Telegram Channel URL" },
+  ],
+  "footer-col3": [
+    { key: "amfi_reg_no", label: "AMFI Reg. No. (e.g. ARN-369301)" },
+    { key: "sebi_reg_no", label: "SEBI Reg. No. (e.g. Documentation in Process)" },
+    { key: "city_location", label: "City / Office Location (e.g. Mumbai, India)" },
+    { key: "email", label: "Primary Email (e.g. info@alyoracapital.in)" },
+    { key: "email_secondary", label: "Secondary Email (e.g. sarfraj@alyoracapital.in)" },
+    { key: "phone", label: "Phone Number (e.g. +91 6389570522)" },
+    { key: "whatsapp_url", label: "WhatsApp Chat Link" },
+    { key: "disclaimer", label: "Legal Disclaimer Text", isTextarea: true },
   ],
 };
 

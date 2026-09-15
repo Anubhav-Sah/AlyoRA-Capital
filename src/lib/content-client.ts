@@ -180,6 +180,9 @@ export async function getCurrentUser(): Promise<UserProfile | null> {
       const saved = localStorage.getItem(SESSION_KEY);
       if (saved) {
         cachedUser = JSON.parse(saved) as UserProfile;
+        if (cachedUser && cachedUser.role === "admin") {
+          return cachedUser;
+        }
       }
     } catch {
       // continue
@@ -191,9 +194,6 @@ export async function getCurrentUser(): Promise<UserProfile | null> {
     const liveProfile = await fetchUserProfile(cachedUser.id, cachedUser.email);
     if (liveProfile) {
       return liveProfile;
-    }
-    if (cachedUser.role === "admin") {
-      return cachedUser;
     }
   }
 

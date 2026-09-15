@@ -88,8 +88,49 @@ const pillars: Pillar[] = [
   },
 ];
 
+import { usePageData } from "@/lib/usePageData";
+
 export default function WhyUsSection() {
   const [selectedPillar, setSelectedPillar] = useState<Pillar | null>(null);
+  const { cards, getContent } = usePageData("home");
+
+  const sectionHeading = getContent(
+    "why-us",
+    "heading",
+    "Research you can trust. Advice you can act on."
+  );
+  const sectionSubheading = getContent(
+    "why-us",
+    "subheading",
+    "Click any pillar to explore what sets AlyoRA apart from generic advisory firms."
+  );
+
+  const whyUsCards = (cards || []).filter((c) => c.section === "why-us" && c.visible);
+
+  const displayPillars: Pillar[] =
+    whyUsCards.length > 0
+      ? whyUsCards.map((c, i) => {
+          const extra = (c.extra_data || {}) as Record<string, unknown>;
+          const details = Array.isArray(extra.details)
+            ? (extra.details as string[])
+            : c.description
+            ? [c.description]
+            : pillars[i % pillars.length]?.details || [];
+          const features = Array.isArray(extra.features)
+            ? (extra.features as string[])
+            : pillars[i % pillars.length]?.features || [];
+
+          return {
+            num: String(i + 1).padStart(2, "0"),
+            title: c.title,
+            text: c.subtitle || c.description,
+            icon: pillars[i % pillars.length]?.icon || ShieldCheck,
+            color: typeof extra.color === "string" ? extra.color : pillars[i % pillars.length]?.color || "#1E7A3A",
+            details,
+            features,
+          };
+        })
+      : pillars;
 
   return (
     <section id="about-section" className="bg-[#F0F6F2] py-12 sm:py-16 px-3 sm:px-6 lg:px-8 border-y border-[#1E7A3A]/10">
@@ -99,16 +140,16 @@ export default function WhyUsSection() {
             Why AlyoRA
           </div>
           <h2 className="font-serif-title text-2xl sm:text-3xl font-bold text-[#0D1F3C]">
-            Research you can trust. Advice you can act on.
+            {sectionHeading}
           </h2>
           <p className="text-xs sm:text-sm text-gray-600 max-w-2xl mt-1">
-            Click any pillar to explore what sets AlyoRA apart from generic advisory firms.
+            {sectionSubheading}
           </p>
         </div>
 
         {/* Single col on mobile, 4-col on desktop */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-          {pillars.map((item) => {
+          {displayPillars.map((item) => {
             const Icon = item.icon;
             return (
               <button
