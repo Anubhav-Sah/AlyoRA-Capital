@@ -13,6 +13,7 @@ export interface ReportItem {
   pages: number;
   summary: string;
   highlights: string[];
+  pdfUrl?: string;
 }
 
 const mockReports: ReportItem[] = [
@@ -128,6 +129,14 @@ export default function LatestReportsSection({ onOpenPricing }: LatestReportsSec
 
   const { cards, pdfs, getContent } = usePageData("reports");
 
+  const sectionTagline = getContent("main", "tagline", "Our Research");
+  const sectionHeading = getContent("main", "heading", "Latest Published Reports");
+  const sectionSubheading = getContent(
+    "main",
+    "subheading",
+    "Actionable research across equities, mutual funds, and macro insights."
+  );
+
   const displayReports: ReportItem[] =
     cards && cards.length > 0
       ? cards
@@ -152,6 +161,9 @@ export default function LatestReportsSection({ onOpenPricing }: LatestReportsSec
             const highlights = Array.isArray(extra.highlights)
               ? (extra.highlights as string[])
               : [c.subtitle || "Institutional deep dive analysis"];
+            const pdfUrl =
+              (typeof extra.pdf_url === "string" && extra.pdf_url) ||
+              (c.button_url && c.button_url.endsWith(".pdf") ? c.button_url : undefined);
 
             return {
               id: c.id || `rep-${i}`,
@@ -163,6 +175,7 @@ export default function LatestReportsSection({ onOpenPricing }: LatestReportsSec
               pages,
               summary: c.description || c.subtitle || "",
               highlights,
+              pdfUrl,
             };
           })
       : mockReports;
@@ -180,6 +193,11 @@ export default function LatestReportsSection({ onOpenPricing }: LatestReportsSec
   const handleDownload = (report: ReportItem) => {
     if (report.isLocked) {
       setViewingReport(report);
+      return;
+    }
+    // Check if card has explicit attached PDF url
+    if (report.pdfUrl) {
+      window.open(report.pdfUrl, "_blank");
       return;
     }
     // Check if there is an uploaded PDF matching this report
@@ -203,13 +221,13 @@ export default function LatestReportsSection({ onOpenPricing }: LatestReportsSec
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 sm:mb-8 gap-4">
           <div>
             <div className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-[#1E7A3A] mb-1">
-              Our Research
+              {sectionTagline}
             </div>
             <h2 className="font-serif-title text-2xl sm:text-3xl font-bold text-[#0D1F3C]">
-              Latest Published Reports
+              {sectionHeading}
             </h2>
             <p className="text-xs sm:text-sm text-gray-600 max-w-xl mt-1">
-              Actionable research across equities, mutual funds, and macro insights.
+              {sectionSubheading}
             </p>
           </div>
 

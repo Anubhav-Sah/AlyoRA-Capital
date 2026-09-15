@@ -3,21 +3,31 @@
 import React from "react";
 import { ArrowRight, Mail } from "lucide-react";
 
+import { usePageData } from "@/lib/usePageData";
+
 interface CtaBannerProps {
   onOpenPricing: () => void;
   onOpenConsultation: () => void;
 }
 
 export default function CtaBanner({ onOpenPricing, onOpenConsultation }: CtaBannerProps) {
+  const { getContent } = usePageData("home");
+  const heading = getContent("cta", "heading", "Ready to invest with confidence?");
+  const subheading = getContent(
+    "cta",
+    "subheading",
+    "Join 500+ investors who trust AlyoRA Capital Research for clear market insights, mutual fund selection, and disciplined advisory."
+  );
+
   return (
     <section className="bg-[#0D1F3C] text-white py-12 px-4 sm:px-6 lg:px-8 border-t border-[#1E7A3A]/20">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="text-center md:text-left">
           <h3 className="font-serif-title text-2xl sm:text-3xl font-bold text-white mb-2">
-            Ready to invest with confidence?
+            {heading}
           </h3>
           <p className="text-xs sm:text-sm text-white/70 max-w-xl">
-            Join 500+ investors who trust AlyoRA Capital Research for clear market insights, mutual fund selection, and disciplined advisory.
+            {subheading}
           </p>
         </div>
 

@@ -64,13 +64,17 @@ export default function PricingSection({ onOpenConsultation }: PricingSectionPro
   const [period, setPeriod] = useState<Period>("monthly");
   const { cards } = usePageData("pricing");
 
-  // Read pricing overrides from DB if present
+  // Read pricing overrides from DB if present (section=tiers)
+  const tierCards = (cards || []).filter((c) => c.section === "tiers" || !c.section);
   const pricingCardMap = new Map(
-    (cards || []).map((c) => {
+    tierCards.map((c) => {
       const extra = (c.extra_data || {}) as Record<string, unknown>;
-      const stage = extra.stage as number | undefined;
+      const stage = typeof extra.stage === "number" ? extra.stage : c.position;
       const prices = extra.prices as Record<string, number> | undefined;
-      return [stage ?? c.position, { card: c, prices }];
+      const features = Array.isArray(extra.features)
+        ? (extra.features as Array<{ text: string; inherit: boolean }>)
+        : null;
+      return [stage, { card: c, prices, features }];
     })
   );
 

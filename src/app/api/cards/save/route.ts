@@ -19,7 +19,35 @@ export async function POST(request: Request) {
       const card = cards[i];
       const now = new Date().toISOString();
 
-      if (card.id && !card.id.startsWith("temp-") && !card.id.startsWith("srv-")) {
+      const page = card.page || "services";
+      const section = card.section || "main-cards";
+
+      // If id is missing, check if card already exists in DB with same page, section, and badge/position
+      let targetId = card.id && !card.id.startsWith("temp-") && !card.id.startsWith("srv-") ? card.id : null;
+
+      if (!targetId) {
+        try {
+          const matchQuery = card.badge
+            ? `${INSFORGE_URL}/api/database/records/page_cards?page=eq.${page}&section=eq.${section}&badge=eq.${encodeURIComponent(card.badge)}`
+            : `${INSFORGE_URL}/api/database/records/page_cards?page=eq.${page}&section=eq.${section}&position=eq.${i}`;
+          const checkRes = await fetch(matchQuery, {
+            headers: {
+              apikey: INSFORGE_ANON_KEY,
+              Authorization: `Bearer ${INSFORGE_ANON_KEY}`,
+            },
+          });
+          if (checkRes.ok) {
+            const checkData = await checkRes.json();
+            if (Array.isArray(checkData) && checkData.length > 0 && checkData[0].id) {
+              targetId = checkData[0].id;
+            }
+          }
+        } catch {
+          // continue
+        }
+      }
+
+      if (targetId) {
         // Update existing card
         const updatePayload = {
           title: card.title ?? "",
@@ -34,7 +62,7 @@ export async function POST(request: Request) {
           updated_at: now,
         };
 
-        const patchUrl = `${INSFORGE_URL}/api/database/records/page_cards?id=eq.${card.id}`;
+        const patchUrl = `${INSFORGE_URL}/api/database/records/page_cards?id=eq.${targetId}`;
         const res = await fetch(patchUrl, {
           method: "PATCH",
           headers: {
@@ -48,7 +76,7 @@ export async function POST(request: Request) {
 
         if (!res.ok) {
           const errText = await res.text();
-          console.error(`[api/cards/save] Failed to update card ${card.id}:`, errText);
+          console.error(`[api/cards/save] Failed to update card ${targetId}:`, errText);
         } else {
           const data = await res.json();
           results.push(data);
@@ -57,8 +85,8 @@ export async function POST(request: Request) {
         // Insert new card
         const insertPayload = [
           {
-            page: card.page || "services",
-            section: card.section || "main-cards",
+            page,
+            section,
             title: card.title ?? "",
             subtitle: card.subtitle ?? "",
             description: card.description ?? "",
@@ -99,6 +127,7 @@ export async function POST(request: Request) {
     // Revalidate relevant pages
     try {
       revalidatePath("/services");
+      revalidatePath("/reports");
       revalidatePath("/");
     } catch {
       // ignore
