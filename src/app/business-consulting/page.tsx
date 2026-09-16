@@ -148,13 +148,28 @@ export default function BusinessConsultingPage() {
     "description",
     "Practical, high-impact consulting services for SMEs, growth ventures, and corporate founders."
   );
+  const heroSubheading = getContent(
+    "hero",
+    "subheading",
+    "Partner with AlyoRA Capital Research to build, run, and scale your business with confidence — backed by institutional-grade financial research, structured strategy frameworks, and hands-on planning support."
+  );
+  const heroSupporting = getContent(
+    "hero",
+    "supporting",
+    "From first-time founders to established businesses facing growth roadblocks, we help you turn financial data into clear, actionable decisions."
+  );
+  const heroCtaText = getContent("hero", "cta_text", "Book a Free Strategy Call");
 
   const whoItIsFor = [
-    "First-time founders launching a new venture",
-    "Small business owners facing growth or cash-flow challenges",
-    "Businesses planning expansion but unsure of the numbers",
-    "Owners who want a financial second opinion before big decisions",
+    getContent("who_for", "item1", "First-time founders launching a new venture"),
+    getContent("who_for", "item2", "Small business owners facing growth or cash-flow challenges"),
+    getContent("who_for", "item3", "Businesses planning expansion but unsure of the numbers"),
+    getContent("who_for", "item4", "Owners who want a financial second opinion before big decisions"),
   ];
+
+  const ctaHeading = getContent("cta_banner", "heading", "Not sure where your business stands? Let's find out together.");
+  const ctaSubheading = getContent("cta_banner", "subheading", "Book a free 20-minute strategy call and get a clear first step — no obligation, no jargon.");
+  const ctaButtonText = getContent("cta_banner", "button_text", "Book Your Free Strategy Call");
 
   return (
     <div className="min-h-screen bg-[#F7F8FA] flex flex-col font-sans">
@@ -192,12 +207,12 @@ export default function BusinessConsultingPage() {
 
               {/* Sub-headline */}
               <p className="text-xs sm:text-base text-white/90 max-w-3xl leading-relaxed mb-2 font-medium">
-                Partner with AlyoRA Capital Research to build, run, and scale your business with confidence — backed by institutional-grade financial research, structured strategy frameworks, and hands-on planning support.
+                {heroSubheading}
               </p>
 
               {/* Supporting Line */}
               <p className="text-[11px] sm:text-sm text-white/70 max-w-2xl leading-relaxed mb-5 font-light">
-                From first-time founders to established businesses facing growth roadblocks, we help you turn financial data into clear, actionable decisions.
+                {heroSupporting}
               </p>
 
               {/* CTA Button */}
@@ -207,7 +222,7 @@ export default function BusinessConsultingPage() {
                   className="text-xs sm:text-sm font-semibold bg-[#1E7A3A] hover:bg-[#27A84E] text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg shadow-lg cursor-pointer flex items-center gap-2"
                 >
                   <PhoneCall className="w-4 h-4" />
-                  <span>Book a Free Strategy Call</span>
+                  <span>{heroCtaText}</span>
                 </button>
               </div>
             </div>
@@ -330,10 +345,10 @@ export default function BusinessConsultingPage() {
         <section className="bg-white py-12 sm:py-14 px-3 sm:px-6 lg:px-8 border-t border-gray-200">
           <div className="max-w-4xl mx-auto bg-[#E8F5EC] border-2 border-[#1E7A3A] rounded-2xl p-6 sm:p-8 text-center shadow-lg">
             <h3 className="font-serif-title text-xl sm:text-3xl font-bold text-[#0D1F3C] mb-2">
-              Not sure where your business stands? Let&apos;s find out together.
+              {ctaHeading}
             </h3>
             <p className="text-xs sm:text-sm text-gray-700 mb-6 max-w-xl mx-auto">
-              Book a free 20-minute strategy call and get a clear first step — no obligation, no jargon.
+              {ctaSubheading}
             </p>
 
             <button
@@ -341,7 +356,7 @@ export default function BusinessConsultingPage() {
               className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold bg-[#1E7A3A] text-white px-6 sm:px-8 py-3 rounded-xl shadow-lg cursor-pointer"
             >
               <PhoneCall className="w-4 h-4" />
-              <span>Book Your Free Strategy Call</span>
+              <span>{ctaButtonText}</span>
             </button>
           </div>
         </section>

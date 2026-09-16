@@ -129,6 +129,7 @@ export async function POST(request: Request) {
       revalidatePath("/services");
       revalidatePath("/reports");
       revalidatePath("/pricing");
+      revalidatePath("/business-consulting");
       revalidatePath("/");
     } catch {
       // ignore
