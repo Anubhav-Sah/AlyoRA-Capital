@@ -128,6 +128,7 @@ export async function POST(request: Request) {
     try {
       revalidatePath("/services");
       revalidatePath("/reports");
+      revalidatePath("/pricing");
       revalidatePath("/");
     } catch {
       // ignore

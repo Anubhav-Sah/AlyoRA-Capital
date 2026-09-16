@@ -113,91 +113,107 @@ export default function PricingSection({ onOpenConsultation }: PricingSectionPro
     return item?.card.subtitle || defaultTag;
   };
 
+  const getTierName = (defaultName: string, stageIdx: number) => {
+    const item = pricingCardMap.get(stageIdx);
+    return item?.card.title || defaultName;
+  };
+
+  const getTierCta = (defaultCta: string, stageIdx: number) => {
+    const item = pricingCardMap.get(stageIdx);
+    return item?.card.button_label || defaultCta;
+  };
+
+  const getTierFeatures = (defaultFeatures: Array<{ text: string; inherit: boolean }>, stageIdx: number) => {
+    const item = pricingCardMap.get(stageIdx);
+    if (item?.features && item.features.length > 0) return item.features;
+    return defaultFeatures;
+  };
+
   const tiers = [
     {
       id: "prime",
-      name: "Prime",
+      name: getTierName("Prime", 0),
       tag: getTierTag("Index options calls.", 0),
       amount: currentData.prime,
       step: 0,
       badge: getTierBadge(null, 0),
       colorBar: [6, 6, 6, 6, 6],
-      features: [
+      features: getTierFeatures([
         { text: "Sensex, Nifty, Bank Nifty & Fin Nifty outlook (weekly)", inherit: false },
         { text: "Intraday index options calls", inherit: false },
         { text: "Stock options calls (buyer strategy only)", inherit: false },
         { text: "Real-time entry & exit alerts", inherit: false },
         { text: "Standard email & WhatsApp support", inherit: false },
-      ],
-      ctaText: "Start with Prime",
+      ], 0),
+      ctaText: getTierCta("Start with Prime", 0),
     },
     {
       id: "premium",
-      name: "Premium",
+      name: getTierName("Premium", 1),
       tag: getTierTag("Futures & commodities.", 1),
       amount: currentData.premium,
       step: 1,
       badge: getTierBadge(null, 1),
       colorBar: [6, 6, 6, 10, 10],
-      features: [
+      features: getTierFeatures([
         { text: "Everything in Prime", inherit: true },
         { text: "Index & stock futures calls", inherit: false },
         { text: "Options buyer and seller strategies", inherit: false },
         { text: "Commodity calls (Gold, Silver, Crude & more)", inherit: false },
         { text: "Priority WhatsApp analyst access", inherit: false },
-      ],
-      ctaText: "Move to Premium",
+      ], 1),
+      ctaText: getTierCta("Move to Premium", 1),
     },
     {
       id: "elite",
-      name: "Elite",
+      name: getTierName("Elite", 2),
       tag: getTierTag("IPOs & swing wealth.", 2),
       amount: currentData.elite,
       step: 2,
       badge: getTierBadge("Most chosen", 2),
       colorBar: [6, 6, 10, 14, 14],
-      features: [
+      features: getTierFeatures([
         { text: "Everything in Premium", inherit: true },
         { text: "IPO analysis & application guidance", inherit: false },
         { text: "Swing trading calls (2–15 day)", inherit: false },
         { text: "Monthly equity research report", inherit: false },
         { text: "Long-term stock picks for wealth building", inherit: false },
-      ],
-      ctaText: "Go Elite",
+      ], 2),
+      ctaText: getTierCta("Go Elite", 2),
     },
     {
       id: "apex",
-      name: "Apex",
+      name: getTierName("Apex", 3),
       tag: getTierTag("Primary market & metals.", 3),
       amount: currentData.apex,
       step: 3,
       badge: getTierBadge(null, 3),
       colorBar: [6, 6, 10, 14, 18],
-      features: [
+      features: getTierFeatures([
         { text: "Everything in Elite", inherit: true },
         { text: "FPO & Offer-for-Sale guidance", inherit: false },
         { text: "Full primary market advisory", inherit: false },
         { text: "Gold & silver investment advisory", inherit: false },
         { text: "Weekly research report & recommendations", inherit: false },
-      ],
-      ctaText: "Reach Apex",
+      ], 3),
+      ctaText: getTierCta("Reach Apex", 3),
     },
     {
       id: "pinnacle",
-      name: "Pinnacle",
+      name: getTierName("Pinnacle", 4),
       tag: getTierTag("Complete portfolio.", 4),
       amount: currentData.pinnacle,
       step: 4,
       badge: getTierBadge("Full Portfolio", 4),
       colorBar: [6, 6, 10, 14, 22],
-      features: [
+      features: getTierFeatures([
         { text: "Everything in Apex", inherit: true },
         { text: "Tailor-made investment portfolio", inherit: false },
         { text: "G-Sec, bonds & debenture advisory", inherit: false },
         { text: "Complete gold & silver allocation planning", inherit: false },
         { text: "Dedicated senior research partner 1-on-1", inherit: false },
-      ],
-      ctaText: "Reach the Summit →",
+      ], 4),
+      ctaText: getTierCta("Reach the Summit", 4),
     },
   ];
 
@@ -325,7 +341,7 @@ export default function PricingSection({ onOpenConsultation }: PricingSectionPro
                     : "bg-[#0D1F3C] text-white"
                 }`}
               >
-                {tier.ctaText} →
+                {tier.ctaText.endsWith("→") ? tier.ctaText : `${tier.ctaText} →`}
               </button>
             </div>
           ))}
