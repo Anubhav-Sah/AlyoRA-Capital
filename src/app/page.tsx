@@ -29,14 +29,15 @@ export default function HomePage() {
       <main className="flex-grow">
         <div className="max-w-7xl mx-auto my-0 sm:my-6 sm:px-4 lg:px-8">
           <div className="bg-white sm:rounded-2xl sm:shadow-xl sm:border sm:border-gray-200/80 overflow-hidden">
-            {/* Top Brand Banner Image as requested */}
-            <div className="w-full bg-white border-b border-gray-200 py-3 px-4 sm:py-5 sm:px-8 flex items-center justify-center">
-              <div className="relative w-full max-w-lg sm:max-w-xl md:max-w-2xl h-16 sm:h-24 md:h-28">
+            {/* Top Brand Banner Image */}
+            <div className="w-full bg-white border-b border-gray-200 py-3 px-4 sm:py-5 sm:px-8 flex items-center justify-center min-h-[72px] sm:min-h-[96px]">
+              <div className="relative w-full max-w-md sm:max-w-xl md:max-w-2xl h-14 sm:h-20 md:h-24">
                 <Image
                   src="/logo-horizontal.png"
                   alt="AlyoRA Capital Research — Insights | Strategy | Growth"
                   fill
-                  className="object-contain scale-[1.15] sm:scale-[2]"
+                  sizes="(max-width: 640px) 360px, (max-width: 768px) 560px, 672px"
+                  className="object-contain"
                   priority
                 />
               </div>
