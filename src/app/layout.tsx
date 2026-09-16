@@ -73,6 +73,9 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  verification: {
+    google: "google5fdb0541c1e25c87",
+  },
   icons: {
     icon: [
       { url: "/favicon.ico" },
