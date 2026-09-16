@@ -6,7 +6,7 @@ import {
   DollarSign, Save, RefreshCw, CheckCircle2, AlertCircle,
   Eye, Plus, Trash2, ChevronDown, ChevronUp, Star
 } from "lucide-react";
-import { getPageCards, type PageCard } from "@/lib/content-client";
+import { getPageCards, getSiteContent, type PageCard } from "@/lib/content-client";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -115,10 +115,10 @@ const DEFAULT_TIERS: TierAdminItem[] = [
 const DEFAULT_STANDALONE: StandaloneAdminItem[] = [
   {
     title: "Financial Planning",
-    price: "Rs.1,999 / slot",
+    price: "₹1,999 / slot",
     description: "Goal-based planning for retirement, tax efficiency and wealth creation.",
     badge: "",
-    buttonLabel: "Book Slot",
+    buttonLabel: "Book Slot →",
     visible: true,
   },
   {
@@ -126,7 +126,7 @@ const DEFAULT_STANDALONE: StandaloneAdminItem[] = [
     price: "Free",
     description: "Curated mutual fund and SIP guidance across equity and debt categories.",
     badge: "Free",
-    buttonLabel: "Get Started",
+    buttonLabel: "Get Started →",
     visible: true,
   },
 ];
@@ -140,44 +140,41 @@ const PERIODS: { key: Period; label: string }[] = [
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function mapDbCardToTier(dbCard: PageCard, idx: number): TierAdminItem {
-  const extra = (dbCard.extra_data || {}) as Record<string, unknown>;
-  const rawPrices = extra.prices as Record<string, number> | undefined;
-  const prices: Record<Period, number> = rawPrices
-    ? {
-        monthly: rawPrices.monthly ?? DEFAULT_TIERS[idx]?.prices.monthly ?? 0,
-        quarterly: rawPrices.quarterly ?? DEFAULT_TIERS[idx]?.prices.quarterly ?? 0,
-        halfyearly: rawPrices.halfyearly ?? DEFAULT_TIERS[idx]?.prices.halfyearly ?? 0,
-        yearly: rawPrices.yearly ?? DEFAULT_TIERS[idx]?.prices.yearly ?? 0,
-      }
-    : DEFAULT_TIERS[idx]?.prices ?? { monthly: 0, quarterly: 0, halfyearly: 0, yearly: 0 };
-
-  const rawFeatures = extra.features as Array<{ text: string; inherit: boolean }> | undefined;
-  const features: TierFeature[] = Array.isArray(rawFeatures)
-    ? rawFeatures.map((f) => ({ text: f.text || "", inherit: !!f.inherit }))
-    : DEFAULT_TIERS[idx]?.features || [];
+function mapDbCardToTier(c: PageCard, defaultIdx: number): TierAdminItem {
+  const def = DEFAULT_TIERS[defaultIdx] || DEFAULT_TIERS[0];
+  const extra = (c.extra_data || {}) as Record<string, unknown>;
+  const prices = (extra.prices || def.prices) as Record<Period, number>;
+  const features = Array.isArray(extra.features) ? (extra.features as TierFeature[]) : def.features;
 
   return {
-    id: dbCard.id,
-    name: dbCard.title || DEFAULT_TIERS[idx]?.name || `Tier ${idx + 1}`,
-    tag: dbCard.subtitle || DEFAULT_TIERS[idx]?.tag || "",
-    badge: dbCard.badge || "",
-    ctaText: dbCard.button_label || DEFAULT_TIERS[idx]?.ctaText || "Get Started",
+    id: c.id,
+    name: c.title || def.name,
+    tag: c.subtitle || def.tag,
+    badge: c.badge || (typeof extra.offer === "string" ? extra.offer : def.badge),
+    ctaText: c.button_label || def.ctaText,
     features,
-    prices,
+    prices: {
+      monthly: prices.monthly ?? def.prices.monthly,
+      quarterly: prices.quarterly ?? def.prices.quarterly,
+      halfyearly: prices.halfyearly ?? def.prices.halfyearly,
+      yearly: prices.yearly ?? def.prices.yearly,
+    },
   };
 }
 
-function mapDbCardToStandalone(dbCard: PageCard, idx: number): StandaloneAdminItem {
-  const extra = (dbCard.extra_data || {}) as Record<string, unknown>;
+function mapDbCardToStandalone(c: PageCard, defaultIdx: number): StandaloneAdminItem {
+  const def = DEFAULT_STANDALONE[defaultIdx] || DEFAULT_STANDALONE[0];
+  const extra = (c.extra_data || {}) as Record<string, unknown>;
+  const price = c.subtitle || (typeof extra.price === "string" ? extra.price : def.price);
+
   return {
-    id: dbCard.id,
-    title: dbCard.title || `Service ${idx + 1}`,
-    price: dbCard.subtitle || (typeof extra.price === "string" ? extra.price : "Custom"),
-    description: dbCard.description || "",
-    badge: dbCard.badge || "",
-    buttonLabel: dbCard.button_label || "Book Slot",
-    visible: dbCard.visible !== false,
+    id: c.id,
+    title: c.title || def.title,
+    price,
+    description: c.description || def.description,
+    badge: c.badge || (typeof extra.badge === "string" ? extra.badge : def.badge),
+    buttonLabel: c.button_label || def.buttonLabel,
+    visible: c.visible !== false,
   };
 }
 
@@ -186,6 +183,13 @@ function mapDbCardToStandalone(dbCard: PageCard, idx: number): StandaloneAdminIt
 export default function AdminPricingPage() {
   const [tiers, setTiers] = useState<TierAdminItem[]>(DEFAULT_TIERS);
   const [standalone, setStandalone] = useState<StandaloneAdminItem[]>(DEFAULT_STANDALONE);
+  const [noteMain, setNoteMain] = useState(
+    "Retail and individual investor pricing shown above. Family offices & HNI custom quotes available upon request."
+  );
+  const [noteSub, setNoteSub] = useState(
+    "Investments carry risk. Calls & reports shared under any plan are for informational purposes."
+  );
+
   const [deletedStandaloneIds, setDeletedStandaloneIds] = useState<string[]>([]);
   const [expandedTier, setExpandedTier] = useState<number | null>(0);
   const [expandedStandalone, setExpandedStandalone] = useState<number | null>(null);
@@ -198,7 +202,10 @@ export default function AdminPricingPage() {
   useEffect(() => {
     async function load() {
       try {
-        const cardRows = await getPageCards("pricing");
+        const [cardRows, contentRows] = await Promise.all([
+          getPageCards("pricing"),
+          getSiteContent("pricing"),
+        ]);
         const tierCards = cardRows.filter((c) => c.section === "tiers");
         const standaloneCards = cardRows.filter((c) => c.section === "standalone");
 
@@ -208,6 +215,14 @@ export default function AdminPricingPage() {
         if (standaloneCards.length > 0) {
           setStandalone(standaloneCards.map((c, i) => mapDbCardToStandalone(c, i)));
         }
+
+        contentRows.forEach((r) => {
+          if (!r.value) return;
+          if (r.section === "footnote") {
+            if (r.key === "note_main") setNoteMain(r.value);
+            if (r.key === "note_sub") setNoteSub(r.value);
+          }
+        });
       } catch (err) {
         console.error("Failed to load pricing data:", err);
       } finally {
@@ -362,6 +377,18 @@ export default function AdminPricingPage() {
       });
       const json = await res.json();
       if (!res.ok || json.error) throw new Error(json.error || "Failed to save pricing.");
+
+      // Save footnote text to site_content
+      const footnoteItems = [
+        { page: "pricing", section: "footnote", key: "note_main", value: noteMain },
+        { page: "pricing", section: "footnote", key: "note_sub", value: noteSub },
+      ];
+
+      await fetch("/api/content/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items: footnoteItems }),
+      });
 
       setSavedSuccess(true);
       setTimeout(() => setSavedSuccess(false), 5000);
@@ -779,6 +806,51 @@ export default function AdminPricingPage() {
               No standalone services. Click &ldquo;+ Add Service&rdquo; to create one.
             </div>
           )}
+        </div>
+      </div>
+
+      {/* ─── Section 3: Footnote Notes & Disclaimers ──────────────────────── */}
+      <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm space-y-4">
+        <div className="flex items-center gap-2 pb-3 border-b border-gray-100">
+          <div className="w-7 h-7 rounded-lg bg-[#0D1F3C] text-white flex items-center justify-center font-bold text-xs">
+            3
+          </div>
+          <div>
+            <h2 className="text-sm font-bold text-gray-900">3. Pricing Footnote &amp; Risk Disclaimer</h2>
+            <p className="text-[11px] text-gray-400">Edit the note and disclaimer rendered at the bottom of the live pricing table.</p>
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-xs font-bold text-gray-700 mb-1">
+            Main Pricing Note Line
+          </label>
+          <textarea
+            rows={2}
+            value={noteMain}
+            onChange={(e) => {
+              setNoteMain(e.target.value);
+              setSavedSuccess(false);
+            }}
+            placeholder="Retail and individual investor pricing shown above..."
+            className="w-full px-3 py-2.5 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:bg-white leading-relaxed font-medium"
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-bold text-gray-700 mb-1">
+            Risk &amp; Information Disclaimer Line
+          </label>
+          <input
+            type="text"
+            value={noteSub}
+            onChange={(e) => {
+              setNoteSub(e.target.value);
+              setSavedSuccess(false);
+            }}
+            placeholder="Investments carry risk..."
+            className="w-full px-3 py-2.5 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:bg-white font-medium"
+          />
         </div>
       </div>
 

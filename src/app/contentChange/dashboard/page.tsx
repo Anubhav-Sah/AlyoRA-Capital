@@ -14,10 +14,9 @@ const pages = [
   { key: "reports",             label: "Reports & PDF Uploads",href: "/contentChange/dashboard/reports",             icon: FileText,      color: "#C8963E", desc: "Published reports, PDF uploads for client downloads, headings, subscriber status" },
   { key: "pricing",             label: "Pricing & Standalone",href: "/contentChange/dashboard/pricing",             icon: DollarSign,    color: "#27A84E", desc: "5-stage pricing tiers, special offers, standalone cards (+ Add Financial/Mutual Fund cards)" },
   { key: "about",               label: "About Us",            href: "/contentChange/dashboard/about",               icon: Info,          color: "#0D1F3C", desc: "Vision, Mission, Core Principles, Story, and Team/Values cards" },
-  { key: "navbar",              label: "Footer & Regulatory", href: "/contentChange/dashboard/navbar",              icon: Navigation,    color: "#C8963E", desc: "AMFI Reg. No., SEBI Reg. No., City/Location, Social Media links, Disclaimers" },
-  { key: "contact",             label: "Contact & Desk Info", href: "/contentChange/dashboard/contact",             icon: Phone,         color: "#1E7A3A", desc: "Email addresses, Phone numbers, WhatsApp link, Support desk hours" },
-  { key: "inquiries",           label: "Client Inquiries Inbox",href: "/contentChange/dashboard/inquiries",          icon: MessageSquare, color: "#25D366", desc: "View all messages submitted by visitors on the website with 1-click WhatsApp reply" },
   { key: "business-consulting", label: "Business Consulting", href: "/contentChange/dashboard/business-consulting", icon: Briefcase,     color: "#0D1F3C", desc: "Consulting packages, engagement process steps, case studies" },
+  { key: "contact",             label: "Contact & Social",    href: "/contentChange/dashboard/contact",             icon: Phone,         color: "#1E7A3A", desc: "Email addresses, Phone numbers, WhatsApp link, Support desk hours" },
+  { key: "footer",              label: "Footer & Compliance", href: "/contentChange/dashboard/footer",              icon: Navigation,    color: "#C8963E", desc: "AMFI Reg. No., SEBI Reg. No., City/Location, Social Media links, Disclaimers" },
 ];
 
 interface PingStatus {

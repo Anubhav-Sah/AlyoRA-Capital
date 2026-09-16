@@ -62,7 +62,7 @@ import { usePageData } from "@/lib/usePageData";
 
 export default function PricingSection({ onOpenConsultation }: PricingSectionProps) {
   const [period, setPeriod] = useState<Period>("monthly");
-  const { cards } = usePageData("pricing");
+  const { cards, getContent } = usePageData("pricing");
 
   // Read pricing overrides from DB if present (section=tiers)
   const tierCards = (cards || []).filter((c) => c.section === "tiers" || !c.section);
@@ -442,10 +442,19 @@ export default function PricingSection({ onOpenConsultation }: PricingSectionPro
         {/* Pricing Footnote Notes */}
         <div className="bg-[#112540] text-white p-4 sm:p-6 rounded-xl border border-white/10 text-[11px] sm:text-xs leading-relaxed space-y-2">
           <p>
-            <strong className="text-[#C8963E] font-semibold">A note on pricing.</strong> Retail and individual investor pricing shown above. Family offices & HNI custom quotes available upon request.
+            <strong className="text-[#C8963E] font-semibold">A note on pricing.</strong>{" "}
+            {getContent(
+              "footnote",
+              "note_main",
+              "Retail and individual investor pricing shown above. Family offices & HNI custom quotes available upon request."
+            )}
           </p>
           <p className="text-white/60 text-[10px]">
-            Investments carry risk. Calls & reports shared under any plan are for informational purposes.
+            {getContent(
+              "footnote",
+              "note_sub",
+              "Investments carry risk. Calls & reports shared under any plan are for informational purposes."
+            )}
           </p>
         </div>
       </div>

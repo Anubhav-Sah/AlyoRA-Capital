@@ -16,14 +16,13 @@ import type { UserProfile } from "@/lib/content-client";
 const navItems = [
   { label: "Overview",         href: "/contentChange/dashboard",                   icon: LayoutDashboard },
   { label: "Contact & Social", href: "/contentChange/dashboard/contact",           icon: Phone },
-  { label: "Inquiries Inbox",  href: "/contentChange/dashboard/inquiries",         icon: Mail },
   { label: "Home",             href: "/contentChange/dashboard/home",              icon: Home },
   { label: "About",            href: "/contentChange/dashboard/about",             icon: Info },
   { label: "Services",         href: "/contentChange/dashboard/services",          icon: Wrench },
   { label: "Reports",          href: "/contentChange/dashboard/reports",           icon: FileText },
   { label: "Business Consulting", href: "/contentChange/dashboard/business-consulting", icon: Briefcase },
   { label: "Pricing",          href: "/contentChange/dashboard/pricing",           icon: DollarSign },
-  { label: "Navbar & Footer",  href: "/contentChange/dashboard/navbar",            icon: Navigation },
+  { label: "Footer",           href: "/contentChange/dashboard/footer",            icon: Navigation },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {

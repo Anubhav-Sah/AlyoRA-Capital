@@ -55,6 +55,12 @@ export async function POST(request: Request) {
       revalidatePath("/pricing");
       revalidatePath("/reports");
       revalidatePath("/services");
+      revalidatePath("/services/research-analysis");
+      revalidatePath("/services/investment-advisory");
+      revalidatePath("/services/mutual-funds");
+      revalidatePath("/services/sub-broker");
+      revalidatePath("/services/financial-planning");
+      revalidatePath("/services/business-consulting");
       revalidatePath("/business-consulting");
     } catch {
       // ignore

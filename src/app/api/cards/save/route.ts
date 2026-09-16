@@ -127,6 +127,12 @@ export async function POST(request: Request) {
     // Revalidate relevant pages
     try {
       revalidatePath("/services");
+      revalidatePath("/services/research-analysis");
+      revalidatePath("/services/investment-advisory");
+      revalidatePath("/services/mutual-funds");
+      revalidatePath("/services/sub-broker");
+      revalidatePath("/services/financial-planning");
+      revalidatePath("/services/business-consulting");
       revalidatePath("/reports");
       revalidatePath("/pricing");
       revalidatePath("/business-consulting");
