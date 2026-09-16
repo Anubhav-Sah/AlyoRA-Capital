@@ -486,6 +486,28 @@ export default function ServiceSlugPage() {
         ? (extra.deliverables as string[])
         : null;
 
+      const cardFullDesc = Array.isArray(extra.fullDesc)
+        ? (extra.fullDesc as string[])
+        : typeof extra.fullDesc === "string"
+        ? (extra.fullDesc as string).split("\n\n").map((s) => s.trim()).filter(Boolean)
+        : null;
+
+      const cardIdealFor = Array.isArray(extra.idealFor)
+        ? (extra.idealFor as string[])
+        : typeof extra.idealFor === "string"
+        ? (extra.idealFor as string).split("\n").map((s) => s.trim()).filter(Boolean)
+        : null;
+
+      const cardMethodology = Array.isArray(extra.methodology)
+        ? (extra.methodology as string[])
+        : typeof extra.methodology === "string"
+        ? (extra.methodology as string).split("\n").map((s) => s.trim()).filter(Boolean)
+        : null;
+
+      const cardFaqs = Array.isArray(extra.faqs)
+        ? (extra.faqs as Array<{ q: string; a: string }>)
+        : null;
+
       if (service) {
         service = {
           ...service,
@@ -494,9 +516,14 @@ export default function ServiceSlugPage() {
           shortDesc: matchedCard.subtitle || matchedCard.description || service.shortDesc,
           color: typeof extra.color === "string" ? extra.color : service.color,
           deliverables: cardDeliverables && cardDeliverables.length > 0 ? cardDeliverables : service.deliverables,
-          fullDesc: matchedCard.description
+          fullDesc: cardFullDesc && cardFullDesc.length > 0
+            ? cardFullDesc
+            : matchedCard.description
             ? [matchedCard.description, ...service.fullDesc.slice(1)]
             : service.fullDesc,
+          idealFor: cardIdealFor && cardIdealFor.length > 0 ? cardIdealFor : service.idealFor,
+          methodology: cardMethodology && cardMethodology.length > 0 ? cardMethodology : service.methodology,
+          faqs: cardFaqs && cardFaqs.length > 0 ? cardFaqs : service.faqs,
         };
       } else {
         service = {
@@ -506,10 +533,12 @@ export default function ServiceSlugPage() {
           shortDesc: matchedCard.description || matchedCard.subtitle,
           icon: TrendingUp,
           color: typeof extra.color === "string" ? extra.color : "#1E7A3A",
-          fullDesc: [
-            matchedCard.description || "Comprehensive financial research and advisory tailored to your strategic goals.",
-            "Our research division delivers objective, data-backed insights with zero broker bias.",
-          ],
+          fullDesc: cardFullDesc && cardFullDesc.length > 0
+            ? cardFullDesc
+            : [
+                matchedCard.description || "Comprehensive financial research and advisory tailored to your strategic goals.",
+                "Our research division delivers objective, data-backed insights with zero broker bias.",
+              ],
           deliverables: cardDeliverables && cardDeliverables.length > 0
             ? cardDeliverables
             : [
@@ -517,24 +546,28 @@ export default function ServiceSlugPage() {
                 "Detailed risk-reward analysis and entry-exit zones",
                 "Regular performance and portfolio tracking",
               ],
-          idealFor: Array.isArray(extra.idealFor)
-            ? (extra.idealFor as string[])
+          idealFor: cardIdealFor && cardIdealFor.length > 0
+            ? cardIdealFor
             : ["Retail Investors", "High Net Worth Individuals", "Active Market Participants"],
-          methodology: [
-            "Quantitative and fundamental research models",
-            "Institutional risk management principles",
-            "Continuous market monitoring and timely updates",
-          ],
-          faqs: [
-            {
-              q: `What is included in ${matchedCard.title}?`,
-              a: "You receive our full research framework, documented trade logic, and direct support.",
-            },
-            {
-              q: "How do I get started?",
-              a: "Click 'Book Free Consultation' or contact our research desk to discuss your requirements.",
-            },
-          ],
+          methodology: cardMethodology && cardMethodology.length > 0
+            ? cardMethodology
+            : [
+                "Quantitative and fundamental research models",
+                "Institutional risk management principles",
+                "Continuous market monitoring and timely updates",
+              ],
+          faqs: cardFaqs && cardFaqs.length > 0
+            ? cardFaqs
+            : [
+                {
+                  q: `What is included in ${matchedCard.title}?`,
+                  a: "You receive our full research framework, documented trade logic, and direct support.",
+                },
+                {
+                  q: "How do I get started?",
+                  a: "Click 'Book Free Consultation' or contact our research desk to discuss your requirements.",
+                },
+              ],
           ctaText: "Book Free Consultation",
         };
       }

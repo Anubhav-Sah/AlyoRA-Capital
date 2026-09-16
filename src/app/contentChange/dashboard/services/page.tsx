@@ -18,6 +18,9 @@ interface ServiceCardItem {
   badge: string;
   color: string;
   features: string;
+  idealFor?: string;
+  methodology?: string;
+  fullDesc?: string;
   visible: boolean;
 }
 
@@ -30,6 +33,9 @@ const DEFAULT_SERVICES: ServiceCardItem[] = [
     badge: "Flagship",
     color: "#1E7A3A",
     features: "Weekly Nifty 50 & Bank Nifty Technical Outlook\nQuarterly Earnings Deep-Dives & Valuation Models\nSmall-cap & Mid-cap Multi-bagger Discovery\nSectoral Rotation & Macro Insight Bulletins",
+    idealFor: "Active stock market investors & swing traders\nPortfolio managers seeking independent validation\nHigh-net-worth investors building long-term portfolios\nProfessionals who want actionable weekly market views",
+    methodology: "5-year DCF & Earnings Momentum Valuation\nTechnical Analysis — Elliot Wave, Fibonacci, and Volume Profile\nFII / DII Institutional Flow Analysis\nOptions Chain Sentiment & Put-Call Ratio Tracking",
+    fullDesc: "Our Research Analysis division delivers institutional-grade reports on Indian equities, macroeconomic trends, and high-growth sectors. We combine rigorous DCF valuation, earnings momentum modeling, and technical entry points to give you a complete picture.\n\nEvery report is built from first-principles analysis — no broker-influenced recommendations, no third-party data reselling. You receive our actual proprietary models, not summaries of someone else's research.",
     visible: true,
   },
   {
@@ -40,6 +46,9 @@ const DEFAULT_SERVICES: ServiceCardItem[] = [
     badge: "Advisory",
     color: "#C8963E",
     features: "Custom Portfolio Construction & Rebalancing\nReal-time Risk-adjusted Position Sizing\nDirect Access to Lead Analyst via WhatsApp Desk\nMonthly Performance & Drawdown Audits",
+    idealFor: "HNI investors with ₹25L+ in market capital\nBusy professionals who lack time for active management\nInvestors who want a structured second opinion\nWealth builders planning for retirement corpus",
+    methodology: "Risk Profiling & Financial Goal Mapping\nCore-Satellite Portfolio Construction\nFactor-based Stock Selection (Quality + Value + Momentum)\nTrailing Stop-loss & Risk-Reward Discipline",
+    fullDesc: "Bespoke portfolio management and investment advisory tailored specifically to your financial risk appetite, capital allocation goals, and time horizon. Receive direct buy/hold/sell recommendations from our senior analysts.\n\nUnlike generic robo-advisors, our advisory begins with a structured risk assessment and goal-mapping session. Every recommendation is backed by a documented rationale tied to your specific financial situation.",
     visible: true,
   },
   {
@@ -50,6 +59,9 @@ const DEFAULT_SERVICES: ServiceCardItem[] = [
     badge: "Wealth",
     color: "#1E7A3A",
     features: "Rolling Return & Alpha Benchmark Screening\nPortfolio Overlap Elimination Analysis\nGoal-mapped SIP Allocation (Retirement, Education)\nDirect Mutual Fund Conversion Guidance",
+    idealFor: "Long-term wealth accumulators running SIPs\nInvestors who want equity exposure with managed risk\nTax-savers looking for ELSS-efficient portfolios\nRetirees seeking hybrid debt-equity income strategies",
+    methodology: "10-Year Rolling Return Consistency Screening\nSharpe Ratio & Sortino Ratio Risk-Adjusted Performance\nFund Manager Track Record & AUM Stability Analysis\nExpense Ratio Benchmarking (Direct vs Regular)",
+    fullDesc: "Avoid fund overlap and high-expense ratios. We curate optimal mutual fund portfolios across Large-Cap, Flexi-Cap, Mid-Cap, Small-Cap, and Debt schemes to maximise risk-adjusted CAGR returns.\n\nOur fund selection process screens across 1,200+ schemes using rolling return consistency, manager track record, alpha generation, and expense ratio benchmarking. We don't recommend funds based on AUM or distributor commissions.",
     visible: true,
   },
   {
@@ -60,6 +72,9 @@ const DEFAULT_SERVICES: ServiceCardItem[] = [
     badge: "Partner",
     color: "#0D1F3C",
     features: "Up to 60% Lifetime Revenue Share On Subscriptions\nCo-branded Research Bulletins & Client Webinars\nDedicated Sub-Broker Support Desk & Portal Access\nZero Infrastructure Setup Cost — Turnkey Model",
+    idealFor: "Financial professionals & relationship managers\nRetired bankers and insurance agents\nCA / CFA students looking for practice income\nMotivated individuals with strong financial networks",
+    methodology: "Transparent Commission Structure (No Hidden Deductions)\nMonthly Payout Cycle with Detailed Statements\nClient Retention Tracking & Renewal Incentives\nPerformance Tiers — Bronze, Silver, Gold, Platinum",
+    fullDesc: "AlyoRA Capital Research's Sub-Broker Program empowers financial professionals, retired bankers, CA students, and motivated individuals to build a sustainable income stream by distributing our research subscriptions and advisory services.\n\nYou focus on client relationships and referrals — we provide the backend research, compliance framework, marketing collateral, and a structured commission structure that grows with your network.",
     visible: true,
   },
   {
@@ -70,6 +85,9 @@ const DEFAULT_SERVICES: ServiceCardItem[] = [
     badge: "Planning",
     color: "#1E7A3A",
     features: "Retirement Corpus Projection & FIRE Strategy Roadmap\nTax Optimisation Under New & Old Tax Regimes\nLife & Health Insurance Coverage Adequacy Audit\nGoal-based Asset-Liability Matching",
+    idealFor: "Families planning for multiple financial goals\nSalaried professionals approaching retirement\nBusiness owners seeking structured personal finance\nCouples planning for child education funding",
+    methodology: "Net Worth & Cash-flow Assessment\nGoal Prioritisation Matrix (Urgency vs Impact)\nMonte Carlo Retirement Simulation\nTax-efficient Instrument Selection",
+    fullDesc: "A comprehensive financial roadmap covering emergency funds, insurance adequacy, retirement planning, child education funding, and legal estate structuring under SEBI framework compliance.\n\nFinancial planning is not a one-time event — it is an ongoing discipline. Our approach provides you with a living plan that adapts to life changes, market conditions, and evolving financial goals.",
     visible: true,
   },
   {
@@ -80,6 +98,9 @@ const DEFAULT_SERVICES: ServiceCardItem[] = [
     badge: "Consulting",
     color: "#0D1F3C",
     features: "Financial Planning & Budgeting with Cash-flow Forecasts\nBusiness Strategy & Growth Planning with Milestone Roadmaps\nStartup Advisory & Business Model Validation\nBusiness Health Diagnostics & Cost Leakage Audits",
+    idealFor: "First-time founders launching a new venture\nSmall business owners facing growth challenges\nBusinesses planning expansion into new markets\nOwners wanting a financial second opinion",
+    methodology: "Financial Statement Analysis & Margin Review\nDCF-based Business Valuation\nCompetitor Positioning & Market Sizing\nUnit Economics & Break-even Modeling",
+    fullDesc: "Partner with AlyoRA Capital Research to build, run, and scale your business with confidence — backed by institutional-grade financial research, structured strategy frameworks, and hands-on planning support.\n\nFrom first-time founders to established businesses facing growth roadblocks, we help you turn financial data into clear, actionable decisions. Our consulting is practical — not theoretical frameworks that gather dust.",
     visible: true,
   },
 ];
@@ -165,7 +186,6 @@ export default function SimpleAdminServicesPage() {
         // Merge cards
         if (cardRows && cardRows.length > 0) {
           const mappedCards: ServiceCardItem[] = DEFAULT_SERVICES.map((defCard, idx) => {
-            // Find existing DB card by matching slug or title or position
             const found = cardRows.find((dbCard) => {
               const extra = (dbCard.extra_data || {}) as Record<string, unknown>;
               const dbSlug =
@@ -186,6 +206,24 @@ export default function SimpleAdminServicesPage() {
               ? extra.features
               : defCard.features;
 
+            const idealList = Array.isArray(extra.idealFor)
+              ? (extra.idealFor as string[]).join("\n")
+              : typeof extra.idealFor === "string"
+              ? extra.idealFor
+              : defCard.idealFor || "";
+
+            const methodList = Array.isArray(extra.methodology)
+              ? (extra.methodology as string[]).join("\n")
+              : typeof extra.methodology === "string"
+              ? extra.methodology
+              : defCard.methodology || "";
+
+            const descFull = Array.isArray(extra.fullDesc)
+              ? (extra.fullDesc as string[]).join("\n\n")
+              : typeof extra.fullDesc === "string"
+              ? extra.fullDesc
+              : defCard.fullDesc || "";
+
             const cardColor = typeof extra.color === "string" ? extra.color : defCard.color;
             const customSlug = (typeof extra.slug === "string" && extra.slug) || defCard.slug;
 
@@ -198,6 +236,9 @@ export default function SimpleAdminServicesPage() {
               badge: found.badge || defCard.badge,
               color: cardColor,
               features: featList,
+              idealFor: idealList,
+              methodology: methodList,
+              fullDesc: descFull,
               visible: found.visible !== false,
             };
           });
@@ -263,6 +304,9 @@ export default function SimpleAdminServicesPage() {
           color: sc.color,
           slug: sc.slug,
           features: sc.features.split("\n").map((s) => s.trim()).filter(Boolean),
+          idealFor: (sc.idealFor || "").split("\n").map((s) => s.trim()).filter(Boolean),
+          methodology: (sc.methodology || "").split("\n").map((s) => s.trim()).filter(Boolean),
+          fullDesc: (sc.fullDesc || "").split("\n\n").map((s) => s.trim()).filter(Boolean),
         },
       }));
 
@@ -666,6 +710,57 @@ export default function SimpleAdminServicesPage() {
                         onChange={(e) => updateCard(index, "features", e.target.value)}
                         placeholder="Weekly Nifty 50 & Bank Nifty Technical Outlook&#10;Quarterly Earnings Deep-Dives&#10;Multi-bagger Discovery"
                         className="w-full px-3 py-2 text-xs font-mono bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1E7A3A]/30 leading-relaxed"
+                      />
+                    </div>
+
+                    {/* Ideal For (Audience List) */}
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="block text-xs font-bold text-gray-700">
+                          Target Audience / &quot;Ideal For&quot; (1 per line)
+                        </label>
+                        <span className="text-[10px] text-gray-400">Shown in sidebar &amp; hero stats</span>
+                      </div>
+                      <textarea
+                        rows={3}
+                        value={card.idealFor || ""}
+                        onChange={(e) => updateCard(index, "idealFor", e.target.value)}
+                        placeholder="Active stock market investors &amp; swing traders&#10;Portfolio managers seeking independent validation&#10;HNI investors"
+                        className="w-full px-3 py-2 text-xs bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1E7A3A]/30 leading-relaxed"
+                      />
+                    </div>
+
+                    {/* Methodology Steps */}
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="block text-xs font-bold text-gray-700">
+                          Our Methodology Steps (1 per line)
+                        </label>
+                        <span className="text-[10px] text-gray-400">Shown in numbered process block</span>
+                      </div>
+                      <textarea
+                        rows={3}
+                        value={card.methodology || ""}
+                        onChange={(e) => updateCard(index, "methodology", e.target.value)}
+                        placeholder="5-year DCF &amp; Earnings Momentum Valuation&#10;Technical Analysis — Elliot Wave &amp; Volume Profile&#10;FII/DII Institutional Flow Analysis"
+                        className="w-full px-3 py-2 text-xs bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1E7A3A]/30 leading-relaxed"
+                      />
+                    </div>
+
+                    {/* Deep Overview Paragraphs */}
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="block text-xs font-bold text-gray-700">
+                          Service Page Long Paragraphs (Separate paragraphs with an empty line)
+                        </label>
+                        <span className="text-[10px] text-gray-400">Shown in &quot;About This Service&quot; section</span>
+                      </div>
+                      <textarea
+                        rows={4}
+                        value={card.fullDesc || ""}
+                        onChange={(e) => updateCard(index, "fullDesc", e.target.value)}
+                        placeholder="Paragraph 1 text...&#10;&#10;Paragraph 2 text..."
+                        className="w-full px-3 py-2 text-xs bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1E7A3A]/30 leading-relaxed"
                       />
                     </div>
 
