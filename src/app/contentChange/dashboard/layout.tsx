@@ -15,6 +15,7 @@ import type { UserProfile } from "@/lib/content-client";
 
 const navItems = [
   { label: "Overview",         href: "/contentChange/dashboard",                   icon: LayoutDashboard },
+  { label: "Inquiries Inbox",  href: "/contentChange/dashboard/inquiries",         icon: Mail },
   { label: "Contact & Social", href: "/contentChange/dashboard/contact",           icon: Phone },
   { label: "Home",             href: "/contentChange/dashboard/home",              icon: Home },
   { label: "About",            href: "/contentChange/dashboard/about",             icon: Info },

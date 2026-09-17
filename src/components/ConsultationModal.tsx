@@ -26,7 +26,22 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
     setLoading(true);
 
     try {
-      // Persist consultation booking to InsForge backend database table
+      // 1. Post to /api/contact so lead shows up in Admin Inquiries Inbox & sends WhatsApp link
+      await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          phone: phone.trim(),
+          subject: `Consultation: ${service}`,
+          message: message
+            ? `[Consultation Booking - ${service}] ${message}`
+            : `Booked a 30-minute advisory consultation call for ${service}.`,
+        }),
+      });
+
+      // 2. Also record in consultation_bookings table
       await insforge.database
         .from("consultation_bookings")
         .insert([
@@ -40,7 +55,7 @@ export default function ConsultationModal({ isOpen, onClose }: ConsultationModal
           },
         ]);
     } catch (err) {
-      console.warn("InsForge submission fallback notice:", err);
+      console.warn("Consultation booking submission notice:", err);
     } finally {
       setLoading(false);
       setSubmitted(true);
