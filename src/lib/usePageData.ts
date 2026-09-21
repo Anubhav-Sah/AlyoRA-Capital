@@ -46,6 +46,24 @@ export function usePageData(pageKey: string) {
 
   useEffect(() => {
     refresh();
+
+    const handleUpdate = () => {
+      refresh();
+    };
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("focus", handleUpdate);
+      document.addEventListener("visibilitychange", handleUpdate);
+      window.addEventListener("alyora_page_data_updated", handleUpdate);
+    }
+
+    return () => {
+      if (typeof window !== "undefined") {
+        window.removeEventListener("focus", handleUpdate);
+        document.removeEventListener("visibilitychange", handleUpdate);
+        window.removeEventListener("alyora_page_data_updated", handleUpdate);
+      }
+    };
   }, [refresh]);
 
   const getContent = useCallback(

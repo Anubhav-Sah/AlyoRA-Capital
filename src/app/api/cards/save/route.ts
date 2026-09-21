@@ -31,14 +31,12 @@ export async function POST(request: Request) {
       const page = card.page || "services";
       const section = card.section || "main-cards";
 
-      // If id is missing, check if card already exists in DB with same page, section, and badge/position
+      // If id is missing, check if card already exists in DB with same page, section, and exact title
       let targetId = card.id && !card.id.startsWith("temp-") && !card.id.startsWith("srv-") ? card.id : null;
 
-      if (!targetId) {
+      if (!targetId && card.title) {
         try {
-          const matchQuery = card.badge
-            ? `${INSFORGE_URL}/api/database/records/page_cards?page=eq.${page}&section=eq.${section}&badge=eq.${encodeURIComponent(card.badge)}`
-            : `${INSFORGE_URL}/api/database/records/page_cards?page=eq.${page}&section=eq.${section}&position=eq.${i}`;
+          const matchQuery = `${INSFORGE_URL}/api/database/records/page_cards?page=eq.${page}&section=eq.${section}&title=eq.${encodeURIComponent(card.title)}`;
           const checkRes = await fetch(matchQuery, {
             headers: {
               apikey: INSFORGE_ANON_KEY,
@@ -55,6 +53,7 @@ export async function POST(request: Request) {
           // continue
         }
       }
+
 
       if (targetId) {
         // Update existing card

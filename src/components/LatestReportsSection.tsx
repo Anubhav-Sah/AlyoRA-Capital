@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Download, Lock, Search, FileText, CheckCircle, X, Sparkles } from "lucide-react";
+import { Download, Lock, Search, FileText, CheckCircle, X, Sparkles, ChevronDown, ChevronUp } from "lucide-react";
 
 export interface ReportItem {
   id: string;
@@ -16,105 +16,6 @@ export interface ReportItem {
   pdfUrl?: string;
 }
 
-const mockReports: ReportItem[] = [
-  {
-    id: "rep-1",
-    title: "Nifty 50 Technical Outlook — June 2026",
-    category: "Equity",
-    date: "04 Jun 2026",
-    tagClass: "bg-[#EBF2FA] text-[#185FA5]",
-    isLocked: false,
-    pages: 14,
-    summary:
-      "Comprehensive chart pattern analysis, support/resistance levels, and options chain sentiment for Nifty 50 ahead of RBI Policy meeting.",
-    highlights: [
-      "Key support zone established at 23,200 level",
-      "Bullish continuation pattern on Weekly timeframe",
-      "FII / DII institutional flow breakdown",
-    ],
-  },
-  {
-    id: "rep-2",
-    title: "Top SIP Picks for FY 2026-27",
-    category: "Mutual Funds",
-    date: "01 Jun 2026",
-    tagClass: "bg-[#E8F5EC] text-[#1E7A3A]",
-    isLocked: false,
-    pages: 22,
-    summary:
-      "Analyst-curated list of top performing Large-Cap, Flexi-Cap, and Hybrid mutual fund schemes with rolling return analysis.",
-    highlights: [
-      "10-year rolling return benchmark evaluation",
-      "Expense ratio optimization & direct plan comparison",
-      "Optimal asset allocation mix by age group",
-    ],
-  },
-  {
-    id: "rep-3",
-    title: "IT Sector — Valuation & Rebound Analysis",
-    category: "Deep Dive",
-    date: "28 May 2026",
-    tagClass: "bg-[#FFF3E0] text-[#854F0B]",
-    isLocked: true,
-    pages: 38,
-    summary:
-      "Institutional deep dive into Tier-1 IT services giants, Cloud migration deal wins, and margin expansion trajectories for FY27.",
-    highlights: [
-      "DCF valuation models for top 5 IT exporters",
-      "US/Europe client discretionary spend outlook",
-      "Generative AI deal monetization timelines",
-    ],
-  },
-  {
-    id: "rep-4",
-    title: "Banking & Financials Credit Growth Report",
-    category: "Equity",
-    date: "20 May 2026",
-    tagClass: "bg-[#EBF2FA] text-[#185FA5]",
-    isLocked: false,
-    pages: 18,
-    summary:
-      "NIM margin outlook, retail NPA trends, and deposit growth dynamics across PSU and Private sector banks.",
-    highlights: [
-      "Credit-to-deposit ratio risk assessment",
-      "Top 3 private bank top picks",
-      "NBFCS auto-finance recovery trends",
-    ],
-  },
-  {
-    id: "rep-5",
-    title: "Global Macro Interest Rates & Inflation Outlook",
-    category: "Macro",
-    date: "12 May 2026",
-    tagClass: "bg-[#F3E8FF] text-[#6B21A8]",
-    isLocked: true,
-    pages: 26,
-    summary:
-      "Federal Reserve rate cut projections, crude oil price volatility impact on INR exchange rate and bond yield curves.",
-    highlights: [
-      "10-Year Indian Government Bond yield forecast",
-      "Impact of US rate cuts on Indian FII inflows",
-      "Commodity price index sensitivity matrix",
-    ],
-  },
-  {
-    id: "rep-6",
-    title: "Small Cap Multi-Bagger Screening Q1 2026",
-    category: "Deep Dive",
-    date: "05 May 2026",
-    tagClass: "bg-[#FFF3E0] text-[#854F0B]",
-    isLocked: true,
-    pages: 42,
-    summary:
-      "Proprietary quantitative screen identifying high ROE, low debt small-caps poised for earnings acceleration.",
-    highlights: [
-      "12 screened small-cap stocks with >20% ROE",
-      "Promoter holding increase analysis",
-      "Clean balance sheet & order book verification",
-    ],
-  },
-];
-
 interface LatestReportsSectionProps {
   onOpenPricing: () => void;
 }
@@ -127,7 +28,7 @@ export default function LatestReportsSection({ onOpenPricing }: LatestReportsSec
   const [viewingReport, setViewingReport] = useState<ReportItem | null>(null);
   const [downloadSuccess, setDownloadSuccess] = useState<string | null>(null);
 
-  const { cards, pdfs, getContent } = usePageData("reports");
+  const { cards, pdfs, getContent, loading } = usePageData("reports");
 
   const sectionTagline = getContent("main", "tagline", "Our Research");
   const sectionHeading = getContent("main", "heading", "Latest Published Reports");
@@ -137,48 +38,46 @@ export default function LatestReportsSection({ onOpenPricing }: LatestReportsSec
     "Actionable research across equities, mutual funds, and macro insights."
   );
 
-  const displayReports: ReportItem[] =
-    cards && cards.length > 0
-      ? cards
-          .filter((c) => c.visible)
-          .map((c, i) => {
-            const extra = (c.extra_data || {}) as Record<string, unknown>;
-            const category = (c.badge ||
-              (extra.category as string) ||
-              "Equity") as ReportItem["category"];
-            const date = (extra.date as string) || "Recent";
-            const tagClass =
-              (extra.tagClass as string) ||
-              (category === "Mutual Funds"
-                ? "bg-[#E8F5EC] text-[#1E7A3A]"
-                : category === "Deep Dive"
-                ? "bg-[#FFF3E0] text-[#854F0B]"
-                : category === "Macro"
-                ? "bg-[#F3E8FF] text-[#6B21A8]"
-                : "bg-[#EBF2FA] text-[#185FA5]");
-            const isLocked = Boolean(extra.isLocked);
-            const pages = typeof extra.pages === "number" ? extra.pages : 16;
-            const highlights = Array.isArray(extra.highlights)
-              ? (extra.highlights as string[])
-              : [c.subtitle || "Institutional deep dive analysis"];
-            const pdfUrl =
-              (typeof extra.pdf_url === "string" && extra.pdf_url) ||
-              (c.button_url && c.button_url.endsWith(".pdf") ? c.button_url : undefined);
+  const displayReports: ReportItem[] = (cards || [])
+    .filter((c) => c.visible !== false)
+    .map((c, i) => {
+      const extra = (c.extra_data || {}) as Record<string, unknown>;
+      const category = (c.badge ||
+        (extra.category as string) ||
+        "Equity") as ReportItem["category"];
+      const date = (extra.date as string) || "Recent";
+      const tagClass =
+        (extra.tagClass as string) ||
+        (category === "Mutual Funds"
+          ? "bg-[#E8F5EC] text-[#1E7A3A]"
+          : category === "Deep Dive"
+          ? "bg-[#FFF3E0] text-[#854F0B]"
+          : category === "Macro"
+          ? "bg-[#F3E8FF] text-[#6B21A8]"
+          : "bg-[#EBF2FA] text-[#185FA5]");
+      const isLocked = Boolean(extra.isLocked);
+      const pages = typeof extra.pages === "number" ? extra.pages : 16;
+      const highlights = Array.isArray(extra.highlights)
+        ? (extra.highlights as string[])
+        : [c.subtitle || "Institutional deep dive analysis"];
+      const pdfUrl =
+        (typeof extra.pdf_url === "string" && extra.pdf_url) ||
+        (c.button_url && c.button_url.endsWith(".pdf") ? c.button_url : undefined) ||
+        "/sample-reports/sample-report.pdf";
 
-            return {
-              id: c.id || `rep-${i}`,
-              title: c.title,
-              category,
-              date,
-              tagClass,
-              isLocked,
-              pages,
-              summary: c.description || c.subtitle || "",
-              highlights,
-              pdfUrl,
-            };
-          })
-      : mockReports;
+      return {
+        id: c.id || `rep-${i}`,
+        title: c.title,
+        category,
+        date,
+        tagClass,
+        isLocked,
+        pages,
+        summary: c.description || c.subtitle || "",
+        highlights,
+        pdfUrl,
+      };
+    });
 
   const categories = ["All", "Equity", "Mutual Funds", "Deep Dive", "Macro"];
 
@@ -195,23 +94,20 @@ export default function LatestReportsSection({ onOpenPricing }: LatestReportsSec
       setViewingReport(report);
       return;
     }
-    // Check if card has explicit attached PDF url
-    if (report.pdfUrl) {
-      window.open(report.pdfUrl, "_blank");
-      return;
-    }
-    // Check if there is an uploaded PDF matching this report
-    const matchingPdf = pdfs.find(
-      (p) =>
-        p.name.toLowerCase().includes(report.title.toLowerCase().slice(0, 15)) ||
-        report.title.toLowerCase().includes(p.name.toLowerCase().slice(0, 15))
-    );
-    if (matchingPdf && matchingPdf.url) {
-      window.open(matchingPdf.url, "_blank");
-      return;
-    }
-    setDownloadSuccess(`Downloading "${report.title}.pdf"...`);
-    setTimeout(() => setDownloadSuccess(null), 3500);
+
+    const pdfPath = report.pdfUrl || "/sample-reports/sample-report.pdf";
+
+    // Direct browser opening of PDF in new tab
+    const a = document.createElement("a");
+    a.href = pdfPath;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    setDownloadSuccess(`Opening "${report.title}.pdf"...`);
+    setTimeout(() => setDownloadSuccess(null), 3000);
   };
 
   return (
@@ -269,13 +165,30 @@ export default function LatestReportsSection({ onOpenPricing }: LatestReportsSec
           </div>
         )}
 
-        {/* 2-Column Grid on Mobile! */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
-          {filteredReports.map((report) => (
-            <div
-              key={report.id}
-              className="bg-[#F7F8FA] border border-gray-200 rounded-xl p-3.5 sm:p-5 hover-lift flex flex-col justify-between"
-            >
+        {/* Grid showing all published reports */}
+        {loading ? (
+          <div className="py-16 text-center text-xs text-gray-500 flex flex-col items-center justify-center gap-2">
+            <div className="w-7 h-7 border-2 border-[#1E7A3A] border-t-transparent rounded-full animate-spin" />
+            <span>Loading research reports from database...</span>
+          </div>
+        ) : filteredReports.length === 0 ? (
+          <div className="py-12 text-center bg-[#F7F8FA] rounded-xl border border-gray-200 p-8">
+            <FileText className="w-10 h-10 text-gray-300 mx-auto mb-2" />
+            <h3 className="text-sm font-bold text-gray-800">No Reports Found</h3>
+            <p className="text-xs text-gray-500 mt-1">
+              {searchQuery || activeCategory !== "All"
+                ? "No reports match your active filter or search query."
+                : "No research reports published yet."}
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
+            {filteredReports.map((report, idx) => (
+              <div
+                key={report.id ? `public-rep-${report.id}-${idx}` : `public-rep-${idx}`}
+                className="bg-[#F7F8FA] border border-gray-200 rounded-xl p-3.5 sm:p-5 hover-lift flex flex-col justify-between"
+              >
+
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <span
@@ -300,7 +213,7 @@ export default function LatestReportsSection({ onOpenPricing }: LatestReportsSec
               <div className="pt-2 sm:pt-3 border-t border-gray-200/60 flex items-center justify-between">
                 <button
                   onClick={() => setViewingReport(report)}
-                  className="text-[10px] sm:text-xs font-semibold text-[#1E7A3A] hover:underline flex items-center gap-0.5"
+                  className="text-[10px] sm:text-xs font-semibold text-[#1E7A3A] hover:underline flex items-center gap-0.5 cursor-pointer"
                 >
                   <FileText className="w-3 h-3" />
                   <span>Preview</span>
@@ -330,20 +243,23 @@ export default function LatestReportsSection({ onOpenPricing }: LatestReportsSec
             </div>
           ))}
         </div>
+      )}
       </div>
+
+
 
       {/* Report Modal */}
       {viewingReport && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 relative shadow-2xl border border-gray-200">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 relative shadow-2xl border border-gray-200 max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setViewingReport(null)}
-              className="absolute top-4 right-4 p-1 rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-100"
+              className="absolute top-4 right-4 p-1 rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-100 cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <div className="mb-4">
+            <div className="mb-4 pr-6">
               <span className={`text-[10px] font-semibold px-2.5 py-0.5 rounded-full ${viewingReport.tagClass}`}>
                 {viewingReport.category}
               </span>
@@ -392,13 +308,14 @@ export default function LatestReportsSection({ onOpenPricing }: LatestReportsSec
             ) : (
               <button
                 onClick={() => {
+                  const targetRep = viewingReport;
                   setViewingReport(null);
-                  handleDownload(viewingReport);
+                  handleDownload(targetRep);
                 }}
                 className="w-full text-center text-xs font-semibold bg-[#1E7A3A] hover:bg-[#27A84E] text-white py-2.5 rounded-lg shadow cursor-pointer transition-colors flex items-center justify-center gap-2"
               >
                 <Download className="w-4 h-4" />
-                <span>Download Full PDF Report</span>
+                <span>Open / Download Full PDF Report</span>
               </button>
             )}
           </div>
@@ -407,3 +324,4 @@ export default function LatestReportsSection({ onOpenPricing }: LatestReportsSec
     </section>
   );
 }
+
