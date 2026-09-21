@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import {
   Home, Save, RefreshCw, CheckCircle2, AlertCircle,
   ExternalLink, Eye, ShieldCheck, Sparkles, BarChart3,
-  Check, ChevronDown, ChevronUp, Layers, ArrowRight
+  Check, ChevronDown, ChevronUp, Layers, ArrowRight,
+  Sliders, Upload, Image as ImageIcon
 } from "lucide-react";
 import { getSiteContent, getPageCards, type PageCard } from "@/lib/content-client";
 
@@ -68,6 +69,14 @@ const PRESET_COLORS = [
 ];
 
 export default function SimpleAdminHomePage() {
+  // 0. Top Brand Banner Section
+  const [bannerImageUrl, setBannerImageUrl] = useState("/logo-horizontal.png");
+  const [bannerScale, setBannerScale] = useState<number>(100);
+  const [bannerVisible, setBannerVisible] = useState<boolean>(true);
+  const [bannerBg, setBannerBg] = useState<string>("#ffffff");
+  const [isBannerUploading, setIsBannerUploading] = useState(false);
+  const bannerFileInputRef = useRef<HTMLInputElement>(null);
+
   // 1. Hero Section
   const [heroEyebrow, setHeroEyebrow] = useState("Insights · Strategy · Growth");
   const [heroHeading, setHeroHeading] = useState("AlyoRA Capital Research");
@@ -121,7 +130,12 @@ export default function SimpleAdminHomePage() {
         // Merge site content
         contentRows.forEach((r) => {
           if (!r.value) return;
-          if (r.section === "hero") {
+          if (r.section === "brand-banner") {
+            if (r.key === "image_url") setBannerImageUrl(r.value);
+            if (r.key === "scale") setBannerScale(parseInt(r.value, 10) || 100);
+            if (r.key === "visible") setBannerVisible(r.value !== "false");
+            if (r.key === "bg") setBannerBg(r.value);
+          } else if (r.section === "hero") {
             if (r.key === "eyebrow") setHeroEyebrow(r.value);
             if (r.key === "heading") setHeroHeading(r.value);
             if (r.key === "tagline") setHeroTagline(r.value);
@@ -211,9 +225,21 @@ export default function SimpleAdminHomePage() {
     setErrorMessage("");
     setSavedSuccess(false);
 
+    const ADMIN_HEADERS = {
+      "Content-Type": "application/json",
+      "x-admin-token": "alyora-admin-secure-2026",
+      Authorization: "Bearer alyora-admin-secure-2026",
+    };
+
     try {
       // 1. Build site_content payload
       const contentItems = [
+        // Brand Banner
+        { page: "home", section: "brand-banner", key: "image_url", value: bannerImageUrl },
+        { page: "home", section: "brand-banner", key: "scale", value: String(bannerScale) },
+        { page: "home", section: "brand-banner", key: "visible", value: String(bannerVisible) },
+        { page: "home", section: "brand-banner", key: "bg", value: bannerBg },
+
         // Hero
         { page: "home", section: "hero", key: "eyebrow", value: heroEyebrow },
         { page: "home", section: "hero", key: "heading", value: heroHeading },
@@ -267,12 +293,12 @@ export default function SimpleAdminHomePage() {
       const [contentRes, cardsRes] = await Promise.all([
         fetch("/api/content/save", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: ADMIN_HEADERS,
           body: JSON.stringify({ items: contentItems }),
         }),
         fetch("/api/cards/save", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: ADMIN_HEADERS,
           body: JSON.stringify({ cards: cardsPayload }),
         }),
       ]);
@@ -289,6 +315,10 @@ export default function SimpleAdminHomePage() {
 
       setSavedSuccess(true);
       setTimeout(() => setSavedSuccess(false), 5000);
+
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("alyora_page_data_updated"));
+      }
     } catch (err) {
       console.error("Save error:", err);
       setErrorMessage(err instanceof Error ? err.message : "Error saving changes. Please try again.");
@@ -381,6 +411,226 @@ export default function SimpleAdminHomePage() {
           <span>{errorMessage}</span>
         </div>
       )}
+
+      {/* Hidden File Input for Banner Image Upload */}
+      <input
+        ref={bannerFileInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={async (e) => {
+          const file = e.target.files?.[0];
+          if (!file) return;
+          setIsBannerUploading(true);
+          try {
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("title", "Top Brand Banner Logo");
+            const res = await fetch("/api/pdfs/upload", {
+              method: "POST",
+              headers: {
+                "x-admin-token": "alyora-admin-secure-2026",
+              },
+              body: formData,
+            });
+            const data = await res.json();
+            if (data.url) {
+              setBannerImageUrl(data.url);
+              setSavedSuccess(false);
+            }
+          } catch (err) {
+            console.error("Banner upload error:", err);
+          } finally {
+            setIsBannerUploading(false);
+            if (bannerFileInputRef.current) bannerFileInputRef.current.value = "";
+          }
+        }}
+      />
+
+      {/* Section 0: Top Brand Banner & Logo Scale Management */}
+      <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm space-y-5">
+        <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-emerald-50 text-[#1E7A3A] flex items-center justify-center">
+              <Sliders className="w-4 h-4" />
+            </div>
+            <div>
+              <h2 className="text-sm font-bold text-gray-900">0. Top Brand Banner &amp; Logo Scale</h2>
+              <p className="text-[11px] text-gray-500">
+                Manage top logo banner image, adjust scale (30% – 250%), toggle visibility, and background color.
+              </p>
+            </div>
+          </div>
+
+          <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-gray-700">
+            <input
+              type="checkbox"
+              checked={bannerVisible}
+              onChange={(e) => {
+                setBannerVisible(e.target.checked);
+                setSavedSuccess(false);
+              }}
+              className="w-4 h-4 rounded text-[#1E7A3A] focus:ring-[#1E7A3A] accent-[#1E7A3A]"
+            />
+            <span>Show Banner on Home Page</span>
+          </label>
+        </div>
+
+        {/* Live Interactive Preview Box */}
+        <div className="space-y-1">
+          <div className="flex items-center justify-between text-xs font-bold text-gray-700">
+            <span>Live Scaled Banner Preview</span>
+            <span className="font-mono text-[#1E7A3A] bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+              Scale: {bannerScale}%
+            </span>
+          </div>
+
+          <div
+            className="w-full border border-gray-200 rounded-xl p-4 flex items-center justify-center min-h-[90px] overflow-hidden transition-all shadow-inner"
+            style={{ backgroundColor: bannerBg }}
+          >
+            <div
+              className="relative w-full max-w-lg flex items-center justify-center transition-all duration-300"
+              style={{
+                height: `${Math.round(80 * (bannerScale / 100))}px`,
+              }}
+            >
+              <div
+                className="relative w-full h-full transition-transform duration-300 flex items-center justify-center"
+                style={{
+                  transform: `scale(${bannerScale / 100})`,
+                  transformOrigin: "center center",
+                }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={bannerImageUrl}
+                  alt="Banner Preview"
+                  className="max-h-full max-w-full object-contain"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Scale Controls: Interactive Slider & Presets */}
+        <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <label className="text-xs font-bold text-gray-800 flex items-center gap-2">
+              <span>Logo Size / Scale Controller:</span>
+              <span className="font-mono text-sm text-[#1E7A3A]">{bannerScale}%</span>
+            </label>
+
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="text-[10px] font-bold text-gray-400 uppercase mr-1">Quick Presets:</span>
+              {[50, 75, 100, 125, 150, 180, 200, 250].map((preset) => (
+                <button
+                  key={preset}
+                  type="button"
+                  onClick={() => {
+                    setBannerScale(preset);
+                    setSavedSuccess(false);
+                  }}
+                  className={`text-[11px] font-mono px-2 py-1 rounded-lg border transition-all cursor-pointer ${
+                    bannerScale === preset
+                      ? "bg-[#1E7A3A] text-white border-[#1E7A3A] font-bold shadow-xs"
+                      : "bg-white text-gray-700 border-gray-200 hover:bg-gray-100"
+                  }`}
+                >
+                  {preset}%
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <span className="text-xs font-mono text-gray-400">30%</span>
+            <input
+              type="range"
+              min={30}
+              max={250}
+              step={5}
+              value={bannerScale}
+              onChange={(e) => {
+                setBannerScale(Number(e.target.value));
+                setSavedSuccess(false);
+              }}
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#1E7A3A]"
+            />
+            <span className="text-xs font-mono text-gray-400">250%</span>
+            <input
+              type="number"
+              min={30}
+              max={250}
+              value={bannerScale}
+              onChange={(e) => {
+                const val = Math.min(250, Math.max(30, Number(e.target.value) || 100));
+                setBannerScale(val);
+                setSavedSuccess(false);
+              }}
+              className="w-20 px-2 py-1 text-xs font-mono border border-gray-300 rounded-lg text-center font-bold"
+            />
+          </div>
+        </div>
+
+        {/* Image Upload & Background Color Inputs */}
+        <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
+          <div className="sm:col-span-8 space-y-1.5">
+            <label className="block text-xs font-bold text-gray-700">
+              Banner Image / Logo URL
+            </label>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => bannerFileInputRef.current?.click()}
+                disabled={isBannerUploading}
+                className="px-3.5 py-2 bg-white border border-gray-300 hover:bg-gray-100 text-gray-800 text-xs font-bold rounded-xl shadow-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50 flex-shrink-0"
+              >
+                <Upload className="w-3.5 h-3.5 text-[#1E7A3A]" />
+                <span>{isBannerUploading ? "Uploading..." : "Upload Image"}</span>
+              </button>
+
+              <input
+                type="text"
+                value={bannerImageUrl}
+                onChange={(e) => {
+                  setBannerImageUrl(e.target.value);
+                  setSavedSuccess(false);
+                }}
+                placeholder="/logo-horizontal.png or https://..."
+                className="w-full px-3 py-2 text-xs bg-gray-50 border border-gray-200 rounded-xl font-mono focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1E7A3A]/30"
+              />
+            </div>
+          </div>
+
+          <div className="sm:col-span-4 space-y-1.5">
+            <label className="block text-xs font-bold text-gray-700">
+              Background Color
+            </label>
+            <div className="flex items-center gap-2">
+              <input
+                type="color"
+                value={bannerBg}
+                onChange={(e) => {
+                  setBannerBg(e.target.value);
+                  setSavedSuccess(false);
+                }}
+                className="w-9 h-9 p-0.5 rounded-lg border border-gray-200 cursor-pointer bg-white"
+              />
+              <input
+                type="text"
+                value={bannerBg}
+                onChange={(e) => {
+                  setBannerBg(e.target.value);
+                  setSavedSuccess(false);
+                }}
+                placeholder="#ffffff"
+                className="w-full px-3 py-2 text-xs bg-gray-50 border border-gray-200 rounded-xl font-mono focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1E7A3A]/30 font-bold"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Section 1: Hero & Brand Tagline */}
       <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm space-y-4">

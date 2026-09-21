@@ -2,9 +2,7 @@ import { NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { verifyAdminAuth } from "@/lib/auth-check";
-
-const INSFORGE_URL = process.env.NEXT_PUBLIC_INSFORGE_URL || "https://2v5tfmzc.ap-southeast.insforge.app";
-const INSFORGE_ANON_KEY = process.env.NEXT_PUBLIC_INSFORGE_ANON_KEY || "ik_c074ab9ccf398203750003e97600ba84";
+import { insforge } from "@/lib/insforge";
 
 export async function POST(request: Request) {
   try {
@@ -24,47 +22,65 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
-    // Ensure public/sample-reports exists
-    const uploadDir = path.join(process.cwd(), "public", "sample-reports");
-    await mkdir(uploadDir, { recursive: true });
-
     // Clean filename
     const ext = path.extname(file.name) || ".pdf";
     const rawName = path.basename(file.name, ext).toLowerCase().replace(/[^a-z0-9_-]/g, "-");
     const uniqueFileName = `${Date.now()}-${rawName}${ext}`;
-    const filePath = path.join(uploadDir, uniqueFileName);
+    const storageKey = `pdfs/reports/${uniqueFileName}`;
 
-    await writeFile(filePath, buffer);
-    const publicUrl = `/sample-reports/${uniqueFileName}`;
+    let publicUrl = "";
+    let insforgeStorageKey = storageKey;
 
-    // Also register in InsForge pdf_files database table
+    // 1. Primary Upload: Upload to InsForge Storage bucket ("pdfs")
     try {
-      const dbPayload = [
+      const { data: uploadData, error: uploadError } = await insforge.storage
+        .from("pdfs")
+        .upload(storageKey, file);
+
+      if (!uploadError && uploadData?.url) {
+        publicUrl = uploadData.url;
+      } else if (uploadError) {
+        console.warn("[api/pdfs/upload] InsForge Storage error:", uploadError);
+      }
+    } catch (storageErr) {
+      console.warn("[api/pdfs/upload] InsForge Storage upload warning:", storageErr);
+    }
+
+    // 2. Secondary Fallback: Save copy to public/sample-reports/
+    try {
+      const bytes = await file.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      const uploadDir = path.join(process.cwd(), "public", "sample-reports");
+      await mkdir(uploadDir, { recursive: true });
+      const filePath = path.join(uploadDir, uniqueFileName);
+      await writeFile(filePath, buffer);
+
+      if (!publicUrl) {
+        publicUrl = `/sample-reports/${uniqueFileName}`;
+        insforgeStorageKey = `sample-reports/${uniqueFileName}`;
+      }
+    } catch (localErr) {
+      console.warn("[api/pdfs/upload] Local file write warning:", localErr);
+    }
+
+    if (!publicUrl) {
+      publicUrl = `/sample-reports/${uniqueFileName}`;
+    }
+
+    // 3. Register PDF in InsForge pdf_files database table
+    try {
+      await insforge.database.from("pdf_files").insert([
         {
           name: reportTitle || file.name,
           url: publicUrl,
-          key: `sample-reports/${uniqueFileName}`,
+          key: insforgeStorageKey,
           page: "reports",
           section: "main",
           visible: true,
           file_size: file.size,
           created_at: new Date().toISOString(),
         },
-      ];
-
-      await fetch(`${INSFORGE_URL}/api/database/records/pdf_files`, {
-        method: "POST",
-        headers: {
-          apikey: INSFORGE_ANON_KEY,
-          Authorization: `Bearer ${INSFORGE_ANON_KEY}`,
-          "Content-Type": "application/json",
-          Prefer: "return=representation",
-        },
-        body: JSON.stringify(dbPayload),
-      });
+      ]);
     } catch (dbErr) {
       console.warn("Failed to register PDF in InsForge database:", dbErr);
     }
@@ -74,6 +90,7 @@ export async function POST(request: Request) {
       url: publicUrl,
       name: file.name,
       file_size: file.size,
+      key: insforgeStorageKey,
     });
   } catch (err) {
     console.error("PDF upload error:", err);
