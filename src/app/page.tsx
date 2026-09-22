@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import StatsBar from "@/components/StatsBar";
@@ -26,6 +25,12 @@ export default function HomePage() {
   const bannerVisibleStr = getContent("brand-banner", "visible", "true");
   const isBannerVisible = bannerVisibleStr !== "false" && isSectionVisible("brand-banner", true);
   const bannerBg = getContent("brand-banner", "bg", "#ffffff");
+
+  const [bannerSrc, setBannerSrc] = React.useState(bannerImageUrl);
+
+  React.useEffect(() => {
+    setBannerSrc(bannerImageUrl);
+  }, [bannerImageUrl]);
 
   return (
     <div className="min-h-screen bg-[#F7F8FA] flex flex-col font-sans">
@@ -55,14 +60,12 @@ export default function HomePage() {
                       transformOrigin: "center center",
                     }}
                   >
-                    <Image
-                      src={bannerImageUrl}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={bannerSrc || "/logo-horizontal.png"}
                       alt="AlyoRA Capital Research — Insights | Strategy | Growth"
-                      fill
-                      sizes="(max-width: 640px) 360px, (max-width: 768px) 560px, 672px"
-                      className="object-contain"
-                      priority
-                      unoptimized={bannerImageUrl.startsWith("http")}
+                      className="max-h-full max-w-full object-contain"
+                      onError={() => setBannerSrc("/logo-horizontal.png")}
                     />
                   </div>
                 </div>

@@ -425,8 +425,8 @@ export default function SimpleAdminHomePage() {
           try {
             const formData = new FormData();
             formData.append("file", file);
-            formData.append("title", "Top Brand Banner Logo");
-            const res = await fetch("/api/pdfs/upload", {
+            formData.append("folder", "banners");
+            const res = await fetch("/api/images/upload", {
               method: "POST",
               headers: {
                 "x-admin-token": "alyora-admin-secure-2026",
@@ -504,9 +504,13 @@ export default function SimpleAdminHomePage() {
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={bannerImageUrl}
+                  src={bannerImageUrl || "/logo-horizontal.png"}
                   alt="Banner Preview"
                   className="max-h-full max-w-full object-contain"
+                  onError={(e) => {
+                    // Fallback to default logo if custom URL fails to load
+                    (e.target as HTMLImageElement).src = "/logo-horizontal.png";
+                  }}
                 />
               </div>
             </div>
@@ -588,6 +592,18 @@ export default function SimpleAdminHomePage() {
               >
                 <Upload className="w-3.5 h-3.5 text-[#1E7A3A]" />
                 <span>{isBannerUploading ? "Uploading..." : "Upload Image"}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setBannerImageUrl("/logo-horizontal.png");
+                  setSavedSuccess(false);
+                }}
+                className="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-xl transition-colors cursor-pointer flex-shrink-0"
+                title="Reset logo to default /logo-horizontal.png"
+              >
+                Reset Default
               </button>
 
               <input
