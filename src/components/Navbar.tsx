@@ -56,6 +56,8 @@ export default function Navbar({ onOpenConsultation }: NavbarProps) {
               width={38}
               height={38}
               className="object-contain"
+              priority
+              unoptimized
             />
           </div>
           <div>

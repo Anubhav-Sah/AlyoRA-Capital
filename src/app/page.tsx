@@ -63,7 +63,7 @@ export default function HomePage() {
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={bannerSrc || "/logo-horizontal.png"}
-                      alt="AlyoRA Capital Research — Insights | Strategy | Growth"
+                      alt="AlyoRA Capital Research — Simplifying Your Investment Journey"
                       className="max-h-full max-w-full object-contain"
                       onError={() => setBannerSrc("/logo-horizontal.png")}
                     />
@@ -75,7 +75,12 @@ export default function HomePage() {
             {/* Hero Section */}
             {isSectionVisible("hero") && (
               <HeroSection
-                tagline="Where Research Meets Returns"
+                tagline={
+                  getContent("hero", "tagline", "Simplifying Your Investment Journey") ===
+                  "Where Research Meets Returns"
+                    ? "Simplifying Your Investment Journey"
+                    : getContent("hero", "tagline", "Simplifying Your Investment Journey")
+                }
                 onExploreServices={() => router.push("/services")}
                 onViewReports={() => router.push("/reports")}
                 onOpenConsultation={() => setIsConsultationOpen(true)}

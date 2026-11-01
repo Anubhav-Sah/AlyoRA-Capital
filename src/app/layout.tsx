@@ -18,7 +18,7 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.alyoracapital.in"),
   title: {
-    default: "AlyoRA Capital Research — Where Research Meets Returns",
+    default: "AlyoRA Capital Research — Simplifying Your Investment Journey",
     template: "%s | AlyoRA Capital Research",
   },
   description:
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "AlyoRA Capital Research — Where Research Meets Returns",
+    title: "AlyoRA Capital Research — Simplifying Your Investment Journey",
     description:
       "Institutional-grade equity research, bespoke advisory, and mutual fund planning for Indian investors.",
     url: "https://www.alyoracapital.in",
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "AlyoRA Capital Research — Where Research Meets Returns",
+    title: "AlyoRA Capital Research — Simplifying Your Investment Journey",
     description:
       "Institutional-grade equity research, bespoke advisory, and mutual fund planning for Indian investors.",
     images: ["/icon.png"],

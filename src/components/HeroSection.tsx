@@ -23,7 +23,7 @@ export default function HeroSection({
 
   const eyebrow = getContent("hero", "eyebrow", "Insights · Strategy · Growth");
   const heading = getContent("hero", "heading", "AlyoRA Capital Research");
-  const tagline = propTagline || getContent("hero", "tagline", "Where Research Meets Returns");
+  const tagline = propTagline || getContent("hero", "tagline", "Simplifying Your Investment Journey");
   const description = getContent(
     "hero",
     "description",
@@ -34,6 +34,14 @@ export default function HeroSection({
   const ctaTertiary = getContent("hero", "cta_tertiary_label", "Book Free Consultation →");
 
   const renderTagline = () => {
+    if (tagline === "Simplifying Your Investment Journey") {
+      return (
+        <>
+          Simplifying Your <br />
+          Investment <span className="text-[#27A84E]">Journey</span>
+        </>
+      );
+    }
     if (tagline === "Where Research Meets Returns") {
       return (
         <>

@@ -113,6 +113,7 @@ export default function Footer({ onOpenConsultation }: FooterProps) {
                 width={46}
                 height={46}
                 className="object-contain"
+                unoptimized
               />
             </div>
             <div>

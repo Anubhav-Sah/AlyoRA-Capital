@@ -80,7 +80,7 @@ export default function SimpleAdminHomePage() {
   // 1. Hero Section
   const [heroEyebrow, setHeroEyebrow] = useState("Insights · Strategy · Growth");
   const [heroHeading, setHeroHeading] = useState("AlyoRA Capital Research");
-  const [heroTagline, setHeroTagline] = useState("Where Research Meets Returns");
+  const [heroTagline, setHeroTagline] = useState("Simplifying Your Investment Journey");
   const [heroDesc, setHeroDesc] = useState(
     "SEBI-aligned institutional precision for active traders, high-net-worth individuals, and long-term portfolio builders in Indian capital markets."
   );
@@ -701,7 +701,7 @@ export default function SimpleAdminHomePage() {
                 setHeroTagline(e.target.value);
                 setSavedSuccess(false);
               }}
-              placeholder="Where Research Meets Returns"
+              placeholder="Simplifying Your Investment Journey"
               className="w-full px-3 py-2 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1E7A3A]/30 font-semibold text-[#1E7A3A]"
             />
           </div>
